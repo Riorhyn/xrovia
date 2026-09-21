@@ -24,12 +24,12 @@ export function DigitalIdPreview() {
   const [isVerified, setIsVerified] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Alex Morgan",
-    headline: "Structural engineer",
-    location: "Toronto, Canada",
-    about: "Bridge and building design",
+    fullName: "Loading...",
+    headline: "Professional Headline",
+    location: "Location not specified",
+    about: "Professional summary",
     photoUrl: "",
-    skills: ["Structural analysis", "AutoCAD", "Project planning"],
+    skills: ["Core Competency"],
     educationCount: 0,
     educationSummary: "No degree added",
     experienceCount: 0,
@@ -41,73 +41,73 @@ export function DigitalIdPreview() {
     professionalId: "PR-159481",
   });
 
-  const loadProfile = () => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setIsVerified(Boolean(parsed.isVerified));
+  const loadProfileFromDb = async () => {
+    try {
+      const res = await fetch("/api/profile");
+      if (res.ok) {
+        const json = await res.json();
+        const user = json.user || {};
+        const p = user.profile || {};
+        const fullData = p.fullData || {};
 
-        if (parsed.personal && parsed.personal.fullName) {
-          const edus = parsed.educations || [];
-          const exps = parsed.experiences || [];
-          const skls = parsed.skills || [];
-          const prjs = parsed.projects || [];
+        const edus = fullData.educations || [];
+        const exps = fullData.experiences || [];
+        const skls = fullData.skills || [];
+        const prjs = fullData.projects || [];
 
-          const eduSummary = edus[0]
-            ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
-            : "No degree added";
+        const eduSummary = edus[0]
+          ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
+          : "No degree added";
 
-          const expSummary = exps[0]
-            ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
-            : "No experience added";
+        const expSummary = exps[0]
+          ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
+          : "No experience added";
 
-          const sklSummary = skls.length
-            ? skls.slice(0, 3).join(", ")
-            : "No skills listed";
+        const sklSummary = skls.length ? skls.slice(0, 3).join(", ") : "No skills listed";
 
-          const prjSummary = prjs[0]
-            ? `${prjs[0].title}${prjs[0].role ? ` (${prjs[0].role})` : ""}`
-            : "No projects added";
+        const prjSummary = prjs[0]
+          ? `${prjs[0].title}${prjs[0].role ? ` (${prjs[0].role})` : ""}`
+          : "No projects added";
 
-          setProfile({
-            fullName: parsed.personal.fullName,
-            headline: parsed.personal.headline || "Professional Headline",
-            location: parsed.personal.location || "City, Country",
-            about: parsed.personal.about || "Professional summary",
-            photoUrl: parsed.personal.photoUrl || "",
-            skills: skls.length ? skls : ["Core Competency"],
-            educationCount: edus.length,
-            educationSummary: eduSummary,
-            experienceCount: exps.length,
-            experienceSummary: expSummary,
-            skillsCount: skls.length,
-            skillsSummary: sklSummary,
-            projectsCount: prjs.length,
-            projectsSummary: prjSummary,
-            professionalId: "PR-159481",
-          });
+        setProfile({
+          fullName: p.fullName || user.email?.split("@")[0] || "Candidate",
+          headline: p.headline || "Professional Headline",
+          location: p.location || "City, Country",
+          about: p.about || "Professional summary",
+          photoUrl: p.photoUrl || "",
+          skills: skls.length ? skls : ["Core Competency"],
+          educationCount: edus.length,
+          educationSummary: eduSummary,
+          experienceCount: exps.length,
+          experienceSummary: expSummary,
+          skillsCount: skls.length,
+          skillsSummary: sklSummary,
+          projectsCount: prjs.length,
+          projectsSummary: prjSummary,
+          professionalId: p.professionalId || "PR-159481",
+        });
+
+        if (p.professionalId && typeof window !== "undefined") {
+          setShareUrl(`${window.location.origin}/${p.professionalId}`);
         }
-      } catch (e) {
-        console.error("Failed to load profile:", e);
       }
+    } catch (e) {
+      console.error("Failed to load profile from database:", e);
     }
   };
 
   useEffect(() => {
-    loadProfile();
+    loadProfileFromDb();
     if (typeof window !== "undefined") {
       setShareUrl(`${window.location.origin}/PR-159481`);
     }
 
-    window.addEventListener("profile_updated", loadProfile);
-    window.addEventListener("storage", loadProfile);
-    window.addEventListener("focus", loadProfile);
+    window.addEventListener("profile_updated", loadProfileFromDb);
+    window.addEventListener("storage", loadProfileFromDb);
 
     return () => {
-      window.removeEventListener("profile_updated", loadProfile);
-      window.removeEventListener("storage", loadProfile);
-      window.removeEventListener("focus", loadProfile);
+      window.removeEventListener("profile_updated", loadProfileFromDb);
+      window.removeEventListener("storage", loadProfileFromDb);
     };
   }, []);
 
@@ -140,7 +140,7 @@ export function DigitalIdPreview() {
         .join("")
         .slice(0, 2)
         .toUpperCase()
-    : "AM";
+    : "C";
 
   return (
     <>
@@ -206,7 +206,7 @@ export function DigitalIdPreview() {
           </button>
         </div>
 
-        {/* Cohesive Clean Professional ID Banner */}
+        {/* Professional ID Banner */}
         <div className="rounded-2xl bg-blue-50/80 p-3.5 border border-blue-100 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase text-blue-600 tracking-wider">
@@ -306,18 +306,11 @@ export function DigitalIdPreview() {
           </span>
           <span className="font-mono font-bold text-blue-600">/{profile.professionalId}</span>
         </div>
-
-        <button
-          onClick={() => setShowQrModal(true)}
-          className="w-full text-[10px] text-center text-slate-400 font-medium hover:text-blue-600 cursor-pointer transition"
-        >
-          Click QR code to view, download, or share.
-        </button>
       </div>
 
       {/* QR Code Modal */}
       {showQrModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
           <div className="relative w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl space-y-5 border border-slate-100">
             <button
               onClick={() => setShowQrModal(false)}
@@ -337,10 +330,6 @@ export function DigitalIdPreview() {
             <div className="mx-auto w-52 h-52 bg-slate-50 rounded-2xl border border-slate-200 p-4 flex items-center justify-center shadow-inner">
               {shareUrl && <QRCodeSVG value={shareUrl} size={176} level="H" includeMargin={true} />}
             </div>
-
-            <p className="text-xs text-slate-500">
-              Scan this QR code using any smartphone camera to inspect profile records.
-            </p>
 
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
