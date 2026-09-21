@@ -14,10 +14,6 @@ export async function GET() {
       where: { id: session.userId },
       include: {
         profile: true,
-        experiences: true,
-        educations: true,
-        projects: true,
-        skills: true,
       },
     });
 
@@ -46,23 +42,26 @@ export async function POST(req: Request) {
     const updatedUser = await prisma.user.update({
       where: { id: session.userId },
       data: {
-        name: personal.fullName,
+        name: personal?.fullName || undefined,
         profile: {
           upsert: {
             create: {
-              headline: personal.headline,
-              location: personal.location,
-              about: personal.about,
-              photoUrl: personal.photoUrl,
+              headline: personal?.headline || "",
+              location: personal?.location || "",
+              about: personal?.about || "",
+              photoUrl: personal?.photoUrl || "",
             },
             update: {
-              headline: personal.headline,
-              location: personal.location,
-              about: personal.about,
-              photoUrl: personal.photoUrl,
+              headline: personal?.headline || "",
+              location: personal?.location || "",
+              about: personal?.about || "",
+              photoUrl: personal?.photoUrl || "",
             },
           },
         },
+      },
+      include: {
+        profile: true,
       },
     });
 
