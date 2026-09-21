@@ -41,20 +41,22 @@ export default function DashboardPage() {
   const profile = profileData?.profile || {};
   const fullData = profile.fullData || {};
 
-  const fullName = profile.fullName || "Candidate";
+  // Extract real user details
+  const fullName = profile.fullName || "Candidate Name";
   const professionalId = profile.professionalId || "PR-159481";
   const headline = profile.headline || "Professional Headline";
   const location = profile.location || "Location not provided";
   const photoUrl = profile.photoUrl || "";
 
+  // Extract arrays from fullData JSON blob
   const experiences = fullData.experiences || [];
   const educations = fullData.educations || [];
   const skills = fullData.skills || [];
   const projects = fullData.projects || [];
 
-  // Calculate completion percentage dynamically
+  // Calculate dynamic completion status percentage
   let completedCount = 0;
-  if (fullName && headline) completedCount++;
+  if (fullName && fullName !== "Candidate Name") completedCount++;
   if (experiences.length > 0) completedCount++;
   if (educations.length > 0) completedCount++;
   if (skills.length > 0) completedCount++;
@@ -132,7 +134,7 @@ export default function DashboardPage() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Styled Digital ID Card */}
+          {/* Left Column: Dynamic Digital ID Card */}
           <div className="lg:col-span-5 space-y-3">
             <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
               Your Digital ID Card
@@ -176,7 +178,7 @@ export default function DashboardPage() {
           {/* Right Column: Live Summary Metrics & Privacy Controls */}
           <div className="lg:col-span-7 space-y-6">
             
-            {/* Career Summary Metrics */}
+            {/* Career Records Summary */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Career Records Summary</h2>
               
