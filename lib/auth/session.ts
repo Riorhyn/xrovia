@@ -76,3 +76,4 @@ export function clearSessionCookie(response: NextResponse): void {
     maxAge: 0,
   });
 }
+export const createSession = createSessionToken;

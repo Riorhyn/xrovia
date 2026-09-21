@@ -1,10 +1,16 @@
+
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { createSession } from "@/lib/auth/session";
+import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/db/prisma";
+import {
+  createSessionToken,
+  setSessionCookie,
+} from "@/lib/auth/session";
 
 export async function POST(req: Request) {
   try {
-    const { fullName, email, password, country } = await req.json();
+    const { fullName, email, password, country } =
+      await req.json();
 
     if (!email || !password || !fullName) {
       return NextResponse.json(
@@ -20,26 +26,31 @@ export async function POST(req: Request) {
       where: { email: normalizedEmail },
     });
 
-    // Throw error if email is already taken
     if (existingUser) {
       return NextResponse.json(
         {
-          error: "An account with this email already exists. Please log in.",
+          error:
+            "An account with this email already exists. Please log in.",
           isAlreadyRegistered: true,
         },
         { status: 409 }
       );
     }
 
-    // 2. Generate new Professional ID
-    const randomDigits = Math.floor(100000 + Math.random() * 900000);
+    // 2. Generate a new Professional ID
+    const randomDigits = Math.floor(
+      100000 + Math.random() * 900000
+    );
     const professionalId = `PR-${randomDigits}`;
 
-    // 3. Create new user record
+    // 3. Hash the password
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    // 4. Create the user and profile
     const newUser = await prisma.user.create({
       data: {
         email: normalizedEmail,
-        password, // Ensure password hashing (e.g. bcrypt) in production
+        passwordHash,
         profile: {
           create: {
             fullName,
@@ -51,10 +62,15 @@ export async function POST(req: Request) {
       include: { profile: true },
     });
 
-    // 4. Create authentication session for new user
-    await createSession(newUser.id);
+    // 5. Create a session
+    const token = await createSessionToken({
+      userId: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
+    });
 
-    return NextResponse.json(
+    // 6. Set the session cookie
+    const response = NextResponse.json(
       {
         message: "Account created successfully",
         user: {
@@ -65,7 +81,13 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
+
+    setSessionCookie(response, token);
+
+    return response;
   } catch (err) {
+    console.error("Registration error:", err);
+
     return NextResponse.json(
       { error: "Failed to create account. Please try again." },
       { status: 500 }

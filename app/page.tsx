@@ -24,7 +24,7 @@ export const metadata: Metadata = {
  */
 export default async function HomePage() {
   const session = await getSession();
-  const isAuthenticated = Boolean(session?.user || session);
+  const isAuthenticated = Boolean(session);
 
   return (
     <>
