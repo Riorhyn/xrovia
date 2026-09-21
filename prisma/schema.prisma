@@ -1,0 +1,250 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum VerificationStatus {
+  USER_PROVIDED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ReportReason {
+  FAKE_INFORMATION
+  FAKE_IDENTITY
+  FAKE_EMPLOYMENT
+  FAKE_EDUCATION
+  FRAUD_SCAM
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(USER)
+  country      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  profile      Profile?
+  reportsFiled Report[]  @relation("Reporter")
+  redemptions  BenefitRedemption[]
+
+  @@index([email])
+}
+
+model Profile {
+  id              String             @id @default(cuid())
+  userId          String             @unique
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Persistent Unique ID format: PR-XXXXXX
+  professionalId  String             @unique
+  fullName        String
+  headline        String?
+  location        String?
+  about           String?
+  photoUrl        String?
+  isPublic        Boolean            @default(true)
+
+  // Architectural verification anchors (defaults to USER_PROVIDED in V1)
+  verificationStatus VerificationStatus @default(USER_PROVIDED)
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  verificationSource String?
+
+  education       Education[]
+  experience      Experience[]
+  skills          Skill[]
+  certifications  Certification[]
+  projects        Project[]
+  achievements    Achievement[]
+  socialLinks     SocialLink[]
+  reportsReceived Report[]           @relation("ReportedProfile")
+  analytics       AnalyticsEvent[]
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([professionalId])
+}
+
+model Education {
+  id                 String             @id @default(cuid())
+  profileId          String
+  profile            Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  degree             String
+  field              String
+  institution        String
+  startYear          Int
+  endYear            Int?
+  grade              String?
+  description        String?
+  verificationStatus VerificationStatus @default(USER_PROVIDED)
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([profileId])
+}
+
+model Experience {
+  id                 String             @id @default(cuid())
+  profileId          String
+  profile            Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  company            String
+  jobTitle           String
+  employmentType     String?
+  location           String?
+  startDate          DateTime
+  endDate            DateTime?
+  isCurrent          Boolean            @default(false)
+  description        String?
+  verificationStatus VerificationStatus @default(USER_PROVIDED)
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([profileId])
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+
+  @@index([profileId])
+}
+
+model Certification {
+  id                 String             @id @default(cuid())
+  profileId          String
+  profile            Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name               String
+  issuer             String
+  issueDate          DateTime
+  expiryDate         DateTime?
+  certificateUrl     String?
+  credentialId       String?
+  verificationStatus VerificationStatus @default(USER_PROVIDED)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([profileId])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  role        String?
+  tools       String?
+  startDate   DateTime?
+  endDate     DateTime?
+  projectUrl  String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+model Achievement {
+  id           String    @id @default(cuid())
+  profileId    String
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  date         DateTime?
+  organization String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([profileId])
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  String   // "LinkedIn", "GitHub", "Portfolio", "Website", "Other"
+  url       String
+  createdAt DateTime @default(now())
+
+  @@index([profileId])
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  profileId   String
+  profile     Profile      @relation("ReportedProfile", fields: [profileId], references: [id], onDelete: Cascade)
+  reporterId  String?
+  reporter    User?        @relation("Reporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  reason      ReportReason
+  details     String?
+  status      ReportStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([profileId])
+}
+
+model Benefit {
+  id          String              @id @default(cuid())
+  business    String
+  category    String              // Education, Lifestyle, Wellness, Tech
+  discount    String
+  location    String
+  terms       String
+  expiry      DateTime
+  isDemo      Boolean             @default(true)
+  redemptions BenefitRedemption[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model BenefitRedemption {
+  id        String   @id @default(cuid())
+  benefitId String
+  benefit   Benefit  @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([benefitId, userId])
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  profileId  String
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  eventType  String   // "PROFILE_VIEW", "QR_SCAN", "SHARE_CLICK", "CV_DOWNLOAD"
+  createdAt  DateTime @default(now())
+
+  @@index([profileId, eventType])
+}
