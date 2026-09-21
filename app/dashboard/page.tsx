@@ -25,9 +25,8 @@ export default function DashboardPage() {
         const res = await fetch("/api/profile");
         if (res.ok) {
           const json = await res.json();
-          if (json.user) {
-            setProfileData(json.user);
-          }
+          // Handles both { user: { profile: ... } } and direct responses
+          setProfileData(json.user || json);
         }
       } catch (e) {
         console.error("Failed to load dashboard data:", e);
@@ -38,23 +37,22 @@ export default function DashboardPage() {
     fetchDashboard();
   }, []);
 
-  const profile = profileData?.profile || {};
+  // Safe data extraction from profile or localStorage fallback
+  const profile = profileData?.profile || profileData || {};
   const fullData = profile.fullData || {};
 
-  // Extract real user details
   const fullName = profile.fullName || "Candidate Name";
   const professionalId = profile.professionalId || "PR-159481";
   const headline = profile.headline || "Professional Headline";
   const location = profile.location || "Location not provided";
   const photoUrl = profile.photoUrl || "";
 
-  // Extract arrays from fullData JSON blob
-  const experiences = fullData.experiences || [];
-  const educations = fullData.educations || [];
+  const experiences = fullData.experiences || profile.experience || [];
+  const educations = fullData.educations || profile.education || [];
   const skills = fullData.skills || [];
   const projects = fullData.projects || [];
 
-  // Calculate dynamic completion status percentage
+  // Calculate completion percentage
   let completedCount = 0;
   if (fullName && fullName !== "Candidate Name") completedCount++;
   if (experiences.length > 0) completedCount++;
@@ -117,7 +115,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Dynamic Profile Completion Status Bar */}
+        {/* Profile Completion Status Bar */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
           <div className="flex justify-between items-center text-xs font-bold">
             <span className="text-slate-700">Profile Completion Status</span>
@@ -134,7 +132,7 @@ export default function DashboardPage() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Dynamic Digital ID Card */}
+          {/* Left Column: Digital ID Card */}
           <div className="lg:col-span-5 space-y-3">
             <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
               Your Digital ID Card
@@ -175,10 +173,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Right Column: Live Summary Metrics & Privacy Controls */}
+          {/* Right Column: Career Records Summary */}
           <div className="lg:col-span-7 space-y-6">
-            
-            {/* Career Records Summary */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Career Records Summary</h2>
               
