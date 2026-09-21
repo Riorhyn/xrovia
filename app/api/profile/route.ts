@@ -39,6 +39,9 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { personal } = body;
 
+    // Generate a random 6-digit Professional ID for new profiles
+    const generatedProfessionalId = `PR-${Math.floor(100000 + Math.random() * 900000)}`;
+
     const updatedUser = await prisma.user.update({
       where: { id: session.userId },
       data: {
@@ -46,12 +49,15 @@ export async function POST(req: Request) {
         profile: {
           upsert: {
             create: {
+              professionalId: generatedProfessionalId,
+              fullName: personal?.fullName || "User",
               headline: personal?.headline || "",
               location: personal?.location || "",
               about: personal?.about || "",
               photoUrl: personal?.photoUrl || "",
             },
             update: {
+              fullName: personal?.fullName || undefined,
               headline: personal?.headline || "",
               location: personal?.location || "",
               about: personal?.about || "",
