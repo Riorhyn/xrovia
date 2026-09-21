@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth/session";
 
-// 1. Fetch Profile Data from Neon Database on Login
+// 1. Fetch Profile Data from Neon Database
 export async function GET() {
   try {
     const session = await getSession();
@@ -10,15 +10,31 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { id: session.userId },
-      include: {
-        profile: true,
-      },
+      include: { profile: true },
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // If user doesn't have a profile record yet, create a default one
+    if (!user.profile) {
+      const generatedProfessionalId = `PR-${Math.floor(100000 + Math.random() * 900000)}`;
+      const newProfile = await prisma.profile.create({
+        data: {
+          userId: user.id,
+          professionalId: generatedProfessionalId,
+          fullName: user.email.split("@")[0], // Default name from email
+          headline: "",
+          location: "",
+          about: "",
+          photoUrl: "",
+          fullData: {},
+        },
+      });
+      user = { ...user, profile: newProfile };
     }
 
     return NextResponse.json({ user });
@@ -37,24 +53,23 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { personal } = body;
+    const { personal, ...restData } = body;
 
-    // Generate a random 6-digit Professional ID for new profiles
     const generatedProfessionalId = `PR-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const updatedUser = await prisma.user.update({
       where: { id: session.userId },
       data: {
-        
         profile: {
           upsert: {
             create: {
               professionalId: generatedProfessionalId,
-              fullName: personal?.fullName || "User",
+              fullName: personal?.fullName || "Candidate",
               headline: personal?.headline || "",
               location: personal?.location || "",
               about: personal?.about || "",
               photoUrl: personal?.photoUrl || "",
+              fullData: restData,
             },
             update: {
               fullName: personal?.fullName || undefined,
@@ -62,13 +77,12 @@ export async function POST(req: Request) {
               location: personal?.location || "",
               about: personal?.about || "",
               photoUrl: personal?.photoUrl || "",
+              fullData: restData,
             },
           },
         },
       },
-      include: {
-        profile: true,
-      },
+      include: { profile: true },
     });
 
     return NextResponse.json({ success: true, user: updatedUser });
