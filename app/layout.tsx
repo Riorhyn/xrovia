@@ -5,6 +5,9 @@ import { Search } from "lucide-react";
 import { getSession } from "../lib/auth/session";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
+// FORCE NEXT.JS TO CHECK COOKIES ON EVERY REQUEST
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Xrovia — Your Professional Identity",
   description: "One permanent professional ID and organized career record that follows you anywhere.",
@@ -46,8 +49,6 @@ export default async function RootLayout({
                   >
                     Dashboard
                   </Link>
-
-                  {/* Dedicated Logout Action Button */}
                   <LogoutButton />
                 </>
               ) : (
@@ -92,4 +93,4 @@ export default async function RootLayout({
       </body>
     </html>
   );
-}
+} 

@@ -2,30 +2,18 @@
 
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Edit3,
   ExternalLink,
   FileText,
   ShieldCheck,
   Lock,
-  LogOut,
 } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
 
 export default function DashboardPage() {
-  const router = useRouter();
-
-  const handleLogout = () => {
-    // Clear any temporary auth tokens or user flags if applicable
-    localStorage.removeItem("is_authenticated");
-
-    // Redirect to home page
-    router.push("/");
-  };
-
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
@@ -68,16 +56,6 @@ export default function DashboardPage() {
             <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition">
               <FileText className="h-4 w-4" />
               CV View
-            </button>
-
-            {/* Added Sign Out / Log Out Button */}
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50/80 hover:bg-red-100 px-4 py-2.5 text-xs font-bold text-red-700 transition"
-              title="Sign Out"
-            >
-              <LogOut className="h-4 w-4 text-red-600" />
-              Log Out
             </button>
           </div>
         </div>
