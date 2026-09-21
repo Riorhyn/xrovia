@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const updatedUser = await prisma.user.update({
       where: { id: session.userId },
       data: {
-        name: personal?.fullName || undefined,
+        
         profile: {
           upsert: {
             create: {
