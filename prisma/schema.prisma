@@ -53,24 +53,28 @@ model User {
 }
 
 model Profile {
-  id              String             @id @default(cuid())
-  userId          String             @unique
-  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Persistent Unique ID format: PR-XXXXXX
-  professionalId  String             @unique
-  fullName        String
-  headline        String?
-  location        String?
-  about           String?
-  photoUrl        String?
-  isPublic        Boolean            @default(true)
+  professionalId     String             @unique
+  fullName           String
+  headline           String?
+  location           String?
+  about              String?
+  photoUrl           String?
+  isPublic           Boolean            @default(true)
+  
+  fullData           Json?              // <--- ADD THIS EXACT LINE HERE
 
   // Architectural verification anchors (defaults to USER_PROVIDED in V1)
   verificationStatus VerificationStatus @default(USER_PROVIDED)
   verifiedBy         String?
   verifiedAt         DateTime?
   verificationSource String?
+
+  // ... rest of your relations remain the same
 
   education       Education[]
   experience      Experience[]

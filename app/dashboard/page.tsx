@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Edit3,
@@ -8,12 +8,67 @@ import {
   FileText,
   ShieldCheck,
   Lock,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  FolderGit2,
+  ShieldAlert,
 } from "lucide-react";
-import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
-import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
-import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
 
 export default function DashboardPage() {
+  const [profileData, setProfileData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      try {
+        const res = await fetch("/api/profile");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.user) {
+            setProfileData(json.user);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load dashboard data:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDashboard();
+  }, []);
+
+  const profile = profileData?.profile || {};
+  const fullData = profile.fullData || {};
+
+  const fullName = profile.fullName || "Candidate";
+  const professionalId = profile.professionalId || "PR-159481";
+  const headline = profile.headline || "Professional Headline";
+  const location = profile.location || "Location not provided";
+  const photoUrl = profile.photoUrl || "";
+
+  const experiences = fullData.experiences || [];
+  const educations = fullData.educations || [];
+  const skills = fullData.skills || [];
+  const projects = fullData.projects || [];
+
+  // Calculate completion percentage dynamically
+  let completedCount = 0;
+  if (fullName && headline) completedCount++;
+  if (experiences.length > 0) completedCount++;
+  if (educations.length > 0) completedCount++;
+  if (skills.length > 0) completedCount++;
+  if (projects.length > 0) completedCount++;
+  const completionPercentage = Math.round((completedCount / 5) * 100);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-sm font-bold text-slate-500 animate-pulse">Loading dashboard...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
@@ -25,19 +80,19 @@ export default function DashboardPage() {
               Dashboard Overview
             </span>
             <h1 className="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">
-              Welcome Back
+              Welcome Back, {fullName}
             </h1>
             <p className="mt-1 text-sm text-slate-500 flex items-center gap-2">
               <span>Permanent Professional ID:</span>
               <span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                PR-159481
+                {professionalId}
               </span>
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <Link
-              href="/PR-159481"
+              href={`/${professionalId}`}
               target="_blank"
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
             >
@@ -60,8 +115,19 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Dynamic Profile Completion Status */}
-        <ProfileCompletionBar />
+        {/* Dynamic Profile Completion Status Bar */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+          <div className="flex justify-between items-center text-xs font-bold">
+            <span className="text-slate-700">Profile Completion Status</span>
+            <span className="text-blue-600 font-mono">{completionPercentage}% Completed</span>
+          </div>
+          <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-blue-600 transition-all duration-500 rounded-full" 
+              style={{ width: `${completionPercentage}%` }}
+            />
+          </div>
+        </div>
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -71,12 +137,75 @@ export default function DashboardPage() {
             <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
               Your Digital ID Card
             </h2>
-            <DigitalIdPreview />
+            
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">XROVIA ID</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">
+                  <ShieldAlert className="h-3 w-3 text-amber-600" /> Self-Reported
+                </span>
+              </div>
+
+              <div className="flex items-center gap-4 py-2">
+                <div className="h-16 w-16 rounded-2xl bg-blue-600 text-white font-black text-xl flex items-center justify-center overflow-hidden shrink-0">
+                  {photoUrl ? (
+                    <img src={photoUrl} alt={fullName} className="h-full w-full object-cover" />
+                  ) : (
+                    <span>{fullName?.[0]?.toUpperCase() || "U"}</span>
+                  )}
+                </div>
+                <div className="overflow-hidden">
+                  <h3 className="text-sm font-bold text-slate-900 truncate">{fullName}</h3>
+                  <p className="text-xs text-slate-500 truncate">{headline}</p>
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{location}</p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-3 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <span className="text-[9px] font-bold uppercase text-slate-400 block">Professional ID</span>
+                  <span className="text-xs font-black font-mono text-slate-800">{professionalId}</span>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  Active
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Right Column: Live Summary Metrics & Privacy Controls */}
           <div className="lg:col-span-7 space-y-6">
-            <CareerSummaryMetrics />
+            
+            {/* Career Summary Metrics */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Career Records Summary</h2>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1">
+                  <Briefcase className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-slate-900 font-mono">{experiences.length}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Experience</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1">
+                  <GraduationCap className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-slate-900 font-mono">{educations.length}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Education</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1">
+                  <Wrench className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-slate-900 font-mono">{skills.length}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Skills</p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1">
+                  <FolderGit2 className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-slate-900 font-mono">{projects.length}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Projects</p>
+                </div>
+              </div>
+            </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
               <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 w-fit px-3 py-1 rounded-full text-xs font-bold border border-emerald-200">
@@ -85,7 +214,7 @@ export default function DashboardPage() {
               <div>
                 <h3 className="text-sm font-bold text-slate-900">Privacy & Public Visibility</h3>
                 <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Anyone with your Professional ID (<span className="font-mono text-slate-700 font-bold">PR-159481</span>) or direct QR link can inspect your verified records.
+                  Anyone with your Professional ID (<span className="font-mono text-slate-700 font-bold">{professionalId}</span>) or direct QR link can inspect your verified records.
                 </p>
               </div>
               <button className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition">
