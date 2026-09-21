@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -10,7 +11,11 @@ interface QrModalProps {
   profileId: string;
 }
 
-export function QrModal({ isOpen, onClose, profileId }: QrModalProps) {
+export function QrModal({
+  isOpen,
+  onClose,
+  profileId,
+}: QrModalProps) {
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
@@ -26,7 +31,7 @@ export function QrModal({ isOpen, onClose, profileId }: QrModalProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback if clipboard permission is denied
+      // Clipboard permission denied
     }
   };
 
@@ -49,40 +54,57 @@ export function QrModal({ isOpen, onClose, profileId }: QrModalProps) {
     const svgElement = document.getElementById("modal-qr-code");
     if (!svgElement) return;
 
-    // Serialize the SVG XML data
+    // Serialize SVG XML data
     const xml = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-    const URLObject = window.URL || window.webkitURL || window;
-    const blobUrl = URLObject.createObjectURL(svgBlob);
 
-    // Render SVG into an Image element and draw to Canvas for PNG output
+    const svgBlob = new Blob([xml], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+
+    // Create a temporary object URL
+    const blobUrl = URL.createObjectURL(svgBlob);
+
+    // Render SVG into an Image and draw to Canvas
     const img = new Image();
+
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      const scale = 3; // Increase canvas resolution for crisp PNG render
+      const scale = 3;
+
       canvas.width = 300 * scale;
       canvas.height = 300 * scale;
 
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) {
+        URL.revokeObjectURL(blobUrl);
+        return;
+      }
 
-      // Fill white background
+      // White background
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw QR code onto canvas
+      // Draw QR code
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Convert canvas to downloadable PNG
+      // Convert to PNG
       const pngUrl = canvas.toDataURL("image/png");
+
       const downloadLink = document.createElement("a");
       downloadLink.href = pngUrl;
       downloadLink.download = `XROVIA-${profileId}-QR.png`;
+
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
 
-      URLObject.revokeObjectURL(blobUrl);
+      // Release the temporary object URL
+      URL.revokeObjectURL(blobUrl);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl);
+      alert("Could not generate the QR code image.");
     };
 
     img.src = blobUrl;
@@ -94,7 +116,7 @@ export function QrModal({ isOpen, onClose, profileId }: QrModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800"
           aria-label="Close modal"
         >
           <X className="h-4 w-4" />
@@ -104,20 +126,22 @@ export function QrModal({ isOpen, onClose, profileId }: QrModalProps) {
           <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">
             Share Profile
           </p>
+
           <h3 className="mt-1 text-lg font-bold text-slate-900">
             Professional ID: {profileId}
           </h3>
 
-          {/* Large QR Container */}
-          <div className="my-6 mx-auto flex h-48 w-48 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-inner">
+          {/* QR Container */}
+          <div className="mx-auto my-6 flex h-48 w-48 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-inner">
             <QrVisual id="modal-qr-code" className="h-full w-full" />
           </div>
 
-          {/* Copyable Profile Link */}
+          {/* Profile Link */}
           <div className="mb-5 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2.5">
             <span className="truncate text-xs font-medium text-slate-600">
               {profileUrl}
             </span>
+
             <button
               onClick={handleCopyLink}
               className="ml-2 inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
