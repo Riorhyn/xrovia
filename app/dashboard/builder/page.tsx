@@ -7,7 +7,7 @@ import {
   GraduationCap,
   Plus,
   X,
-  ShieldAlert,
+  ShieldCheck,
   Save,
   CheckCircle2,
   ArrowLeft,
@@ -21,7 +21,6 @@ import {
   Award,
   BookOpen,
   Languages,
-  Dices,
 } from "lucide-react";
 
 interface ExperienceItem {
@@ -147,108 +146,35 @@ export default function BuilderPage() {
   const [pubForm, setPubForm] = useState({ title: "", publisher: "", link: "" });
 
   // Load persisted state from LocalStorage on mount
-useEffect(() => {
-  const saved = localStorage.getItem("user_profile_data");
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (parsed.personal) setPersonal(parsed.personal);
-      if (parsed.socials) {
-        setSocials(parsed.socials);
-        if (Object.values(parsed.socials).some((val) => Boolean(val))) {
-          setShowSocials(true);
+  useEffect(() => {
+    const saved = localStorage.getItem("user_profile_data");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.personal) setPersonal(parsed.personal);
+        if (parsed.socials) {
+          setSocials(parsed.socials);
+          if (Object.values(parsed.socials).some((val) => Boolean(val))) {
+            setShowSocials(true);
+          }
         }
+        if (parsed.skills) setSkills(parsed.skills);
+        if (parsed.hobbies) setHobbies(parsed.hobbies);
+        if (parsed.languages) setLanguages(parsed.languages);
+        if (parsed.experiences) setExperiences(parsed.experiences);
+        if (parsed.educations) setEducations(parsed.educations);
+        if (parsed.projects) setProjects(parsed.projects);
+        if (parsed.achievements) setAchievements(parsed.achievements);
+        if (parsed.publications) setPublications(parsed.publications);
+      } catch (e) {
+        console.error("Local storage load error:", e);
       }
-      if (parsed.skills) setSkills(parsed.skills);
-      if (parsed.hobbies) setHobbies(parsed.hobbies);
-      if (parsed.languages) setLanguages(parsed.languages);
-      if (parsed.experiences) setExperiences(parsed.experiences);
-      if (parsed.educations) setEducations(parsed.educations);
-      if (parsed.projects) setProjects(parsed.projects);
-      if (parsed.achievements) setAchievements(parsed.achievements);
-      if (parsed.publications) setPublications(parsed.publications);
-    } catch (e) {
-      console.error("Local storage load error:", e);
     }
-  }
-}, []);
+  }, []);
 
   const saveToLocalStorage = (data: any) => {
     localStorage.setItem("user_profile_data", JSON.stringify(data));
     window.dispatchEvent(new Event("profile_updated"));
-  };
-
-  // 1. Fill Random Sample Data
-  const handleRandomFill = () => {
-    const samplePersonal = {
-      fullName: "Rajinder Singh",
-      headline: "Senior Mechanical Design Engineer",
-      location: "Mohali, Punjab, India",
-      photoUrl: personal.photoUrl,
-      about: "Experienced Mechanical Engineer specializing in 3D CAD modeling, finite element analysis, and product prototyping.",
-    };
-
-    const sampleSkills = ["CAD Design", "AutoCAD", "Thermal Analysis", "SolidWorks", "ANSYS"];
-    const sampleHobbies = ["3D Printing", "Robotics", "Drones"];
-    const sampleLanguages = ["English", "Hindi", "Punjabi"];
-
-    const sampleExperiences = [
-      {
-        id: Date.now().toString(),
-        company: "Precision Engineering Solutions",
-        role: "Senior Design Engineer",
-        startDate: "2022-01-15",
-        endDate: "",
-        current: true,
-        description: "Leading thermal modeling and mechanical design for automated production equipment.",
-      },
-    ];
-
-    const sampleEducations = [
-      {
-        id: (Date.now() + 1).toString(),
-        institution: "Punjab Technical University",
-        degree: "B.Tech",
-        fieldOfStudy: "Mechanical Engineering",
-        startDate: "2018-08-01",
-        endDate: "2022-06-30",
-        current: false,
-      },
-    ];
-
-    const sampleProjects = [
-      {
-        id: (Date.now() + 2).toString(),
-        title: "High-Efficiency Thermal Heat Exchanger",
-        role: "Lead Mechanical Designer",
-        link: "https://github.com/example/thermal-exchanger",
-        description: "Designed a compact heat exchanger using ANSYS simulation.",
-      },
-    ];
-
-    setPersonal(samplePersonal);
-    setSkills(sampleSkills);
-    setHobbies(sampleHobbies);
-    setLanguages(sampleLanguages);
-    setExperiences(sampleExperiences);
-    setEducations(sampleEducations);
-    setProjects(sampleProjects);
-
-    saveToLocalStorage({
-      personal: samplePersonal,
-      socials,
-      skills: sampleSkills,
-      hobbies: sampleHobbies,
-      languages: sampleLanguages,
-      experiences: sampleExperiences,
-      educations: sampleEducations,
-      projects: sampleProjects,
-      achievements,
-      publications,
-    });
-
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2000);
   };
 
   // Personal Photo Upload
@@ -405,31 +331,29 @@ useEffect(() => {
   };
 
   const handleSaveAll = () => {
-  startTransition(async () => {
-    const payload = {
-      personal,
-      socials,
-      skills,
-      hobbies,
-      languages,
-      experiences,
-      educations,
-      projects,
-      achievements,
-      publications,
-    };
-    
-    // Save to localStorage
-    localStorage.setItem("user_profile_data", JSON.stringify(payload));
-    
-    // Notify other components/tabs
-    window.dispatchEvent(new Event("profile_updated"));
-    window.dispatchEvent(new Event("storage"));
+    startTransition(async () => {
+      const payload = {
+        personal,
+        socials,
+        skills,
+        hobbies,
+        languages,
+        experiences,
+        educations,
+        projects,
+        achievements,
+        publications,
+      };
+      
+      localStorage.setItem("user_profile_data", JSON.stringify(payload));
+      
+      window.dispatchEvent(new Event("profile_updated"));
+      window.dispatchEvent(new Event("storage"));
 
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
-  });
-};
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
@@ -438,27 +362,20 @@ useEffect(() => {
         {/* Header Bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-extrabold text-slate-900">Career Record Builder</h1>
-            <p className="mt-1 text-sm text-slate-600 flex items-center gap-1.5">
-              All added entries are tagged as{" "}
-              <span className="inline-flex items-center gap-1 font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-xs">
-                <ShieldAlert className="h-3.5 w-3.5 text-amber-600" /> User-provided
-              </span>{" "}
-              until verified.
-            </p>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Career Record Builder</h1>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500">Record Status:</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
+                <ShieldCheck className="h-3.5 w-3.5 text-amber-600" /> Self-Reported
+              </span>
+              <span className="text-xs text-slate-400 hidden sm:inline">• Pending institutional verification</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleRandomFill}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-100 transition shadow-sm"
-            >
-              <Dices className="h-4 w-4" /> Fill Sample Data
-            </button>
-
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition"
             >
               <ArrowLeft className="h-4 w-4" /> Back to Dashboard
             </Link>
@@ -531,7 +448,7 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* 2. Work Experience (With Inline Editability) */}
+        {/* 2. Work Experience */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-blue-600" /> Work Experience
@@ -600,7 +517,7 @@ useEffect(() => {
           </form>
         </div>
 
-        {/* 3. Education & Studies (With Inline Editability) */}
+        {/* 3. Education & Studies */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 flex items-center gap-2">
             <GraduationCap className="h-5 w-5 text-blue-600" /> Education
@@ -661,7 +578,7 @@ useEffect(() => {
           </form>
         </div>
 
-        {/* 4. Projects (With Photo Upload & Editability) */}
+        {/* 4. Projects */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 flex items-center gap-2">
             <FolderGit2 className="h-5 w-5 text-blue-600" /> Projects & Portfolio
@@ -719,7 +636,7 @@ useEffect(() => {
           </form>
         </div>
 
-        {/* 5. Certificates & Achievements (With Image Upload) */}
+        {/* 5. Certificates & Achievements */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-6">
           <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 flex items-center gap-2">
             <Award className="h-5 w-5 text-blue-600" /> Achievements & Certifications
@@ -767,7 +684,7 @@ useEffect(() => {
           </form>
         </div>
 
-        {/* 6. Concise Social Media Toggle */}
+        {/* 6. Social Links Toggle */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
