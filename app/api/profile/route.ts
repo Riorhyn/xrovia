@@ -39,14 +39,17 @@ export async function GET() {
         },
       }
     );
-  } catch (error) {
-    console.error("GET Profile Error:", error);
+  } catch (error: any) {
+  console.error("GET Profile Error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch profile" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(
+    {
+      error: "Failed to fetch profile",
+      detail: String(error?.message || error),
+    },
+    { status: 500 }
+  );
+}
 }
 
 // POST: Save the logged-in user's profile
