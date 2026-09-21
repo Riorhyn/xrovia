@@ -11,12 +11,18 @@ import {
   ShieldCheck,
   FolderGit2,
   Award,
-  BookOpen,
-  Languages,
-  Heart,
-  Globe,
   ExternalLink,
 } from "lucide-react";
+
+// Format external URLs so they open outside Next.js router
+const formatExternalUrl = (url?: string) => {
+  if (!url) return "#";
+  const trimmed = url.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+};
 
 export default function PublicProfilePage() {
   const [isVerified, setIsVerified] = useState(false);
@@ -221,7 +227,7 @@ export default function PublicProfilePage() {
                 >
                   <div className="flex justify-between items-start">
                     <h3 className="text-sm font-bold text-slate-900">
-                      {edu.degree} - {edu.fieldOfStudy}
+                      {edu.degree}{edu.fieldOfStudy ? ` - ${edu.fieldOfStudy}` : ""}
                     </h3>
                     <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
                       {edu.startDate} - {edu.current ? "Present" : edu.endDate}
@@ -236,7 +242,7 @@ export default function PublicProfilePage() {
           </div>
         )}
 
-        {/* Projects */}
+        {/* Key Projects Section */}
         {profile.projects?.length > 0 && (
           <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
@@ -246,32 +252,39 @@ export default function PublicProfilePage() {
               {profile.projects.map((proj: any, i: number) => (
                 <div
                   key={i}
-                  className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 space-y-2"
+                  className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 flex flex-col justify-between space-y-3"
                 >
-                  {proj.imageUrl && (
-                    <img
-                      src={proj.imageUrl}
-                      alt={proj.title}
-                      className="h-28 w-full object-cover rounded-xl border border-slate-200"
-                    />
-                  )}
-                  <h3 className="text-sm font-bold text-slate-900">
-                    {proj.title}
-                  </h3>
-                  <p className="text-xs text-slate-600">{proj.role}</p>
-                  {proj.description && (
-                    <p className="text-xs text-slate-500 line-clamp-2">
-                      {proj.description}
-                    </p>
-                  )}
+                  <div className="space-y-2">
+                    {/* Fixed aspect ratio container so images don't get cropped */}
+                    {proj.imageUrl && (
+                      <div className="aspect-video w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                        <img
+                          src={proj.imageUrl}
+                          alt={proj.title}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-sm font-bold text-slate-900">
+                      {proj.title}
+                    </h3>
+                    <p className="text-xs text-slate-600">{proj.role}</p>
+                    {proj.description && (
+                      <p className="text-xs text-slate-500 line-clamp-2">
+                        {proj.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Properly formatted external URL link */}
                   {proj.link && (
                     <a
-                      href={proj.link}
+                      href={formatExternalUrl(proj.link)}
                       target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-blue-600 font-bold inline-flex items-center gap-1 hover:underline pt-1"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-600 font-bold inline-flex items-center gap-1 hover:underline pt-2 border-t border-slate-200/60"
                     >
-                      View Project <ExternalLink className="h-3 w-3" />
+                      View Project <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   )}
                 </div>

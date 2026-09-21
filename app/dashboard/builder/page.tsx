@@ -145,36 +145,65 @@ export default function BuilderPage() {
   const [publications, setPublications] = useState<PublicationItem[]>([]);
   const [pubForm, setPubForm] = useState({ title: "", publisher: "", link: "" });
 
-  // Load persisted state from LocalStorage on mount
+  // Load state on mount (LocalStorage first, then sync with DB)
   useEffect(() => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
+    async function loadProfileData() {
+      // 1. Read local storage for fast render
+      const saved = localStorage.getItem("user_profile_data");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.personal) setPersonal(parsed.personal);
+          if (parsed.socials) {
+            setSocials(parsed.socials);
+            if (Object.values(parsed.socials).some((val) => Boolean(val))) {
+              setShowSocials(true);
+            }
+          }
+          if (parsed.skills) setSkills(parsed.skills);
+          if (parsed.hobbies) setHobbies(parsed.hobbies);
+          if (parsed.languages) setLanguages(parsed.languages);
+          if (parsed.experiences) setExperiences(parsed.experiences);
+          if (parsed.educations) setEducations(parsed.educations);
+          if (parsed.projects) setProjects(parsed.projects);
+          if (parsed.achievements) setAchievements(parsed.achievements);
+          if (parsed.publications) setPublications(parsed.publications);
+        } catch (e) {
+          console.error("Local storage load error:", e);
+        }
+      }
+
+      // 2. Fetch ground truth from Neon Database
       try {
-        const parsed = JSON.parse(saved);
-        if (parsed.personal) setPersonal(parsed.personal);
-        if (parsed.socials) {
-          setSocials(parsed.socials);
-          if (Object.values(parsed.socials).some((val) => Boolean(val))) {
-            setShowSocials(true);
+        const res = await fetch("/api/profile");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            const dbPersonal = {
+              fullName: data.user.name || "",
+              headline: data.user.profile?.headline || "",
+              location: data.user.profile?.location || "",
+              photoUrl: data.user.profile?.photoUrl || "",
+              about: data.user.profile?.about || "",
+            };
+
+            if (dbPersonal.fullName) {
+              setPersonal((prev) => ({ ...prev, ...dbPersonal }));
+            }
           }
         }
-        if (parsed.skills) setSkills(parsed.skills);
-        if (parsed.hobbies) setHobbies(parsed.hobbies);
-        if (parsed.languages) setLanguages(parsed.languages);
-        if (parsed.experiences) setExperiences(parsed.experiences);
-        if (parsed.educations) setEducations(parsed.educations);
-        if (parsed.projects) setProjects(parsed.projects);
-        if (parsed.achievements) setAchievements(parsed.achievements);
-        if (parsed.publications) setPublications(parsed.publications);
       } catch (e) {
-        console.error("Local storage load error:", e);
+        console.error("Failed to load profile from database:", e);
       }
     }
+
+    loadProfileData();
   }, []);
 
   const saveToLocalStorage = (data: any) => {
     localStorage.setItem("user_profile_data", JSON.stringify(data));
     window.dispatchEvent(new Event("profile_updated"));
+    window.dispatchEvent(new Event("storage"));
   };
 
   // Personal Photo Upload
@@ -330,6 +359,7 @@ export default function BuilderPage() {
     }
   };
 
+  // Save to LocalStorage + Neon Database
   const handleSaveAll = () => {
     startTransition(async () => {
       const payload = {
@@ -344,11 +374,20 @@ export default function BuilderPage() {
         achievements,
         publications,
       };
-      
-      localStorage.setItem("user_profile_data", JSON.stringify(payload));
-      
-      window.dispatchEvent(new Event("profile_updated"));
-      window.dispatchEvent(new Event("storage"));
+
+      // 1. Instant local storage update
+      saveToLocalStorage(payload);
+
+      // 2. Permanent database storage
+      try {
+        await fetch("/api/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch (e) {
+        console.error("Failed to persist to database:", e);
+      }
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
