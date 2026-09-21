@@ -1,69 +1,88 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { getSession } from "@/lib/auth/session";
 
-// 1. Fetch Profile Data from Neon Database
+// GET: Fetch the logged-in user's profile
 export async function GET() {
   try {
     const session = await getSession();
-    if (!session || !session.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    if (!session?.userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
-    let user = await prisma.user.findUnique({
-      where: { id: session.userId },
-      include: { profile: true },
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.userId,
+      },
+      include: {
+        profile: true,
+      },
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
-    // If user doesn't have a profile record yet, create a default one
-    if (!user.profile) {
-      const generatedProfessionalId = `PR-${Math.floor(100000 + Math.random() * 900000)}`;
-      const newProfile = await prisma.profile.create({
-        data: {
-          userId: user.id,
-          professionalId: generatedProfessionalId,
-          fullName: user.email.split("@")[0], // Default name from email
-          headline: "",
-          location: "",
-          about: "",
-          photoUrl: "",
-          fullData: {},
+    return NextResponse.json(
+      { user },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
         },
-      });
-      user = { ...user, profile: newProfile };
-    }
-
-    return NextResponse.json({ user });
+      }
+    );
   } catch (error) {
     console.error("GET Profile Error:", error);
-    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Failed to fetch profile" },
+      { status: 500 }
+    );
   }
 }
 
-// 2. Save Profile Data to Neon Database
+// POST: Save the logged-in user's profile
 export async function POST(req: Request) {
   try {
     const session = await getSession();
-    if (!session || !session.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    if (!session?.userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     const body = await req.json();
     const { personal, ...restData } = body;
 
-    const generatedProfessionalId = `PR-${Math.floor(100000 + Math.random() * 900000)}`;
+    const existingProfile = await prisma.profile.findUnique({
+      where: {
+        userId: session.userId,
+      },
+    });
+
+    const professionalId =
+      existingProfile?.professionalId ||
+      `PR-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const updatedUser = await prisma.user.update({
-      where: { id: session.userId },
+      where: {
+        id: session.userId,
+      },
       data: {
         profile: {
           upsert: {
             create: {
-              professionalId: generatedProfessionalId,
+              professionalId,
               fullName: personal?.fullName || "Candidate",
               headline: personal?.headline || "",
               location: personal?.location || "",
@@ -82,12 +101,24 @@ export async function POST(req: Request) {
           },
         },
       },
-      include: { profile: true },
+      include: {
+        profile: true,
+      },
     });
 
-    return NextResponse.json({ success: true, user: updatedUser });
+    return NextResponse.json(
+      {
+        success: true,
+        user: updatedUser,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Save Profile Error:", error);
-    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Failed to save profile" },
+      { status: 500 }
+    );
   }
 }

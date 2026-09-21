@@ -20,35 +20,56 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchDashboard() {
-      try {
-        const res = await fetch("/api/profile");
-        if (res.ok) {
-          const json = await res.json();
-          setProfileData(json.user || json);
-        }
-      } catch (e) {
-        console.error("Failed to load dashboard data:", e);
-      } finally {
-        setLoading(false);
+  async function fetchDashboard() {
+    try {
+      const response = await fetch("/api/profile", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to fetch profile");
       }
+
+      console.log("Dashboard profile data:", data);
+
+      setProfileData(data.user);
+    } catch (error) {
+      console.error("Failed to load dashboard data:", error);
+    } finally {
+      setLoading(false);
     }
-    fetchDashboard();
-  }, []);
+  }
 
-  const profile = profileData?.profile || profileData || {};
-  const fullData = profile.fullData || {};
+  fetchDashboard();
+}, []);
 
-  const fullName = profile.fullName || "Candidate Name";
-  const professionalId = profile.professionalId || "PR-159481";
-  const headline = profile.headline || "Professional Headline";
-  const location = profile.location || "Location not provided";
-  const photoUrl = profile.photoUrl || "";
+  const profile = profileData?.profile || {};
+const fullData = profile.fullData || {};
 
-  const experiences = fullData.experiences || profile.experience || [];
-  const educations = fullData.educations || profile.education || [];
-  const skills = fullData.skills || [];
-  const projects = fullData.projects || [];
+const fullName = profile.fullName || "Candidate Name";
+const professionalId = profile.professionalId || "Not assigned";
+const headline = profile.headline || "Professional Headline";
+const location = profile.location || "Location not provided";
+const photoUrl = profile.photoUrl || "";
+
+const experiences = Array.isArray(fullData.experiences)
+  ? fullData.experiences
+  : [];
+
+const educations = Array.isArray(fullData.educations)
+  ? fullData.educations
+  : [];
+
+const skills = Array.isArray(fullData.skills)
+  ? fullData.skills
+  : [];
+
+const projects = Array.isArray(fullData.projects)
+  ? fullData.projects
+  : [];
 
   // Calculate dynamic completion percentage
   let completedCount = 0;
