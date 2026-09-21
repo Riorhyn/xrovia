@@ -54,6 +54,26 @@ export function DigitalIdPreview() {
           const skls = parsed.skills || [];
           const prjs = parsed.projects || [];
 
+          // Format Education (e.g. "BE - Mechanical engineering")
+          const eduSummary = edus[0]
+            ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
+            : "No degree added";
+
+          // Format Experience (e.g. "JE at Gilard")
+          const expSummary = exps[0]
+            ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
+            : "No experience added";
+
+          // Format Skills (e.g. "AutoCAD, SolidWorks, ANSYS")
+          const sklSummary = skls.length
+            ? skls.slice(0, 3).join(", ")
+            : "No skills listed";
+
+          // Format Projects (e.g. "Thermal Exchanger (Lead)")
+          const prjSummary = prjs[0]
+            ? `${prjs[0].title}${prjs[0].role ? ` (${prjs[0].role})` : ""}`
+            : "No projects added";
+
           setProfile({
             fullName: parsed.personal.fullName,
             headline: parsed.personal.headline || "Professional Headline",
@@ -62,13 +82,13 @@ export function DigitalIdPreview() {
             photoUrl: parsed.personal.photoUrl || "",
             skills: skls.length ? skls : ["Core Competency"],
             educationCount: edus.length,
-            educationSummary: edus[0] ? `${edus[0].degree}` : "No degree added",
+            educationSummary: eduSummary,
             experienceCount: exps.length,
-            experienceSummary: exps[0] ? `${exps[0].role}` : "No experience added",
+            experienceSummary: expSummary,
             skillsCount: skls.length,
-            skillsSummary: skls.slice(0, 2).join(", ") || "No skills listed",
+            skillsSummary: sklSummary,
             projectsCount: prjs.length,
-            projectsSummary: prjs[0] ? `${prjs[0].title}` : "No projects added",
+            projectsSummary: prjSummary,
             professionalId: "PR-159481",
             isSample: false,
           });
@@ -131,7 +151,7 @@ export function DigitalIdPreview() {
     <>
       <div className="mx-auto w-full max-w-sm rounded-[28px] border border-slate-100 bg-white p-5 shadow-xl space-y-5 text-slate-900 transition hover:shadow-2xl">
         
-        {/* Top Header - ONLY 1 BADGE HERE */}
+        {/* Top Header - Verification Status */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="h-6 w-6 rounded-md bg-blue-600 flex items-center justify-center text-white font-black text-xs">
@@ -204,7 +224,7 @@ export function DigitalIdPreview() {
           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Primary focus
           </p>
-          <p className="text-xs font-medium text-slate-800 mt-1 leading-relaxed">
+          <p className="text-xs font-medium text-slate-800 mt-1 leading-relaxed line-clamp-2">
             {profile.about}
           </p>
         </div>
@@ -226,8 +246,9 @@ export function DigitalIdPreview() {
           </div>
         </div>
 
-        {/* Clean 2x2 Metrics Grid (Inner Badges Removed) */}
+        {/* Clean 2x2 Detailed Metrics Grid */}
         <div className="grid grid-cols-2 gap-2.5 pt-1">
+          {/* Education Block */}
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-2.5 space-y-1">
             <div className="flex items-center justify-between text-slate-600">
               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-700">
@@ -235,11 +256,15 @@ export function DigitalIdPreview() {
               </span>
               <span className="text-xs font-black text-blue-600">{profile.educationCount}</span>
             </div>
-            <p className="text-[10px] text-slate-500 font-medium truncate">
+            <p 
+              className="text-[11px] text-slate-700 font-semibold truncate"
+              title={profile.educationSummary}
+            >
               {profile.educationSummary}
             </p>
           </div>
 
+          {/* Experience Block */}
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-2.5 space-y-1">
             <div className="flex items-center justify-between text-slate-600">
               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-700">
@@ -247,11 +272,15 @@ export function DigitalIdPreview() {
               </span>
               <span className="text-xs font-black text-blue-600">{profile.experienceCount}</span>
             </div>
-            <p className="text-[10px] text-slate-500 font-medium truncate">
+            <p 
+              className="text-[11px] text-slate-700 font-semibold truncate"
+              title={profile.experienceSummary}
+            >
               {profile.experienceSummary}
             </p>
           </div>
 
+          {/* Skills Block */}
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-2.5 space-y-1">
             <div className="flex items-center justify-between text-slate-600">
               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-700">
@@ -259,11 +288,15 @@ export function DigitalIdPreview() {
               </span>
               <span className="text-xs font-black text-blue-600">{profile.skillsCount}</span>
             </div>
-            <p className="text-[10px] text-slate-500 font-medium truncate">
+            <p 
+              className="text-[11px] text-slate-700 font-semibold truncate"
+              title={profile.skillsSummary}
+            >
               {profile.skillsSummary}
             </p>
           </div>
 
+          {/* Projects Block */}
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-2.5 space-y-1">
             <div className="flex items-center justify-between text-slate-600">
               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-700">
@@ -271,7 +304,10 @@ export function DigitalIdPreview() {
               </span>
               <span className="text-xs font-black text-blue-600">{profile.projectsCount}</span>
             </div>
-            <p className="text-[10px] text-slate-500 font-medium truncate">
+            <p 
+              className="text-[11px] text-slate-700 font-semibold truncate"
+              title={profile.projectsSummary}
+            >
               {profile.projectsSummary}
             </p>
           </div>
