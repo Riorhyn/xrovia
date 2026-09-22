@@ -8,11 +8,9 @@ export function ProfileCompletionBar() {
   const calculateCompletion = async () => {
   try {
     const res = await fetch("/api/profile");
-
     if (!res.ok) return;
 
     const data = await res.json();
-
     const profile = data.user?.profile || {};
     const fullData = profile.fullData || {};
 
@@ -43,9 +41,7 @@ export function ProfileCompletionBar() {
       completedSections++;
     }
 
-    setPercentage(
-      Math.round((completedSections / totalSections) * 100)
-    );
+    setPercentage(Math.round((completedSections / totalSections) * 100));
   } catch (e) {
     console.error("Error calculating profile completion:", e);
   }
