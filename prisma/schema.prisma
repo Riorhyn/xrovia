@@ -42,6 +42,11 @@ model User {
   passwordHash String
   role         Role      @default(USER)
   country      String?
+
+  emailVerifiedAt          DateTime?
+  emailVerificationCodeHash String?
+  emailVerificationExpiresAt DateTime?
+
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
