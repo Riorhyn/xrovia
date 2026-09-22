@@ -145,15 +145,18 @@ export default function BuilderPage() {
   const [publications, setPublications] = useState<PublicationItem[]>([]);
   const [pubForm, setPubForm] = useState({ title: "", publisher: "", link: "" });
 
-  // Load state on mount (LocalStorage first, then sync with DB)
+  // Load state on mount (LocalStorage first, then sync with DB & Registration Name)
   useEffect(() => {
     async function loadProfileData() {
-      // 1. Read local storage for fast render
+      let localDataLoaded = false;
       const saved = localStorage.getItem("user_profile_data");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed.personal) setPersonal(parsed.personal);
+          if (parsed.personal) {
+            setPersonal(parsed.personal);
+            if (parsed.personal.fullName) localDataLoaded = true;
+          }
           if (parsed.socials) {
             setSocials(parsed.socials);
             if (Object.values(parsed.socials).some((val) => Boolean(val))) {
@@ -173,23 +176,23 @@ export default function BuilderPage() {
         }
       }
 
-      // 2. Fetch ground truth from Neon Database
+      // Fetch ground truth from Database (pre-fills registered name if local storage is empty)
       try {
         const res = await fetch("/api/profile");
         if (res.ok) {
           const data = await res.json();
           if (data.user) {
-            const dbPersonal = {
-              fullName: data.user.name || "",
-              headline: data.user.profile?.headline || "",
-              location: data.user.profile?.location || "",
-              photoUrl: data.user.profile?.photoUrl || "",
-              about: data.user.profile?.about || "",
-            };
-
-            if (dbPersonal.fullName) {
-              setPersonal((prev) => ({ ...prev, ...dbPersonal }));
-            }
+            const regName = data.user.name || data.user.email?.split("@")[0] || "";
+            const dbProfile = data.user.profile || {};
+            
+            setPersonal((prev) => ({
+              ...prev,
+              fullName: prev.fullName || dbProfile.fullName || regName,
+              headline: prev.headline || dbProfile.headline || "",
+              location: prev.location || dbProfile.location || "",
+              photoUrl: prev.photoUrl || dbProfile.photoUrl || "",
+              about: prev.about || dbProfile.about || "",
+            }));
           }
         }
       } catch (e) {
@@ -407,7 +410,6 @@ export default function BuilderPage() {
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
                 <ShieldCheck className="h-3.5 w-3.5 text-amber-600" /> Self-Reported
               </span>
-              <span className="text-xs text-slate-400 hidden sm:inline">• Pending institutional verification</span>
             </div>
           </div>
 
