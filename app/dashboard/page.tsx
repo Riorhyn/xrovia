@@ -19,62 +19,29 @@ export default function DashboardPage() {
     professionalId: "PR-159481",
   });
 
-  const loadDashboardData = () => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.personal) {
-          setProfile({
-            fullName: parsed.personal.fullName || "Candidate Name",
-            professionalId: "PR-159481",
-          });
-        }
-      } catch (e) {
-        console.error("Failed to parse local storage for dashboard:", e);
-      }
-    }
-  };
+  const loadDashboardData = async () => {
+  try {
+    const res = await fetch("/api/profile");
 
-  // Auto-sync database profile to localStorage on dashboard mount
-  useEffect(() => {
-    async function syncDatabaseToLocalStorage() {
-      try {
-        const res = await fetch("/api/profile");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) {
-            const dbProfile = data.user.profile;
-            const regName = dbProfile?.fullName || data.user.name || data.user.email?.split("@")[0] || "Candidate Name";
-            const professionalId = dbProfile?.professionalId || "PR-159481";
+    if (!res.ok) return;
 
-            // Grab existing local storage data or initialize structure
-            const saved = localStorage.getItem("user_profile_data");
-            let parsed = saved ? JSON.parse(saved) : {};
+    const data = await res.json();
+    const dbProfile = data.user?.profile || {};
 
-            // Ensure personal object exists and has the correct name
-            parsed.personal = {
-              fullName: parsed.personal?.fullName || regName,
-              headline: parsed.personal?.headline || dbProfile?.headline || "",
-              location: parsed.personal?.location || dbProfile?.location || "",
-              photoUrl: parsed.personal?.photoUrl || dbProfile?.photoUrl || "",
-              about: parsed.personal?.about || dbProfile?.about || "",
-            };
+    setProfile({
+      fullName:
+        dbProfile.fullName ||
+        data.user?.name ||
+        data.user?.email?.split("@")[0] ||
+        "Candidate Name",
+      professionalId: dbProfile.professionalId || "PR-159481",
+    });
+  } catch (error) {
+    console.error("Failed to load dashboard profile:", error);
+  }
+};
 
-            // Save back to local storage and trigger UI updates
-            localStorage.setItem("user_profile_data", JSON.stringify(parsed));
-            window.dispatchEvent(new Event("profile_updated"));
-            window.dispatchEvent(new Event("storage"));
-            loadDashboardData();
-          }
-        }
-      } catch (error) {
-        console.error("Dashboard sync error:", error);
-      }
-    }
-
-    syncDatabaseToLocalStorage();
-  }, []);
+  
 
   // 2. Event listener script
   useEffect(() => {
