@@ -1,26 +1,29 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { randomInt } from "crypto";
 import { prisma } from "@/lib/db/prisma";
-import {
-  createSessionToken,
-  setSessionCookie,
-} from "@/lib/auth/session";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
-    const { fullName, email, password, country } =
-      await req.json();
+    const { fullName, email, password, country } = await req.json();
 
-    if (!email || !password || !fullName) {
+    if (!email || !password || !fullName || !country) {
       return NextResponse.json(
-        { error: "Name, email, and password are required." },
+        { error: "Name, email, password, and country are required." },
+        { status: 400 }
+      );
+    }
+
+    if (typeof password !== "string" || password.length < 8) {
+      return NextResponse.json(
+        { error: "Password must be at least 8 characters." },
         { status: 400 }
       );
     }
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // 1. Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
@@ -36,24 +39,31 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Generate a new Professional ID
-    const randomDigits = Math.floor(
-      100000 + Math.random() * 900000
-    );
+    const randomDigits = randomInt(100000, 1000000);
     const professionalId = `PR-${randomDigits}`;
 
-    // 3. Hash the password
     const passwordHash = await bcrypt.hash(password, 12);
 
-    // 4. Create the user and profile
+    const verificationCode = String(randomInt(100000, 1000000));
+    const verificationCodeHash = await bcrypt.hash(
+      verificationCode,
+      10
+    );
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const sentAt = new Date();
+
     const newUser = await prisma.user.create({
       data: {
         email: normalizedEmail,
         passwordHash,
+        emailVerificationCodeHash: verificationCodeHash,
+        emailVerificationExpiresAt: expiresAt,
+        emailVerificationSentAt: sentAt,
         profile: {
           create: {
-            fullName,
-            location: country || "",
+            fullName: fullName.trim(),
+            location: country.trim(),
             professionalId,
             fullData: {},
           },
@@ -62,36 +72,40 @@ export async function POST(req: Request) {
       include: { profile: true },
     });
 
-    // 5. Create a session
-    const token = await createSessionToken({
-      userId: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
-    });
+    try {
+      await sendVerificationEmail(
+        normalizedEmail,
+        verificationCode
+      );
+    } catch (emailError) {
+      await prisma.user.delete({
+        where: { id: newUser.id },
+      });
 
-    // 6. Set the session cookie
-    const response = NextResponse.json(
-      {
-        message: "Account created successfully",
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          professionalId: newUser.profile?.professionalId,
+      console.error("Verification email error:", emailError);
+
+      return NextResponse.json(
+        {
+          error:
+            "We could not send the verification email. Please try again.",
         },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: "Verification code sent.",
+        email: normalizedEmail,
       },
       { status: 201 }
     );
-
-    setSessionCookie(response, token);
-
-    return response;
-  } catch (err: any) {
+  } catch (err) {
     console.error("Registration error:", err);
 
     return NextResponse.json(
       {
         error: "Failed to create account. Please try again.",
-        detail: String(err?.message || err),
       },
       { status: 500 }
     );
