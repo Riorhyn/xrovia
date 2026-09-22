@@ -150,7 +150,7 @@ export default function BuilderPage() {
   useEffect(() => {
     async function loadProfileData() {
       let localData: any = null;
-      
+
       // 1. Read local storage
       const saved = localStorage.getItem("user_profile_data");
       if (saved) {
@@ -184,7 +184,8 @@ export default function BuilderPage() {
           if (data.user) {
             const regName = data.user.name || data.user.email?.split("@")[0] || "";
             const dbProfile = data.user.profile || {};
-            
+            const dbFullData = dbProfile.fullData || {};
+
             const updatedPersonal = {
               fullName: localData?.personal?.fullName || dbProfile.fullName || regName,
               headline: localData?.personal?.headline || dbProfile.headline || "",
@@ -195,19 +196,37 @@ export default function BuilderPage() {
 
             setPersonal(updatedPersonal);
 
+            // If local storage was empty but the DB has nested records, load those too
+            if (!localData) {
+              if (dbFullData.socials) {
+                setSocials(dbFullData.socials);
+                if (Object.values(dbFullData.socials).some((val) => Boolean(val))) {
+                  setShowSocials(true);
+                }
+              }
+              if (dbFullData.skills) setSkills(dbFullData.skills);
+              if (dbFullData.hobbies) setHobbies(dbFullData.hobbies);
+              if (dbFullData.languages) setLanguages(dbFullData.languages);
+              if (dbFullData.experiences) setExperiences(dbFullData.experiences);
+              if (dbFullData.educations) setEducations(dbFullData.educations);
+              if (dbFullData.projects) setProjects(dbFullData.projects);
+              if (dbFullData.achievements) setAchievements(dbFullData.achievements);
+              if (dbFullData.publications) setPublications(dbFullData.publications);
+            }
+
             // AUTO-SYNC FIX: If local storage didn't have the name, save it instantly so all views update
             if (!localData?.personal?.fullName && updatedPersonal.fullName) {
               const payload = {
                 personal: updatedPersonal,
-                socials: localData?.socials || { linkedin: "", github: "", website: "", twitter: "" },
-                skills: localData?.skills || [],
-                hobbies: localData?.hobbies || [],
-                languages: localData?.languages || [],
-                experiences: localData?.experiences || [],
-                educations: localData?.educations || [],
-                projects: localData?.projects || [],
-                achievements: localData?.achievements || [],
-                publications: localData?.publications || [],
+                socials: localData?.socials || dbFullData.socials || { linkedin: "", github: "", website: "", twitter: "" },
+                skills: localData?.skills || dbFullData.skills || [],
+                hobbies: localData?.hobbies || dbFullData.hobbies || [],
+                languages: localData?.languages || dbFullData.languages || [],
+                experiences: localData?.experiences || dbFullData.experiences || [],
+                educations: localData?.educations || dbFullData.educations || [],
+                projects: localData?.projects || dbFullData.projects || [],
+                achievements: localData?.achievements || dbFullData.achievements || [],
+                publications: localData?.publications || dbFullData.publications || [],
               };
               localStorage.setItem("user_profile_data", JSON.stringify(payload));
               window.dispatchEvent(new Event("profile_updated"));
@@ -402,12 +421,17 @@ export default function BuilderPage() {
     saveToLocalStorage(payload);
 
     // 2. Permanent database storage
+    // FIX: send the payload flat (personal + the rest of the fields at the
+    // top level) so the API route's `const { personal, ...restData } = body`
+    // captures everything correctly into the `fullData` column.
+    // Previously this sent `{ fullData: payload, personal }`, which nested
+    // the data one level too deep (fullData.fullData.experiences instead of
+    // fullData.experiences), making it look like data disappeared.
     try {
       const response = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // Fixed: Wrap payload in fullData to match the expected API structure
-        body: JSON.stringify({ fullData: payload, personal }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -427,7 +451,7 @@ export default function BuilderPage() {
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-8">
-        
+
         {/* Header Bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
