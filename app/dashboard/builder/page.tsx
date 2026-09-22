@@ -70,6 +70,7 @@ interface PublicationItem {
 export default function BuilderPage() {
   const [isPending, startTransition] = useTransition();
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showSocials, setShowSocials] = useState(false);
 
   // Core Personal Details
@@ -382,38 +383,45 @@ export default function BuilderPage() {
   };
 
   // Save to LocalStorage + Neon Database
-  const handleSaveAll = () => {
-    startTransition(async () => {
-      const payload = {
-        personal,
-        socials,
-        skills,
-        hobbies,
-        languages,
-        experiences,
-        educations,
-        projects,
-        achievements,
-        publications,
-      };
+  const handleSaveAll = async () => {
+    setIsSaving(true);
+    const payload = {
+      personal,
+      socials,
+      skills,
+      hobbies,
+      languages,
+      experiences,
+      educations,
+      projects,
+      achievements,
+      publications,
+    };
 
-      // 1. Instant local storage update
-      saveToLocalStorage(payload);
+    // 1. Instant local storage update
+    saveToLocalStorage(payload);
 
-      // 2. Permanent database storage
-      try {
-        await fetch("/api/profile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch (e) {
-        console.error("Failed to persist to database:", e);
+    // 2. Permanent database storage
+    try {
+      const response = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Fixed: Wrap payload in fullData to match the expected API structure
+        body: JSON.stringify({ fullData: payload, personal }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save to database");
       }
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
-    });
+    } catch (e) {
+      console.error("Failed to persist to database:", e);
+      alert("Saved locally, but failed to sync to database.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -867,10 +875,10 @@ export default function BuilderPage() {
           <div className="flex gap-3 ml-auto">
             <button
               onClick={handleSaveAll}
-              disabled={isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-6 py-2.5 text-xs font-bold text-white shadow hover:bg-blue-800"
+              disabled={isPending || isSaving}
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-6 py-2.5 text-xs font-bold text-white shadow hover:bg-blue-800 disabled:opacity-50"
             >
-              <Save className="h-4 w-4" /> Save Record
+              <Save className="h-4 w-4" /> {isSaving ? "Saving..." : "Save Record"}
             </button>
             <Link
               href="/dashboard"
