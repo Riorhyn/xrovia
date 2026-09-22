@@ -148,35 +148,34 @@ export default function BuilderPage() {
   // Load state on mount (LocalStorage first, then sync with DB & Registration Name)
   useEffect(() => {
     async function loadProfileData() {
-      let localDataLoaded = false;
+      let localData: any = null;
+      
+      // 1. Read local storage
       const saved = localStorage.getItem("user_profile_data");
       if (saved) {
         try {
-          const parsed = JSON.parse(saved);
-          if (parsed.personal) {
-            setPersonal(parsed.personal);
-            if (parsed.personal.fullName) localDataLoaded = true;
-          }
-          if (parsed.socials) {
-            setSocials(parsed.socials);
-            if (Object.values(parsed.socials).some((val) => Boolean(val))) {
+          localData = JSON.parse(saved);
+          if (localData.personal) setPersonal(localData.personal);
+          if (localData.socials) {
+            setSocials(localData.socials);
+            if (Object.values(localData.socials).some((val) => Boolean(val))) {
               setShowSocials(true);
             }
           }
-          if (parsed.skills) setSkills(parsed.skills);
-          if (parsed.hobbies) setHobbies(parsed.hobbies);
-          if (parsed.languages) setLanguages(parsed.languages);
-          if (parsed.experiences) setExperiences(parsed.experiences);
-          if (parsed.educations) setEducations(parsed.educations);
-          if (parsed.projects) setProjects(parsed.projects);
-          if (parsed.achievements) setAchievements(parsed.achievements);
-          if (parsed.publications) setPublications(parsed.publications);
+          if (localData.skills) setSkills(localData.skills);
+          if (localData.hobbies) setHobbies(localData.hobbies);
+          if (localData.languages) setLanguages(localData.languages);
+          if (localData.experiences) setExperiences(localData.experiences);
+          if (localData.educations) setEducations(localData.educations);
+          if (localData.projects) setProjects(localData.projects);
+          if (localData.achievements) setAchievements(localData.achievements);
+          if (localData.publications) setPublications(localData.publications);
         } catch (e) {
           console.error("Local storage load error:", e);
         }
       }
 
-      // Fetch ground truth from Database (pre-fills registered name if local storage is empty)
+      // 2. Fetch ground truth from Database
       try {
         const res = await fetch("/api/profile");
         if (res.ok) {
@@ -185,14 +184,34 @@ export default function BuilderPage() {
             const regName = data.user.name || data.user.email?.split("@")[0] || "";
             const dbProfile = data.user.profile || {};
             
-            setPersonal((prev) => ({
-              ...prev,
-              fullName: prev.fullName || dbProfile.fullName || regName,
-              headline: prev.headline || dbProfile.headline || "",
-              location: prev.location || dbProfile.location || "",
-              photoUrl: prev.photoUrl || dbProfile.photoUrl || "",
-              about: prev.about || dbProfile.about || "",
-            }));
+            const updatedPersonal = {
+              fullName: localData?.personal?.fullName || dbProfile.fullName || regName,
+              headline: localData?.personal?.headline || dbProfile.headline || "",
+              location: localData?.personal?.location || dbProfile.location || "",
+              photoUrl: localData?.personal?.photoUrl || dbProfile.photoUrl || "",
+              about: localData?.personal?.about || dbProfile.about || "",
+            };
+
+            setPersonal(updatedPersonal);
+
+            // AUTO-SYNC FIX: If local storage didn't have the name, save it instantly so all views update
+            if (!localData?.personal?.fullName && updatedPersonal.fullName) {
+              const payload = {
+                personal: updatedPersonal,
+                socials: localData?.socials || { linkedin: "", github: "", website: "", twitter: "" },
+                skills: localData?.skills || [],
+                hobbies: localData?.hobbies || [],
+                languages: localData?.languages || [],
+                experiences: localData?.experiences || [],
+                educations: localData?.educations || [],
+                projects: localData?.projects || [],
+                achievements: localData?.achievements || [],
+                publications: localData?.publications || [],
+              };
+              localStorage.setItem("user_profile_data", JSON.stringify(payload));
+              window.dispatchEvent(new Event("profile_updated"));
+              window.dispatchEvent(new Event("storage"));
+            }
           }
         }
       } catch (e) {
