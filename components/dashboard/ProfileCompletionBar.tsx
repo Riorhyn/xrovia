@@ -10,15 +10,40 @@ export function ProfileCompletionBar() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        let completed = 0;
-        if (parsed.personal?.fullName && parsed.personal?.headline) completed++;
-        if ((parsed.experiences || []).length > 0) completed++;
-        if ((parsed.educations || []).length > 0) completed++;
-        if ((parsed.skills || []).length > 0) completed++;
-        if ((parsed.projects || []).length > 0) completed++;
-        setPercentage(Math.round((completed / 5) * 100));
+        
+        let totalSections = 10;
+        let completedSections = 0;
+
+        // 1. Full Name & Headline
+        if (parsed.personal?.fullName && parsed.personal?.headline) completedSections++;
+        // 2. Profile Photo
+        if (parsed.personal?.photoUrl) completedSections++;
+        // 3. About Summary / Primary Focus
+        if (parsed.personal?.about) completedSections++;
+        // 4. Work Experience
+        if ((parsed.experiences || []).length > 0) completedSections++;
+        // 5. Education
+        if ((parsed.educations || []).length > 0) completedSections++;
+        // 6. Skills
+        if ((parsed.skills || []).length > 0) completedSections++;
+        // 7. Projects
+        if ((parsed.projects || []).length > 0) completedSections++;
+        // 8. Achievements / Certifications
+        if ((parsed.achievements || []).length > 0) completedSections++;
+        // 9. Publications
+        if ((parsed.publications || []).length > 0) completedSections++;
+        // 10. Social Links or Hobbies
+        if (
+          (parsed.hobbies || []).length > 0 || 
+          (parsed.socials && Object.values(parsed.socials).some(Boolean))
+        ) {
+          completedSections++;
+        }
+
+        const calculated = Math.round((completedSections / totalSections) * 100);
+        setPercentage(calculated);
       } catch (e) {
-        console.error("Error calculating completion:", e);
+        console.error("Error calculating profile completion:", e);
       }
     }
   };
@@ -27,9 +52,12 @@ export function ProfileCompletionBar() {
     calculateCompletion();
     window.addEventListener("profile_updated", calculateCompletion);
     window.addEventListener("storage", calculateCompletion);
+    window.addEventListener("focus", calculateCompletion);
+
     return () => {
       window.removeEventListener("profile_updated", calculateCompletion);
       window.removeEventListener("storage", calculateCompletion);
+      window.removeEventListener("focus", calculateCompletion);
     };
   }, []);
 
@@ -45,6 +73,9 @@ export function ProfileCompletionBar() {
           style={{ width: `${percentage}%` }}
         />
       </div>
+      <p className="text-[11px] text-slate-400">
+        Add your photo, summary, achievements, publications, hobbies, and social links to reach 100%.
+      </p>
     </div>
   );
 }
