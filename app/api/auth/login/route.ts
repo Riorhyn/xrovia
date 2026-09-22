@@ -1,56 +1,75 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
-import { LoginSchema } from "@/lib/validation/profile-schemas";
-import { createSessionToken, setSessionCookie } from "@/lib/auth/session";
+import {
+  createSessionToken,
+  setSessionCookie,
+} from "@/lib/auth/session";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const validated = LoginSchema.parse(body);
+    const { email, password } = await req.json();
 
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required." },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // 1. Find user by normalized email
     const user = await prisma.user.findUnique({
-      where: { email: validated.email },
-      include: { profile: { select: { professionalId: true } } },
+      where: { email: normalizedEmail },
+      include: { profile: true },
     });
 
-    if (!user) {
+    if (!user || !user.passwordHash) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
 
-    const validPassword = await bcrypt.compare(validated.password, user.passwordHash);
-    if (!validPassword) {
+    // 2. Compare password hashes
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
 
+    // 3. Create session token
     const token = await createSessionToken({
       userId: user.id,
       email: user.email,
       role: user.role,
     });
 
-    const response = NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        professionalId: user.profile?.professionalId,
+    // 4. Set session cookie and return success response
+    const response = NextResponse.json(
+      {
+        message: "Logged in successfully",
+        user: {
+          id: user.id,
+          email: user.email,
+          professionalId: user.profile?.professionalId,
+        },
       },
-    });
+      { status: 200 }
+    );
 
     setSessionCookie(response, token);
+
     return response;
-  } catch (error: any) {
-    console.error("Login error:", error);
-    if (error.name === "ZodError") {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
-    }
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } catch (err) {
+    console.error("Login error:", err);
+    return NextResponse.json(
+      { error: "Internal server error. Please try again." },
+      { status: 500 }
+    );
   }
 }
