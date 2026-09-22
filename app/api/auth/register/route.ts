@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
@@ -56,7 +55,7 @@ export async function POST(req: Request) {
             fullName,
             location: country || "",
             professionalId,
-            fullData: {}, // <-- Add this required field to fix the column error
+            fullData: {},
           },
         },
       },
@@ -86,11 +85,14 @@ export async function POST(req: Request) {
     setSessionCookie(response, token);
 
     return response;
-  } catch (err) {
+  } catch (err: any) {
     console.error("Registration error:", err);
 
     return NextResponse.json(
-      { error: "Failed to create account. Please try again." },
+      {
+        error: "Failed to create account. Please try again.",
+        detail: String(err?.message || err),
+      },
       { status: 500 }
     );
   }
