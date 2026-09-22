@@ -65,7 +65,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { personal, ...restData } = body;
+    // Support both direct payload and nested fullData structures
+    const payload = body.fullData ? body.fullData : body;
+    const { personal } = payload;
 
     const existingProfile = await prisma.profile.findUnique({
       where: {
@@ -91,7 +93,7 @@ export async function POST(req: Request) {
               location: personal?.location || "",
               about: personal?.about || "",
               photoUrl: personal?.photoUrl || "",
-              fullData: restData,
+              fullData: payload,
             },
             update: {
               fullName: personal?.fullName || undefined,
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
               location: personal?.location || "",
               about: personal?.about || "",
               photoUrl: personal?.photoUrl || "",
-              fullData: restData,
+              fullData: payload,
             },
           },
         },
