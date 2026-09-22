@@ -104,17 +104,24 @@ export function DigitalIdPreview() {
 };
 
   useEffect(() => {
-    loadProfile();
-    
+  loadProfile();
 
-    window.addEventListener("profile_updated", loadProfile);
-    window.addEventListener("storage", loadProfile);
+  window.addEventListener("profile_updated", loadProfile);
+  window.addEventListener("storage", loadProfile);
 
-    return () => {
-      window.removeEventListener("profile_updated", loadProfile);
-      window.removeEventListener("storage", loadProfile);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener("profile_updated", loadProfile);
+    window.removeEventListener("storage", loadProfile);
+  };
+}, []);
+
+useEffect(() => {
+  if (typeof window !== "undefined" && profile.professionalId) {
+    setShareUrl(
+      `${window.location.origin}/${profile.professionalId}`
+    );
+  }
+}, [profile.professionalId]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
