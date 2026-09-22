@@ -36,39 +36,44 @@ export default function DashboardPage() {
     }
   };
 
-  // 1. Auto-sync script (Moved INSIDE the component)
+  // Auto-sync database profile to localStorage on dashboard mount
   useEffect(() => {
-    async function syncDashboardData() {
-      const saved = localStorage.getItem("user_profile_data");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.personal?.fullName) return; 
-      }
-
+    async function syncDatabaseToLocalStorage() {
       try {
         const res = await fetch("/api/profile");
         if (res.ok) {
           const data = await res.json();
           if (data.user) {
-            const dbData = data.user.profile?.fullData;
-            const regName = data.user.profile?.fullName || data.user.name || data.user.email?.split("@")[0] || "";
+            const dbProfile = data.user.profile;
+            const regName = dbProfile?.fullName || data.user.name || data.user.email?.split("@")[0] || "Candidate Name";
+            const professionalId = dbProfile?.professionalId || "PR-159481";
 
-            const hasDbData = dbData && Object.keys(dbData).length > 0;
-            const payload = hasDbData ? dbData : {
-              personal: { fullName: regName, headline: "", location: "", photoUrl: "", about: "" }
+            // Grab existing local storage data or initialize structure
+            const saved = localStorage.getItem("user_profile_data");
+            let parsed = saved ? JSON.parse(saved) : {};
+
+            // Ensure personal object exists and has the correct name
+            parsed.personal = {
+              fullName: parsed.personal?.fullName || regName,
+              headline: parsed.personal?.headline || dbProfile?.headline || "",
+              location: parsed.personal?.location || dbProfile?.location || "",
+              photoUrl: parsed.personal?.photoUrl || dbProfile?.photoUrl || "",
+              about: parsed.personal?.about || dbProfile?.about || "",
             };
 
-            localStorage.setItem("user_profile_data", JSON.stringify(payload));
+            // Save back to local storage and trigger UI updates
+            localStorage.setItem("user_profile_data", JSON.stringify(parsed));
             window.dispatchEvent(new Event("profile_updated"));
             window.dispatchEvent(new Event("storage"));
+            loadDashboardData();
           }
         }
       } catch (error) {
-        console.error("Failed to sync profile to dashboard:", error);
+        console.error("Dashboard sync error:", error);
       }
     }
 
-    syncDashboardData();
+    syncDatabaseToLocalStorage();
   }, []);
 
   // 2. Event listener script
