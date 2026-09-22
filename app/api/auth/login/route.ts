@@ -19,7 +19,6 @@ export async function POST(req: Request) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // 1. Find user by normalized email
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
       include: { profile: true },
@@ -32,8 +31,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Compare password hashes
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.passwordHash
+    );
 
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -42,14 +43,28 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Create session token
+    // New accounts waiting for email verification.
+    // Existing accounts without verification data remain usable.
+    if (
+      !user.emailVerifiedAt &&
+      user.emailVerificationCodeHash
+    ) {
+      return NextResponse.json(
+        {
+          error: "Please verify your email before logging in.",
+          needsVerification: true,
+          email: user.email,
+        },
+        { status: 403 }
+      );
+    }
+
     const token = await createSessionToken({
       userId: user.id,
       email: user.email,
       role: user.role,
     });
 
-    // 4. Set session cookie and return success response
     const response = NextResponse.json(
       {
         message: "Logged in successfully",
@@ -67,6 +82,7 @@ export async function POST(req: Request) {
     return response;
   } catch (err) {
     console.error("Login error:", err);
+
     return NextResponse.json(
       { error: "Internal server error. Please try again." },
       { status: 500 }
