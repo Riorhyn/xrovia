@@ -196,23 +196,23 @@ export default function BuilderPage() {
 
             setPersonal(updatedPersonal);
 
-            // If local storage was empty but the DB has nested records, load those too
-            if (!localData) {
-              if (dbFullData.socials) {
-                setSocials(dbFullData.socials);
-                if (Object.values(dbFullData.socials).some((val) => Boolean(val))) {
-                  setShowSocials(true);
-                }
-              }
-              if (dbFullData.skills) setSkills(dbFullData.skills);
-              if (dbFullData.hobbies) setHobbies(dbFullData.hobbies);
-              if (dbFullData.languages) setLanguages(dbFullData.languages);
-              if (dbFullData.experiences) setExperiences(dbFullData.experiences);
-              if (dbFullData.educations) setEducations(dbFullData.educations);
-              if (dbFullData.projects) setProjects(dbFullData.projects);
-              if (dbFullData.achievements) setAchievements(dbFullData.achievements);
-              if (dbFullData.publications) setPublications(dbFullData.publications);
-            }
+            // Always load nested profile data from the database
+if (dbFullData.socials) {
+  setSocials(dbFullData.socials);
+
+  if (Object.values(dbFullData.socials).some((val) => Boolean(val))) {
+    setShowSocials(true);
+  }
+}
+
+if (dbFullData.skills) setSkills(dbFullData.skills);
+if (dbFullData.hobbies) setHobbies(dbFullData.hobbies);
+if (dbFullData.languages) setLanguages(dbFullData.languages);
+if (dbFullData.experiences) setExperiences(dbFullData.experiences);
+if (dbFullData.educations) setEducations(dbFullData.educations);
+if (dbFullData.projects) setProjects(dbFullData.projects);
+if (dbFullData.achievements) setAchievements(dbFullData.achievements);
+if (dbFullData.publications) setPublications(dbFullData.publications);
 
             // AUTO-SYNC FIX: If local storage didn't have the name, save it instantly so all views update
             if (!localData?.personal?.fullName && updatedPersonal.fullName) {
