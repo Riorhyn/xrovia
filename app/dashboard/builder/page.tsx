@@ -187,12 +187,12 @@ export default function BuilderPage() {
             const dbFullData = dbProfile.fullData || {};
 
             const updatedPersonal = {
-              fullName: localData?.personal?.fullName || dbProfile.fullName || regName,
-              headline: localData?.personal?.headline || dbProfile.headline || "",
-              location: localData?.personal?.location || dbProfile.location || "",
-              photoUrl: localData?.personal?.photoUrl || dbProfile.photoUrl || "",
-              about: localData?.personal?.about || dbProfile.about || "",
-            };
+  fullName: dbProfile.fullName || regName || "",
+  headline: dbProfile.headline || "",
+  location: dbProfile.location || "",
+  photoUrl: dbProfile.photoUrl || "",
+  about: dbProfile.about || "",
+};
 
             setPersonal(updatedPersonal);
 
@@ -214,24 +214,7 @@ if (dbFullData.projects) setProjects(dbFullData.projects);
 if (dbFullData.achievements) setAchievements(dbFullData.achievements);
 if (dbFullData.publications) setPublications(dbFullData.publications);
 
-            // AUTO-SYNC FIX: If local storage didn't have the name, save it instantly so all views update
-            if (!localData?.personal?.fullName && updatedPersonal.fullName) {
-              const payload = {
-                personal: updatedPersonal,
-                socials: localData?.socials || dbFullData.socials || { linkedin: "", github: "", website: "", twitter: "" },
-                skills: localData?.skills || dbFullData.skills || [],
-                hobbies: localData?.hobbies || dbFullData.hobbies || [],
-                languages: localData?.languages || dbFullData.languages || [],
-                experiences: localData?.experiences || dbFullData.experiences || [],
-                educations: localData?.educations || dbFullData.educations || [],
-                projects: localData?.projects || dbFullData.projects || [],
-                achievements: localData?.achievements || dbFullData.achievements || [],
-                publications: localData?.publications || dbFullData.publications || [],
-              };
-              localStorage.setItem("user_profile_data", JSON.stringify(payload));
-              window.dispatchEvent(new Event("profile_updated"));
-              window.dispatchEvent(new Event("storage"));
-            }
+            
           }
         }
       } catch (e) {
