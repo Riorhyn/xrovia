@@ -1,22 +1,29 @@
 "use client";
 
-import React, { useTransition } from "react";
+import React, { useState } from "react";
 import { LogOut } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 
 export function LogoutButton() {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    setIsPending(true);
+    
     // 1. Clear client storage
     localStorage.clear();
     sessionStorage.clear();
     window.dispatchEvent(new Event("profile_updated"));
 
-    // 2. Invoke server action to delete cookie & redirect
-    startTransition(async () => {
+    // 2. Invoke server action to delete cookie
+    try {
       await logoutAction();
-    });
+    } catch (error) {
+      console.error("Logout action error:", error);
+    }
+
+    // 3. Force a hard browser reload to clear Next.js layout cache
+    window.location.href = "/";
   };
 
   return (
