@@ -11,22 +11,33 @@ export function CareerSummaryMetrics() {
     projects: 0,
   });
 
-  const loadCounts = () => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setCounts({
-          experience: (parsed.experiences || []).length,
-          education: (parsed.educations || []).length,
-          skills: (parsed.skills || []).length,
-          projects: (parsed.projects || []).length,
-        });
-      } catch (e) {
-        console.error("Error loading metrics:", e);
-      }
-    }
-  };
+  const loadCounts = async () => {
+  try {
+    const res = await fetch("/api/profile");
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    const fullData = data.user?.profile?.fullData || {};
+
+    setCounts({
+      experience: (fullData.experiences || []).length,
+      education: (fullData.educations || []).length,
+      skills: (fullData.skills || []).length,
+      projects: (fullData.projects || []).length,
+    });
+
+    // Rebuild local cache
+    localStorage.setItem(
+      "user_profile_data",
+      JSON.stringify(fullData)
+    );
+
+    window.dispatchEvent(new Event("profile_updated"));
+  } catch (e) {
+    console.error("Error loading profile:", e);
+  }
+};
 
   useEffect(() => {
     loadCounts();
