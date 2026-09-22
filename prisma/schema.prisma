@@ -66,7 +66,7 @@ model Profile {
   photoUrl           String?
   isPublic           Boolean            @default(true)
   
-  fullData           Json?              // <--- ADD THIS EXACT LINE HERE
+  fullData       Json     @default("{}")            // <--- ADD THIS EXACT LINE HERE
 
   // Architectural verification anchors (defaults to USER_PROVIDED in V1)
   verificationStatus VerificationStatus @default(USER_PROVIDED)
