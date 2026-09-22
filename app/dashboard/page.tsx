@@ -36,6 +36,42 @@ export default function DashboardPage() {
     }
   };
 
+  // 1. Auto-sync script (Moved INSIDE the component)
+  useEffect(() => {
+    async function syncDashboardData() {
+      const saved = localStorage.getItem("user_profile_data");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.personal?.fullName) return; 
+      }
+
+      try {
+        const res = await fetch("/api/profile");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) {
+            const dbData = data.user.profile?.fullData;
+            const regName = data.user.profile?.fullName || data.user.name || data.user.email?.split("@")[0] || "";
+
+            const hasDbData = dbData && Object.keys(dbData).length > 0;
+            const payload = hasDbData ? dbData : {
+              personal: { fullName: regName, headline: "", location: "", photoUrl: "", about: "" }
+            };
+
+            localStorage.setItem("user_profile_data", JSON.stringify(payload));
+            window.dispatchEvent(new Event("profile_updated"));
+            window.dispatchEvent(new Event("storage"));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to sync profile to dashboard:", error);
+      }
+    }
+
+    syncDashboardData();
+  }, []);
+
+  // 2. Event listener script
   useEffect(() => {
     loadDashboardData();
     window.addEventListener("profile_updated", loadDashboardData);
