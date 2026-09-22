@@ -1,75 +1,120 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/db/prisma";
-import {
-  createSessionToken,
-  setSessionCookie,
-} from "@/lib/auth/session";
+"use client";
 
-export async function POST(req: Request) {
-  try {
-    const { email, password } = await req.json();
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required." },
-        { status: 400 }
-      );
-    }
+export default function LoginPage() {
+  const router = useRouter();
 
-    const normalizedEmail = email.trim().toLowerCase();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    // 1. Find user by normalized email
-    const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-      include: { profile: true },
-    });
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    if (!user || !user.passwordHash) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    // 2. Compare password hashes
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    // 3. Create session token
-    const token = await createSessionToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    });
-
-    // 4. Set session cookie and return success response
-    const response = NextResponse.json(
-      {
-        message: "Logged in successfully",
-        user: {
-          id: user.id,
-          email: user.email,
-          professionalId: user.profile?.professionalId,
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-      { status: 200 }
-    );
+        body: JSON.stringify({ email, password }),
+      });
 
-    setSessionCookie(response, token);
+      const data = await response.json();
 
-    return response;
-  } catch (err) {
-    console.error("Login error:", err);
-    return NextResponse.json(
-      { error: "Internal server error. Please try again." },
-      { status: 500 }
-    );
+      if (!response.ok) {
+        setError(data.error || "Invalid email or password");
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Internal server error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
+
+  return (
+    <div className="max-w-md mx-auto px-4 py-16">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white font-black text-xl mb-4">
+            P
+          </div>
+
+          <h1 className="text-3xl font-bold text-slate-900">
+            Welcome back
+          </h1>
+
+          <p className="text-slate-500 mt-2">
+            Sign in to your PROVIA account.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Email address
+            </label>
+
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Password
+            </label>
+
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-slate-500 mt-6">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            Create Professional ID
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 }
