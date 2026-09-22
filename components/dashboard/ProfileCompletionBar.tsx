@@ -5,48 +5,51 @@ import React, { useEffect, useState } from "react";
 export function ProfileCompletionBar() {
   const [percentage, setPercentage] = useState(0);
 
-  const calculateCompletion = () => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        
-        let totalSections = 10;
-        let completedSections = 0;
+  const calculateCompletion = async () => {
+  try {
+    const res = await fetch("/api/profile");
 
-        // 1. Full Name & Headline
-        if (parsed.personal?.fullName && parsed.personal?.headline) completedSections++;
-        // 2. Profile Photo
-        if (parsed.personal?.photoUrl) completedSections++;
-        // 3. About Summary / Primary Focus
-        if (parsed.personal?.about) completedSections++;
-        // 4. Work Experience
-        if ((parsed.experiences || []).length > 0) completedSections++;
-        // 5. Education
-        if ((parsed.educations || []).length > 0) completedSections++;
-        // 6. Skills
-        if ((parsed.skills || []).length > 0) completedSections++;
-        // 7. Projects
-        if ((parsed.projects || []).length > 0) completedSections++;
-        // 8. Achievements / Certifications
-        if ((parsed.achievements || []).length > 0) completedSections++;
-        // 9. Publications
-        if ((parsed.publications || []).length > 0) completedSections++;
-        // 10. Social Links or Hobbies
-        if (
-          (parsed.hobbies || []).length > 0 || 
-          (parsed.socials && Object.values(parsed.socials).some(Boolean))
-        ) {
-          completedSections++;
-        }
+    if (!res.ok) return;
 
-        const calculated = Math.round((completedSections / totalSections) * 100);
-        setPercentage(calculated);
-      } catch (e) {
-        console.error("Error calculating profile completion:", e);
-      }
+    const data = await res.json();
+
+    const profile = data.user?.profile || {};
+    const fullData = profile.fullData || {};
+
+    const personal = fullData.personal || {
+      fullName: profile.fullName || "",
+      headline: profile.headline || "",
+      photoUrl: profile.photoUrl || "",
+      about: profile.about || "",
+    };
+
+    let totalSections = 10;
+    let completedSections = 0;
+
+    if (personal.fullName && personal.headline) completedSections++;
+    if (personal.photoUrl) completedSections++;
+    if (personal.about) completedSections++;
+    if ((fullData.experiences || []).length > 0) completedSections++;
+    if ((fullData.educations || []).length > 0) completedSections++;
+    if ((fullData.skills || []).length > 0) completedSections++;
+    if ((fullData.projects || []).length > 0) completedSections++;
+    if ((fullData.achievements || []).length > 0) completedSections++;
+    if ((fullData.publications || []).length > 0) completedSections++;
+
+    if (
+      (fullData.hobbies || []).length > 0 ||
+      Object.values(fullData.socials || {}).some(Boolean)
+    ) {
+      completedSections++;
     }
-  };
+
+    setPercentage(
+      Math.round((completedSections / totalSections) * 100)
+    );
+  } catch (e) {
+    console.error("Error calculating profile completion:", e);
+  }
+};
 
   useEffect(() => {
     calculateCompletion();
