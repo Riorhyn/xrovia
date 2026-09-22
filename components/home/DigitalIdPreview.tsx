@@ -41,52 +41,67 @@ export function DigitalIdPreview() {
     professionalId: "PR-159481",
   });
 
-  const loadProfile = () => {
-    const saved = localStorage.getItem("user_profile_data");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.personal) {
-          const edus = parsed.educations || [];
-          const exps = parsed.experiences || [];
-          const skls = parsed.skills || [];
-          const prjs = parsed.projects || [];
+  const loadProfile = async () => {
+  try {
+    const res = await fetch("/api/profile");
 
-          const eduSummary = edus[0]
-            ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
-            : "No degree added";
+    if (!res.ok) return;
 
-          const expSummary = exps[0]
-            ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
-            : "No experience added";
+    const data = await res.json();
+    const dbProfile = data.user?.profile || {};
+    const fullData = dbProfile.fullData || {};
 
-          const sklSummary = skls.length ? skls.slice(0, 3).join(", ") : "No skills listed";
+    const edus = fullData.educations || [];
+    const exps = fullData.experiences || [];
+    const skls = fullData.skills || [];
+    const prjs = fullData.projects || [];
 
-          const prjSummary = prjs[0] ? prjs[0].title : "No projects added";
+    const eduSummary = edus[0]
+      ? [edus[0].degree, edus[0].fieldOfStudy]
+          .filter(Boolean)
+          .join(" - ")
+      : "No degree added";
 
-          setProfile({
-            fullName: parsed.personal.fullName || "Candidate Name",
-            headline: parsed.personal.headline || "Professional Headline",
-            location: parsed.personal.location || "Location not provided",
-            about: parsed.personal.about || "Professional summary",
-            photoUrl: parsed.personal.photoUrl || "",
-            skills: skls.length ? skls : ["Core Competency"],
-            educationCount: edus.length,
-            educationSummary: eduSummary,
-            experienceCount: exps.length,
-            experienceSummary: expSummary,
-            skillsCount: skls.length,
-            skillsSummary: sklSummary,
-            projectsCount: prjs.length,
-            projectsSummary: prjSummary,
-            professionalId: parsed.professionalId || "PR-159481",
-          });
-        }
-      } catch (e) {
-        console.error("Local storage read error:", e);
-      }
-    }
-  };
+    const expSummary = exps[0]
+      ? [exps[0].role, exps[0].company]
+          .filter(Boolean)
+          .join(" at ")
+      : "No experience added";
+
+    const sklSummary = skls.length
+      ? skls.slice(0, 3).join(", ")
+      : "No skills listed";
+
+    const prjSummary = prjs[0]
+      ? prjs[0].title
+      : "No projects added";
+
+    setProfile({
+      fullName: dbProfile.fullName || "Candidate Name",
+      headline: dbProfile.headline || "Professional Headline",
+      location: dbProfile.location || "Location not provided",
+      about: dbProfile.about || "Professional summary",
+      photoUrl: dbProfile.photoUrl || "",
+      skills: skls.length ? skls : ["Core Competency"],
+      educationCount: edus.length,
+      educationSummary: eduSummary,
+      experienceCount: exps.length,
+      experienceSummary: expSummary,
+      skillsCount: skls.length,
+      skillsSummary: sklSummary,
+      projectsCount: prjs.length,
+      projectsSummary: prjSummary,
+      professionalId: fullData.professionalId || "PR-159481",
+    });
+
+    localStorage.setItem(
+      "user_profile_data",
+      JSON.stringify(fullData)
+    );
+  } catch (e) {
+    console.error("Database profile read error:", e);
+  }
+};
 
   useEffect(() => {
     loadProfile();
