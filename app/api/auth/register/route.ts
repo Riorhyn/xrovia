@@ -56,6 +56,7 @@ export async function POST(req: Request) {
             fullName,
             location: country || "",
             professionalId,
+            fullData: {}, // <-- Add this required field to fix the column error
           },
         },
       },
