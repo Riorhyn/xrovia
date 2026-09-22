@@ -14,7 +14,6 @@ export function CareerSummaryMetrics() {
   const loadCounts = async () => {
   try {
     const res = await fetch("/api/profile");
-
     if (!res.ok) return;
 
     const data = await res.json();
@@ -27,7 +26,6 @@ export function CareerSummaryMetrics() {
       projects: (fullData.projects || []).length,
     });
 
-    // Rebuild local cache
     localStorage.setItem(
       "user_profile_data",
       JSON.stringify(fullData)
