@@ -27,6 +27,7 @@ export default function DashboardPage() {
 
     const data = await res.json();
     const dbProfile = data.user?.profile || {};
+    const fullData = dbProfile.fullData || {};
 
     setProfile({
       fullName:
