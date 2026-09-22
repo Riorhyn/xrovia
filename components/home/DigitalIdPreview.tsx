@@ -91,7 +91,7 @@ export function DigitalIdPreview() {
       skillsSummary: sklSummary,
       projectsCount: prjs.length,
       projectsSummary: prjSummary,
-      professionalId: fullData.professionalId || "PR-159481",
+      professionalId: dbProfile.professionalId || "PR-159481",
     });
 
     localStorage.setItem(
@@ -105,9 +105,7 @@ export function DigitalIdPreview() {
 
   useEffect(() => {
     loadProfile();
-    if (typeof window !== "undefined") {
-      setShareUrl(`${window.location.origin}/PR-159481`);
-    }
+    
 
     window.addEventListener("profile_updated", loadProfile);
     window.addEventListener("storage", loadProfile);
