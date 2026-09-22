@@ -400,9 +400,7 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
       publications,
     };
 
-    // 1. Instant local storage update
-    saveToLocalStorage(payload);
-
+    
     // 2. Permanent database storage
     // FIX: send the payload flat (personal + the rest of the fields at the
     // top level) so the API route's `const { personal, ...restData } = body`
@@ -420,6 +418,7 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
       if (!response.ok) {
         throw new Error("Failed to save to database");
       }
+      saveToLocalStorage(payload);
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
