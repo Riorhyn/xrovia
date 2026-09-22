@@ -24,9 +24,9 @@ export function DigitalIdPreview() {
   const [isVerified, setIsVerified] = useState(false);
 
   const [profile, setProfile] = useState({
-    fullName: "Loading...",
+    fullName: "Candidate Name",
     headline: "Professional Headline",
-    location: "Location not specified",
+    location: "Location not provided",
     about: "Professional summary",
     photoUrl: "",
     skills: ["Core Competency"],
@@ -41,73 +41,65 @@ export function DigitalIdPreview() {
     professionalId: "PR-159481",
   });
 
-  const loadProfileFromDb = async () => {
-    try {
-      const res = await fetch("/api/profile");
-      if (res.ok) {
-        const json = await res.json();
-        const user = json.user || {};
-        const p = user.profile || {};
-        const fullData = p.fullData || {};
+  const loadProfile = () => {
+    const saved = localStorage.getItem("user_profile_data");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.personal) {
+          const edus = parsed.educations || [];
+          const exps = parsed.experiences || [];
+          const skls = parsed.skills || [];
+          const prjs = parsed.projects || [];
 
-        const edus = fullData.educations || [];
-        const exps = fullData.experiences || [];
-        const skls = fullData.skills || [];
-        const prjs = fullData.projects || [];
+          const eduSummary = edus[0]
+            ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
+            : "No degree added";
 
-        const eduSummary = edus[0]
-          ? [edus[0].degree, edus[0].fieldOfStudy].filter(Boolean).join(" - ")
-          : "No degree added";
+          const expSummary = exps[0]
+            ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
+            : "No experience added";
 
-        const expSummary = exps[0]
-          ? [exps[0].role, exps[0].company].filter(Boolean).join(" at ")
-          : "No experience added";
+          const sklSummary = skls.length ? skls.slice(0, 3).join(", ") : "No skills listed";
 
-        const sklSummary = skls.length ? skls.slice(0, 3).join(", ") : "No skills listed";
+          const prjSummary = prjs[0] ? prjs[0].title : "No projects added";
 
-        const prjSummary = prjs[0]
-          ? `${prjs[0].title}${prjs[0].role ? ` (${prjs[0].role})` : ""}`
-          : "No projects added";
-
-        setProfile({
-          fullName: p.fullName || user.email?.split("@")[0] || "Candidate",
-          headline: p.headline || "Professional Headline",
-          location: p.location || "City, Country",
-          about: p.about || "Professional summary",
-          photoUrl: p.photoUrl || "",
-          skills: skls.length ? skls : ["Core Competency"],
-          educationCount: edus.length,
-          educationSummary: eduSummary,
-          experienceCount: exps.length,
-          experienceSummary: expSummary,
-          skillsCount: skls.length,
-          skillsSummary: sklSummary,
-          projectsCount: prjs.length,
-          projectsSummary: prjSummary,
-          professionalId: p.professionalId || "PR-159481",
-        });
-
-        if (p.professionalId && typeof window !== "undefined") {
-          setShareUrl(`${window.location.origin}/${p.professionalId}`);
+          setProfile({
+            fullName: parsed.personal.fullName || "Candidate Name",
+            headline: parsed.personal.headline || "Professional Headline",
+            location: parsed.personal.location || "Location not provided",
+            about: parsed.personal.about || "Professional summary",
+            photoUrl: parsed.personal.photoUrl || "",
+            skills: skls.length ? skls : ["Core Competency"],
+            educationCount: edus.length,
+            educationSummary: eduSummary,
+            experienceCount: exps.length,
+            experienceSummary: expSummary,
+            skillsCount: skls.length,
+            skillsSummary: sklSummary,
+            projectsCount: prjs.length,
+            projectsSummary: prjSummary,
+            professionalId: parsed.professionalId || "PR-159481",
+          });
         }
+      } catch (e) {
+        console.error("Local storage read error:", e);
       }
-    } catch (e) {
-      console.error("Failed to load profile from database:", e);
     }
   };
 
   useEffect(() => {
-    loadProfileFromDb();
+    loadProfile();
     if (typeof window !== "undefined") {
       setShareUrl(`${window.location.origin}/PR-159481`);
     }
 
-    window.addEventListener("profile_updated", loadProfileFromDb);
-    window.addEventListener("storage", loadProfileFromDb);
+    window.addEventListener("profile_updated", loadProfile);
+    window.addEventListener("storage", loadProfile);
 
     return () => {
-      window.removeEventListener("profile_updated", loadProfileFromDb);
-      window.removeEventListener("storage", loadProfileFromDb);
+      window.removeEventListener("profile_updated", loadProfile);
+      window.removeEventListener("storage", loadProfile);
     };
   }, []);
 
@@ -248,7 +240,7 @@ export function DigitalIdPreview() {
           </div>
         </div>
 
-        {/* Clean 2x2 Grid with Equal-Height Cards */}
+        {/* Grid Cards */}
         <div className="grid grid-cols-2 gap-2.5 pt-1">
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/60 p-2.5 flex flex-col justify-between space-y-1 min-h-[58px]">
             <div className="flex items-center justify-between text-slate-600">
@@ -318,7 +310,6 @@ export function DigitalIdPreview() {
             >
               <X className="h-5 w-5" />
             </button>
-
             <div>
               <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600">
                 Permanent Record QR Code
@@ -326,11 +317,9 @@ export function DigitalIdPreview() {
               <h3 className="text-lg font-black text-slate-900 mt-1">{profile.fullName}</h3>
               <p className="text-xs font-mono font-bold text-slate-500">{profile.professionalId}</p>
             </div>
-
             <div className="mx-auto w-52 h-52 bg-slate-50 rounded-2xl border border-slate-200 p-4 flex items-center justify-center shadow-inner">
               {shareUrl && <QRCodeSVG value={shareUrl} size={176} level="H" includeMargin={true} />}
             </div>
-
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={handleNativeShare}
@@ -338,7 +327,6 @@ export function DigitalIdPreview() {
               >
                 <Share2 className="h-4 w-4" /> Share Link
               </button>
-
               <button
                 onClick={handleCopyLink}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-200 transition"
