@@ -81,6 +81,7 @@ model Profile {
   socialLinks SocialLink[]
   reportsReceived Report[] @relation("ReportedProfile")
   analytics AnalyticsEvent[]
+  evidenceFiles EvidenceFile[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([professionalId])
