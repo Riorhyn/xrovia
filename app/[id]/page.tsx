@@ -366,6 +366,19 @@ export default function PublicProfilePage() {
                         {exp.description}
                       </p>
                     )}
+
+                    {profile.evidenceFiles?.filter((f: any) => f.itemType === "EXPERIENCE" && f.itemId === String(exp.id)).length > 0 && (
+                      <div className="pt-2 mt-2 border-t border-slate-200/60">
+                        <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                        <div className="flex flex-wrap gap-2">
+                          {profile.evidenceFiles.filter((f: any) => f.itemType === "EXPERIENCE" && f.itemId === String(exp.id)).map((file: any) => (
+                            <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
+                              {file.fileName}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )
               )}
@@ -407,6 +420,19 @@ export default function PublicProfilePage() {
                     <p className="text-xs font-semibold text-blue-700">
                       {edu.institution}
                     </p>
+
+                    {profile.evidenceFiles?.filter((f: any) => f.itemType === "EDUCATION" && f.itemId === String(edu.id)).length > 0 && (
+                      <div className="pt-2 mt-2 border-t border-slate-200/60">
+                        <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                        <div className="flex flex-wrap gap-2">
+                          {profile.evidenceFiles.filter((f: any) => f.itemType === "EDUCATION" && f.itemId === String(edu.id)).map((file: any) => (
+                            <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
+                              {file.fileName}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )
               )}
