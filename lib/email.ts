@@ -39,3 +39,24 @@ export async function sendPasswordResetEmail(email: string, token: string) {
       <p>If you did not request this, you can ignore this email.</p>
     </div>`);
 }
+
+export async function sendVerificationInvitationEmail(
+  email: string,
+  candidateName: string,
+  organizationName: string,
+  title: string,
+  verificationUrl: string,
+) {
+  return sendEmail(email, `XROVIA verification request for ${candidateName}`, `
+    <div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#0f172a">
+      <h2>Verify a professional record on XROVIA</h2>
+      <p><strong>${candidateName}</strong> has requested verification of:</p>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:18px 0">
+        <p style="margin:0;font-weight:700">${title}</p>
+        <p style="margin:6px 0 0;color:#64748b">${organizationName}</p>
+      </div>
+      <p>Open the secure XROVIA verification page using the button below. You will be asked to confirm your name, role, and that the record is accurate.</p>
+      <p><a href="${verificationUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700">Review verification request</a></p>
+      <p style="font-size:12px;color:#64748b">This link is intended for the recipient of this email. If you are not the appropriate person to verify this record, do not approve it.</p>
+    </div>`);
+}
