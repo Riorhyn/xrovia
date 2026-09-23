@@ -78,7 +78,8 @@ export async function POST(req: Request) {
         user: {
           id: user.id,
           email: user.email,
-          professionalId: user.profile?.professionalId,\n          role: user.role,
+          professionalId: user.profile?.professionalId,
+          role: user.role,
         },
       },
       { status: 200 }
