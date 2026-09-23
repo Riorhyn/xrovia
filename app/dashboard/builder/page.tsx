@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from "react";
+import { RequestVerification } from "@/components/dashboard/RequestVerification";
 import Link from "next/link";
 import {
   Briefcase,
@@ -870,6 +871,8 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
             </div>
           </form>
         </div>
+
+        <RequestVerification />
 
         {/* Action Footer */}
         <div className="flex items-center justify-between pt-4">
