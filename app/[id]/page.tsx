@@ -54,6 +54,7 @@ export default function PublicProfilePage() {
     publications: [],
     connectedPlatforms: [],
     verificationRequests: [],
+    evidenceFiles: [],
     professionalId: "",
   });
 
@@ -116,6 +117,7 @@ export default function PublicProfilePage() {
         publications: fullData.publications || [],
         connectedPlatforms: fullData.connectedPlatforms || [],
         verificationRequests: fullData.verificationRequests || [],
+        evidenceFiles: dbProfile.evidenceFiles || [],
 
         professionalId:
           dbProfile.professionalId || id.toUpperCase(),
@@ -452,6 +454,21 @@ export default function PublicProfilePage() {
                           {proj.description}
                         </p>
                       )}
+
+                      {profile.evidenceFiles?.filter((f: any) => f.itemType === "PROJECT" && f.itemId === String(proj.id)).length > 0 && (
+                        <div className="pt-2 border-t border-slate-200/60">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">
+                            Evidence
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {profile.evidenceFiles.filter((f: any) => f.itemType === "PROJECT" && f.itemId === String(proj.id)).map((file: any) => (
+                              <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
+                                {file.fileName}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {proj.link && (
@@ -521,6 +538,19 @@ export default function PublicProfilePage() {
                       <p className="text-xs text-slate-600">
                         {ach.issuer} • {ach.date}
                       </p>
+
+                      {profile.evidenceFiles?.filter((f: any) => f.itemType === "ACHIEVEMENT" && f.itemId === String(ach.id)).length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                          <div className="flex flex-wrap gap-2">
+                            {profile.evidenceFiles.filter((f: any) => f.itemType === "ACHIEVEMENT" && f.itemId === String(ach.id)).map((file: any) => (
+                              <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
+                                {file.fileName}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
