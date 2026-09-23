@@ -27,7 +27,7 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white font-black text-xl mb-4">P</div>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white font-black text-xl mb-4">X</div>
           <h1 className="text-3xl font-bold text-slate-900">Welcome back</h1>
           <p className="text-slate-500 mt-2">Sign in to your PROVIA account.</p>
         </div>
