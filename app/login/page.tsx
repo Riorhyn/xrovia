@@ -18,7 +18,7 @@ export default function LoginPage() {
       });
       const data = await response.json();
       if (!response.ok) { setError(data.error || "Invalid email or password"); return; }
-      window.location.href="/dashboard";
+      window.location.href = data.user?.role === "ADMIN" ? "/admin" : "/dashboard";
     } catch { setError("Internal server error. Please try again."); }
     finally { setLoading(false); }
   }
