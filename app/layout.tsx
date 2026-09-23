@@ -86,6 +86,7 @@ export default async function RootLayout({
               <Link href="/#search-id" className="hover:text-white">Search ID</Link>
               <Link href="/#benefits" className="hover:text-white">Member Benefits</Link>
               <Link href="/admin" className="hover:text-white">Admin</Link>
+              <Link href="/feedback" className="hover:text-white">Feedback</Link>
             </div>
             <p className="text-xs text-slate-500">© {new Date().getFullYear()} Xrovia Identity Inc. All rights reserved.</p>
           </div>
