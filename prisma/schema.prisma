@@ -236,3 +236,16 @@ model AnalyticsEvent {
   createdAt DateTime @default(now())
   @@index([profileId, eventType])
 }
+model EvidenceFile {
+  id String @id @default(cuid())
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  itemType String
+  itemId String
+  fileName String
+  mimeType String
+  size Int
+  data Bytes
+  createdAt DateTime @default(now())
+  @@index([profileId, itemType, itemId])
+}
