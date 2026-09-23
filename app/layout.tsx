@@ -9,8 +9,58 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Xrovia — Your Professional Identity",
-  description: "One permanent professional ID and organized career record that follows you anywhere.",
+  metadataBase: new URL("https://xrovia.com"),
+  title: {
+    default: "XROVIA | Professional Identity Platform",
+    template: "%s | XROVIA",
+  },
+  description:
+    "XROVIA is a professional identity platform for creating, managing, verifying, and sharing your career profile, education, experience, skills, projects, and achievements.",
+  applicationName: "XROVIA",
+  keywords: [
+    "professional identity",
+    "professional identity platform",
+    "digital professional profile",
+    "career profile",
+    "professional profile",
+    "verified professional profile",
+    "digital identity",
+    "career record",
+    "professional ID",
+    "XROVIA",
+  ],
+  authors: [{ name: "XROVIA" }],
+  creator: "XROVIA",
+  publisher: "XROVIA",
+  alternates: {
+    canonical: "https://xrovia.com/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: "https://xrovia.com/",
+    siteName: "XROVIA",
+    title: "XROVIA | Professional Identity Platform",
+    description:
+      "Create, manage, verify, and share your professional identity with one permanent Professional ID.",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "XROVIA | Professional Identity Platform",
+    description:
+      "Create, manage, verify, and share your professional identity with one permanent Professional ID.",
+  },
 };
 
 export default async function RootLayout({
