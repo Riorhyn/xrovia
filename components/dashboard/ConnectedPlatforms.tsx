@@ -59,7 +59,7 @@ export function ConnectedPlatforms() {
     const name=customName.trim(), raw=customUrl.trim();
     if(!name||!raw)return;
     try{
-      const url=new URL(/^https?:\\/\\//i.test(raw)?raw:`https://${raw}`);
+      const url=new URL(raw.startsWith("http://") || raw.startsWith("https://") ? raw : `https://${raw}`);
       savePlatforms([...platforms,{id:`custom-${Date.now()}`,name,description:"Professional profile",placeholder:"https://...",url:url.toString().replace(/\\/$/,"")}]);
       setCustomName("");setCustomUrl("");
     }catch{}
