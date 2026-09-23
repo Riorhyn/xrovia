@@ -84,10 +84,15 @@ export async function POST(req: Request) {
 
       console.error("Verification email error:", emailError);
 
+      const details =
+        emailError instanceof Error
+          ? emailError.message
+          : String(emailError);
+
       return NextResponse.json(
         {
-          error:
-            "We could not send the verification email. Please try again.",
+          error: "We could not send the verification email.",
+          details,
         },
         { status: 503 }
       );
