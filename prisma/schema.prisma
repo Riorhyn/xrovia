@@ -7,10 +7,34 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role { USER ADMIN }
-enum VerificationStatus { USER_PROVIDED PENDING VERIFIED REJECTED }
-enum ReportReason { FAKE_INFORMATION FAKE_IDENTITY FAKE_EMPLOYMENT FAKE_EDUCATION FRAUD_SCAM INAPPROPRIATE_CONTENT OTHER }
-enum ReportStatus { PENDING INVESTIGATING RESOLVED DISMISSED }
+enum Role {
+  USER
+  ADMIN
+}
+
+enum VerificationStatus {
+  USER_PROVIDED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ReportReason {
+  FAKE_INFORMATION
+  FAKE_IDENTITY
+  FAKE_EMPLOYMENT
+  FAKE_EDUCATION
+  FRAUD_SCAM
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
 
 model User {
   id String @id @default(cuid())
@@ -80,6 +104,7 @@ model Education {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model Experience {
   id String @id @default(cuid())
   profileId String
@@ -99,6 +124,7 @@ model Experience {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model Skill {
   id String @id @default(cuid())
   profileId String
@@ -107,6 +133,7 @@ model Skill {
   createdAt DateTime @default(now())
   @@index([profileId])
 }
+
 model Certification {
   id String @id @default(cuid())
   profileId String
@@ -122,6 +149,7 @@ model Certification {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model Project {
   id String @id @default(cuid())
   profileId String
@@ -138,6 +166,7 @@ model Project {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model Achievement {
   id String @id @default(cuid())
   profileId String
@@ -150,6 +179,7 @@ model Achievement {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model SocialLink {
   id String @id @default(cuid())
   profileId String
@@ -159,6 +189,7 @@ model SocialLink {
   createdAt DateTime @default(now())
   @@index([profileId])
 }
+
 model Report {
   id String @id @default(cuid())
   profileId String
@@ -172,6 +203,7 @@ model Report {
   updatedAt DateTime @updatedAt
   @@index([profileId])
 }
+
 model Benefit {
   id String @id @default(cuid())
   business String
@@ -185,6 +217,7 @@ model Benefit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model BenefitRedemption {
   id String @id @default(cuid())
   benefitId String
@@ -194,6 +227,7 @@ model BenefitRedemption {
   createdAt DateTime @default(now())
   @@index([benefitId, userId])
 }
+
 model AnalyticsEvent {
   id String @id @default(cuid())
   profileId String
