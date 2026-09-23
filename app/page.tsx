@@ -13,9 +13,18 @@ import { SearchId } from "@/components/home/search-id";
 
 export const metadata: Metadata = {
   // `absolute` ignores any title template set in app/layout.tsx.
-  title: { absolute: "Xrovia | Your permanent professional identity" },
+  title: "Professional Identity Platform | Digital Career Profile",
   description:
-    "Create, manage, and share your professional identity with one permanent Professional ID.",
+    "Build a professional identity with XROVIA. Create a digital career profile with your education, experience, skills, projects, achievements, evidence, and Professional ID.",
+  alternates: { canonical: "https://xrovia.com/" },
+  openGraph: {
+    title: "XROVIA | Professional Identity Platform",
+    description:
+      "Build, verify, manage, and share your professional identity and career record with one Professional ID.",
+    url: "https://xrovia.com/",
+    type: "website",
+    siteName: "XROVIA",
+  },
 };
 
 /**
