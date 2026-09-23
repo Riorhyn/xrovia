@@ -61,7 +61,17 @@ interface AchievementItem {
   certificateUrl?: string;
 }
 
-interface EvidenceFile {\n  id: string;\n  itemType: string;\n  itemId: string;\n  fileName: string;\n  mimeType: string;\n  size: number;\n  createdAt: string;\n}\n\ninterface PublicationItem {
+interface EvidenceFile {
+  id: string;
+  itemType: string;
+  itemId: string;
+  fileName: string;
+  mimeType: string;
+  size: number;
+  createdAt: string;
+}
+
+interface PublicationItem {
   id: string;
   title: string;
   publisher: string;
