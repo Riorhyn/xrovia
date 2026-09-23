@@ -216,13 +216,19 @@ export default function PublicProfilePage() {
       <div className="mx-auto max-w-4xl space-y-3">
 
         {/* Navigation */}
-        <div>
+        <div className="flex items-center justify-between gap-3">
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition"
           >
             <ArrowLeft className="h-4 w-4" />
             Home
+          </Link>
+          <Link
+            href="/feedback"
+            className="text-xs font-bold text-slate-500 hover:text-blue-600 transition"
+          >
+            Help us build XROVIA
           </Link>
         </div>
 
