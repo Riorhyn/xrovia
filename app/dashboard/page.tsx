@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Edit3, ExternalLink, ShieldCheck, Lock, KeyRound, MessageSquare } from "lucide-react";
+import { Edit3, ExternalLink, ShieldCheck, Lock, KeyRound } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
@@ -49,11 +49,6 @@ export default function DashboardPage() {
         </div>
         <VerificationCenter />
         <ConnectedPlatforms />
-        <div className="border-t border-slate-200 pt-6 text-center">
-          <Link href="/feedback" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition">
-            <MessageSquare className="h-4 w-4" /> Feedback
-          </Link>
-        </div>
       </div>
     </div>
   );
