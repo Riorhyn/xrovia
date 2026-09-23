@@ -12,6 +12,7 @@ import {
   FolderGit2,
   Award,
   ExternalLink,
+  Link2,
 } from "lucide-react";
 
 // Format external URLs so they open outside Next.js router
@@ -51,6 +52,7 @@ export default function PublicProfilePage() {
     projects: [],
     achievements: [],
     publications: [],
+    connectedPlatforms: [],
     professionalId: "",
   });
 
@@ -111,6 +113,7 @@ export default function PublicProfilePage() {
         projects: fullData.projects || [],
         achievements: fullData.achievements || [],
         publications: fullData.publications || [],
+        connectedPlatforms: fullData.connectedPlatforms || [],
 
         professionalId:
           dbProfile.professionalId || id.toUpperCase(),
@@ -444,6 +447,24 @@ export default function PublicProfilePage() {
                   </div>
                 )
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Connected Professional Presence */}
+        {profile.connectedPlatforms?.some((p: any) => p.url) && (
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-5">
+            <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Link2 className="h-5 w-5" /></div>
+              <div><h2 className="text-base font-bold text-slate-900">Professional Presence</h2><p className="mt-1 text-xs text-slate-500">Explore this professional identity across connected platforms.</p></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => (
+                <a key={platform.id} href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="group rounded-2xl border border-slate-200 bg-slate-50/60 p-4 transition hover:border-blue-200 hover:bg-white hover:shadow-sm">
+                  <div className="flex items-center justify-between gap-3"><div><h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3><p className="mt-1 text-xs text-slate-500">{platform.description}</p></div><ExternalLink className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-blue-600" /></div>
+                  <p className="mt-3 truncate text-[11px] font-semibold text-blue-600">{platform.url}</p>
+                </a>
+              ))}
             </div>
           </div>
         )}
