@@ -31,8 +31,11 @@ export function ConnectedPlatforms() {
       const data=await res.json();
       const fullData=data.user?.profile?.fullData||{};
       const stored=Array.isArray(fullData.connectedPlatforms)?fullData.connectedPlatforms:[];
-      const byId=new Map(stored.map((p:Platform)=>[p.id,p]));
-      const defaults=DEFAULT_PLATFORMS.map(p=>({...p,...(byId.get(p.id)||{})}));
+      const byId = new Map<string, Platform>(stored.map((p: any) => [String(p.id), { ...p }]));
+      const defaults = DEFAULT_PLATFORMS.map((p) => {
+        const storedPlatform = byId.get(p.id);
+        return storedPlatform ? { ...p, ...storedPlatform } : { ...p };
+      });
       const custom=stored.filter((p:Platform)=>!DEFAULT_PLATFORMS.some(d=>d.id===p.id));
       setPlatforms([...defaults,...custom]);
       setBaseFullData(fullData);
