@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Link2, Plus, Trash2, CheckCircle2 } from "lucide-react";
 
-type Platform = { id:string; name:string; description:string; placeholder:string; url:string };
+type Platform = { id:string; name:string; description:string; placeholder:string; url:string; specialMessage?:string; showSpecialMessage?:boolean };
 
 const DEFAULT_PLATFORMS: Platform[] = [
   {id:"linkedin",name:"LinkedIn",description:"Career, experience & professional network",placeholder:"https://linkedin.com/in/your-name",url:""},
@@ -63,7 +63,7 @@ export function ConnectedPlatforms() {
     if(!name||!raw)return;
     try{
       const url=new URL(raw.startsWith("http://") || raw.startsWith("https://") ? raw : `https://${raw}`);
-      savePlatforms([...platforms,{id:`custom-${Date.now()}`,name,description:"Professional profile",placeholder:"https://...",url:url.toString()}]);
+      savePlatforms([...platforms,{id:`custom-${Date.now()}`,name,description:"Professional profile",placeholder:"https://...",url:url.toString(),specialMessage:"",showSpecialMessage:false}]);
       setCustomName("");setCustomUrl("");
     }catch{}
   };
@@ -84,6 +84,30 @@ export function ConnectedPlatforms() {
           <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="text-sm font-extrabold text-slate-900">{p.name}</h3><p className="mt-1 text-xs text-slate-500">Caption shown on your public profile</p></div>{p.url&&<a href={p.url} target="_blank" rel="noreferrer" className="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:text-blue-600"><ExternalLink className="h-4 w-4"/></a>}</div>
           <input value={p.description} onChange={e=>update(p.id,{description:e.target.value})} placeholder="Short caption" className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"/>
           <div className="mt-2 flex gap-2"><input value={p.url} onChange={e=>update(p.id,{url:e.target.value})} placeholder={p.placeholder} className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"/><button type="button" onClick={()=>saveOne(p.id)} disabled={saving} className="rounded-xl bg-blue-600 px-3 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-50">Save</button>{p.id.startsWith("custom-")&&<button type="button" onClick={()=>savePlatforms(platforms.filter(x=>x.id!==p.id))} className="rounded-xl border border-red-100 bg-red-50 px-3 text-red-600"><Trash2 className="h-4 w-4"/></button>}</div>
+          {p.url&&(
+            <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={p.showSpecialMessage ?? false}
+                  onChange={e=>update(p.id,{showSpecialMessage:e.target.checked})}
+                  className="h-4 w-4 rounded border-slate-300 text-blue-600"
+                />
+                Show a special message on my public profile
+              </label>
+              {p.showSpecialMessage && (
+                <textarea
+                  value={p.specialMessage || ""}
+                  onChange={e=>update(p.id,{specialMessage:e.target.value})}
+                  placeholder="Example: View my latest projects and professional work here."
+                  rows={2}
+                  maxLength={180}
+                  className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
+              )}
+              <p className="mt-1.5 text-[10px] text-slate-400">You choose whether this message is visible to people viewing your XROVIA profile.</p>
+            </div>
+          )}
           {p.url&&<p className="mt-2 text-[11px] font-semibold text-emerald-600">Connected to your XROVIA profile</p>}
         </div>)}
       </div>
