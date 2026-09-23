@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLink, Link2, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { ExternalLink, Link2, Plus, Trash2, CheckCircle2, Linkedin } from "lucide-react";
 
 type Platform = { id:string; name:string; description:string; placeholder:string; url:string; specialMessage?:string; showSpecialMessage?:boolean };
 const platformLogo = (id:string) => {
@@ -94,7 +94,7 @@ export function ConnectedPlatforms() {
     <>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {platforms.map(p=><div key={p.id} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 transition hover:border-blue-200 hover:bg-white hover:shadow-sm">
-          <div className="flex items-start justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">{platformLogo(p.id)?<img src={platformLogo(p.id)!} alt="" className="h-5 w-5" />:<span className="text-sm font-black text-slate-500">{p.name.slice(0,1).toUpperCase()}</span>}</div><div className="min-w-0"><h3 className="text-sm font-extrabold text-slate-900">{p.name}</h3><p className="mt-1 text-xs text-slate-500">Caption shown on your public profile</p></div></div>{p.url&&<a href={p.url} target="_blank" rel="noreferrer" className="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:text-blue-600"><ExternalLink className="h-4 w-4"/></a>}</div>
+          <div className="flex items-start justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">{p.id === "linkedin" ? <Linkedin className="h-5 w-5 text-[#0A66C2]" /> : platformLogo(p.id) ? <img src={platformLogo(p.id)!} alt="" className="h-5 w-5" /> : <span className="text-sm font-black text-slate-500">{p.name.slice(0,1).toUpperCase()}</span>}</div><div className="min-w-0"><h3 className="text-sm font-extrabold text-slate-900">{p.name}</h3><p className="mt-1 text-xs text-slate-500">Caption shown on your public profile</p></div></div>{p.url&&<a href={p.url} target="_blank" rel="noreferrer" className="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:text-blue-600"><ExternalLink className="h-4 w-4"/></a>}</div>
           <input value={p.description} onChange={e=>update(p.id,{description:e.target.value})} placeholder="Short caption" className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"/>
           <div className="mt-2 flex gap-2"><input value={p.url} onChange={e=>update(p.id,{url:e.target.value})} placeholder={p.placeholder} className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"/><button type="button" onClick={()=>saveOne(p.id)} disabled={saving} className="rounded-xl bg-blue-600 px-3 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-50">Save</button>{p.id.startsWith("custom-")&&<button type="button" onClick={()=>savePlatforms(platforms.filter(x=>x.id!==p.id))} className="rounded-xl border border-red-100 bg-red-50 px-3 text-red-600"><Trash2 className="h-4 w-4"/></button>}</div>
           {p.url&&(
