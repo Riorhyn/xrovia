@@ -6,6 +6,7 @@ import { Edit3, ExternalLink, ShieldCheck, Lock, KeyRound } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
+import { ConnectedPlatforms } from "@/components/dashboard/ConnectedPlatforms";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState({fullName:"Candidate Name",professionalId:"PR-159481"});
@@ -44,6 +45,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        <ConnectedPlatforms />
       </div>
     </div>
   );
