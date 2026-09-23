@@ -19,7 +19,14 @@ export async function GET() {
         id: session.userId,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            evidenceFiles: {
+              select: { id: true, itemType: true, itemId: true, fileName: true, mimeType: true, size: true, createdAt: true },
+              orderBy: { createdAt: "asc" },
+            },
+          },
+        },
       },
     });
 
