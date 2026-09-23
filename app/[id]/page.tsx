@@ -11,7 +11,9 @@ const platformLogo = (id: string) => {
     patents: "https://cdn.simpleicons.org/google/4285F4",
   };
   return logos[id.toLowerCase()] || null;
-};se client";
+};
+
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -210,8 +212,8 @@ export default function PublicProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl space-y-6">
+    <div className="min-h-screen bg-[#f6f8fb] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl space-y-6">
 
         {/* Navigation */}
         <div>
@@ -224,126 +226,65 @@ export default function PublicProfilePage() {
           </Link>
         </div>
 
-        {/* Hero Card */}
-        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-
-            <div className="flex items-center sm:items-start gap-4">
-              <div className="relative h-20 w-20 rounded-2xl bg-blue-600 text-white font-black text-2xl flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
-
-                {profile.personal?.photoUrl ? (
-                  <img
-                    src={profile.personal.photoUrl}
-                    alt={profile.personal.fullName}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span>{initials}</span>
-                )}
-
+        {/* Profile Header */}
+        <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
+          <div className="h-28 bg-gradient-to-r from-slate-950 via-blue-950 to-blue-700" />
+          <div className="px-5 pb-6 sm:px-8">
+            <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex items-end gap-4">
+                <div className="h-24 w-24 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-blue-600 text-2xl font-black text-white shadow-lg flex items-center justify-center">
+                  {profile.personal?.photoUrl ? (
+                    <img src={profile.personal.photoUrl} alt={profile.personal.fullName} className="h-full w-full object-cover" />
+                  ) : <span>{initials}</span>}
+                </div>
+                <div className="pb-1">
+                  <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{profile.personal?.fullName || "Candidate Name"}</h1>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-600">
+                    <Briefcase className="h-4 w-4 text-blue-600" />
+                    {profile.personal?.headline || "Professional Headline"}
+                  </p>
+                  <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
+                    <MapPin className="h-3.5 w-3.5" /> {profile.personal?.location || "Location Not Provided"}
+                  </p>
+                </div>
               </div>
-
-              <div className="space-y-1">
-                <h1 className="text-2xl font-black text-slate-900">
-                  {profile.personal?.fullName ||
-                    "Candidate Name"}
-                </h1>
-
-                <p className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
-                  <Briefcase className="h-4 w-4 text-blue-600 shrink-0" />
-                  {profile.personal?.headline ||
-                    "Professional Headline"}
-                </p>
-
-                <p className="text-xs text-slate-400 flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                  {profile.personal?.location ||
-                    "Location Not Provided"}
-                </p>
+              <div className="flex flex-wrap items-center gap-2 sm:pb-1">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Professional ID</p>
+                  <p className="font-mono text-xs font-black text-slate-800">{profile.professionalId}</p>
+                </div>
+                <div className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold ${profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
+                  {profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
+                  {profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? "Verified" : "Self-Reported"}
+                </div>
               </div>
             </div>
 
-            {/* Professional ID */}
-            <div className="rounded-xl bg-blue-50/80 px-3.5 py-2 border border-blue-100 self-start">
-              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">
-                Professional ID
-              </span>
+            {profile.personal?.about && (
+              <div className="mt-6 max-w-3xl">
+                <p className="text-sm leading-7 text-slate-600">{profile.personal.about}</p>
+              </div>
+            )}
 
-              <span className="text-xs font-mono font-black text-blue-900">
-                {profile.professionalId}
-              </span>
-
-              <span
-                className={`mt-1 inline-flex items-center gap-1 text-[10px] font-bold ${
-                  profile.educations?.length + profile.experiences?.length > 0 &&
-                  profile.educations?.every((item: any) =>
-                    profile.verificationRequests?.some(
-                      (r: any) =>
-                        r.type === "EDUCATION" &&
-                        r.itemId === String(item.id) &&
-                        r.status === "VERIFIED"
-                    )
-                  ) &&
-                  profile.experiences?.every((item: any) =>
-                    profile.verificationRequests?.some(
-                      (r: any) =>
-                        r.type === "EXPERIENCE" &&
-                        r.itemId === String(item.id) &&
-                        r.status === "VERIFIED"
-                    )
-                  )
-                    ? "text-emerald-700"
-                    : "text-amber-700"
-                }`}
-              >
-                {profile.educations?.length + profile.experiences?.length > 0 &&
-                profile.educations?.every((item: any) =>
-                  profile.verificationRequests?.some(
-                    (r: any) =>
-                      r.type === "EDUCATION" &&
-                      r.itemId === String(item.id) &&
-                      r.status === "VERIFIED"
-                  )
-                ) &&
-                profile.experiences?.every((item: any) =>
-                  profile.verificationRequests?.some(
-                    (r: any) =>
-                      r.type === "EXPERIENCE" &&
-                      r.itemId === String(item.id) &&
-                      r.status === "VERIFIED"
-                  )
-                ) ? (
-                  <>
-                    <ShieldCheck className="h-3 w-3" />
-                    Verified
-                  </>
-                ) : (
-                  <>
-                    <ShieldAlert className="h-3 w-3" />
-                    Self-Reported
-                  </>
-                )}
-              </span>
+            <div className="mt-6 grid grid-cols-2 gap-2 border-t border-slate-100 pt-5 sm:grid-cols-4">
+              {[
+                ["Experience", profile.experiences?.length || 0],
+                ["Education", profile.educations?.length || 0],
+                ["Projects", profile.projects?.length || 0],
+                ["Platforms", profile.connectedPlatforms?.filter((p:any)=>p.url).length || 0],
+              ].map(([label,value]) => (
+                <div key={String(label)} className="rounded-2xl bg-slate-50 px-4 py-3">
+                  <p className="text-lg font-black text-slate-900">{value}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* About Summary */}
-          {profile.personal?.about && (
-            <div className="border-t border-slate-100 pt-5">
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                About / Summary
-              </h2>
-
-              <p className="text-sm text-slate-700 leading-relaxed">
-                {profile.personal.about}
-              </p>
-            </div>
-          )}
-        </div>
+        </section>
 
         {/* Core Competencies */}
         {profile.skills?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm space-y-3">
+          <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               Core Competencies
             </h2>
@@ -366,7 +307,7 @@ export default function PublicProfilePage() {
 
         {/* Work Experience */}
         {profile.experiences?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm space-y-5">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-blue-600" />
               Work Experience
