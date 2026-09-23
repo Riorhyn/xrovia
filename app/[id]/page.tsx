@@ -212,14 +212,14 @@ export default function PublicProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl space-y-5">
+    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl space-y-3">
 
         {/* Navigation */}
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition"
           >
             <ArrowLeft className="h-4 w-4" />
             Home
@@ -228,17 +228,17 @@ export default function PublicProfilePage() {
 
         {/* Profile Header */}
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="h-24 bg-gradient-to-r from-blue-50 via-indigo-50 to-sky-100 border-b border-blue-100" />
-          <div className="px-5 pb-6 sm:px-8">
-            <div className="-mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="h-20 bg-gradient-to-r from-blue-50 via-indigo-50 to-sky-100 border-b border-blue-100" />
+          <div className="px-5 pb-5 sm:px-7">
+            <div className="-mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-end gap-4">
-                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-blue-100 text-2xl font-black text-blue-700 shadow-md flex items-center justify-center">
+                <div className="h-[76px] w-[76px] shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-blue-100 text-2xl font-black text-blue-700 shadow-md flex items-center justify-center">
                   {profile.personal?.photoUrl ? (
                     <img src={profile.personal.photoUrl} alt={profile.personal.fullName} className="h-full w-full object-cover" />
                   ) : <span>{initials}</span>}
                 </div>
                 <div className="pb-1">
-                  <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">{profile.personal?.fullName || "Candidate Name"}</h1>
+                  <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-[28px]">{profile.personal?.fullName || "Candidate Name"}</h1>
                   <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-600">
                     <Briefcase className="h-4 w-4 text-blue-600" />
                     {profile.personal?.headline || "Professional Headline"}
@@ -261,19 +261,19 @@ export default function PublicProfilePage() {
             </div>
 
             {profile.personal?.about && (
-              <div className="mt-6 max-w-3xl">
+              <div className="mt-4 max-w-3xl">
                 <p className="text-sm leading-7 text-slate-600">{profile.personal.about}</p>
               </div>
             )}
 
-            <div className="mt-5 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-4">
+            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-4">
               {[
                 ["Experience", profile.experiences?.length || 0],
                 ["Education", profile.educations?.length || 0],
                 ["Projects", profile.projects?.length || 0],
                 ["Platforms", profile.connectedPlatforms?.filter((p:any)=>p.url).length || 0],
               ].map(([label,value]) => (
-                <div key={String(label)} className="rounded-xl bg-blue-50/60 px-4 py-3">
+                <div key={String(label)} className="rounded-xl bg-blue-50/60 px-3.5 py-2.5">
                   <p className="text-lg font-black text-slate-900">{value}</p>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
                 </div>
@@ -284,7 +284,7 @@ export default function PublicProfilePage() {
 
         {/* Core Competencies */}
         {profile.skills?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               Core Competencies
             </h2>
@@ -307,18 +307,18 @@ export default function PublicProfilePage() {
 
         {/* Work Experience */}
         {profile.experiences?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-5">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-blue-600" />
               Work Experience
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {profile.experiences.map(
                 (exp: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-slate-100 bg-white p-4 space-y-1"
+                    className="rounded-xl border border-slate-100 bg-white p-4"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex items-center gap-2">
@@ -377,18 +377,18 @@ export default function PublicProfilePage() {
 
         {/* Academic Background */}
         {profile.educations?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-blue-600" />
               Academic Background
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {profile.educations.map(
                 (edu: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-slate-100 bg-white p-4 space-y-1"
+                    className="rounded-xl border border-slate-100 bg-white p-4"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex items-center gap-2">
@@ -444,18 +444,18 @@ export default function PublicProfilePage() {
 
         {/* Key Projects */}
         {profile.projects?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
               <FolderGit2 className="h-5 w-5 text-blue-600" />
               Key Projects
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {profile.projects.map(
                 (proj: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-slate-100 bg-white p-4 flex flex-col justify-between space-y-3"
+                    className="rounded-xl border border-slate-100 bg-white p-4 flex flex-col justify-between"
                   >
                     <div className="space-y-2">
 
@@ -519,7 +519,7 @@ export default function PublicProfilePage() {
 
         {/* Connected Professional Presence */}
         {profile.connectedPlatforms?.some((p: any) => p.url) && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
             <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                 <Link2 className="h-5 w-5" />
@@ -541,9 +541,9 @@ export default function PublicProfilePage() {
                     <div className="min-w-0 flex-1">
                       <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
                       {platform.showSpecialMessage && platform.specialMessage?.trim() ? (
-                        <p className="mt-1 text-[11px] leading-5 text-slate-500">{platform.specialMessage.trim()}</p>
+                        <p className="mt-0.5 text-[11px] leading-5 text-slate-500">{platform.specialMessage.trim()}</p>
                       ) : (
-                        <p className="mt-1 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
+                        <p className="mt-0.5 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
                       )}
                     </div>
                     <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
@@ -558,13 +558,13 @@ export default function PublicProfilePage() {
 
         {/* Certifications & Achievements */}
         {profile.achievements?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
               <Award className="h-5 w-5 text-blue-600" />
               Certifications & Honors
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {profile.achievements.map(
                 (ach: any, i: number) => (
                   <div
