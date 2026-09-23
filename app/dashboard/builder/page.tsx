@@ -61,7 +61,7 @@ interface AchievementItem {
   certificateUrl?: string;
 }
 
-interface PublicationItem {
+interface EvidenceFile {\n  id: string;\n  itemType: string;\n  itemId: string;\n  fileName: string;\n  mimeType: string;\n  size: number;\n  createdAt: string;\n}\n\ninterface PublicationItem {
   id: string;
   title: string;
   publisher: string;
@@ -124,7 +124,7 @@ export default function BuilderPage() {
   });
 
   // Projects State + Editing tracking
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);\n  const [evidenceFiles, setEvidenceFiles] = useState<EvidenceFile[]>([]);
   const [editingProjId, setEditingProjId] = useState<string | null>(null);
   const [projForm, setProjForm] = useState({
     title: "",
@@ -267,6 +267,46 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
       reader.readAsDataURL(file);
     }
   };
+
+  const uploadEvidence = async (itemType: string, itemId: string, file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Each evidence file must be 5 MB or smaller.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("itemType", itemType);
+    formData.append("itemId", itemId);
+    try {
+      const res = await fetch("/api/evidence/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      setEvidenceFiles((prev) => [...prev, data.evidence]);
+    } catch (error: any) {
+      alert(error?.message || "Unable to upload evidence.");
+    }
+  };
+
+  const deleteEvidence = async (id: string) => {
+    try {
+      const res = await fetch(`/api/evidence/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Delete failed");
+      }
+      setEvidenceFiles((prev) => prev.filter((file) => file.id !== id));
+    } catch (error: any) {
+      alert(error?.message || "Unable to delete evidence.");
+    }
+  };
+
+  const formatFileSize = (size: number) => {
+    if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))} KB`;
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const evidenceFor = (itemType: string, itemId: string) =>
+    evidenceFiles.filter((file) => file.itemType === itemType && file.itemId === itemId);
 
   // Experience Add / Edit Handlers
   const handleAddOrUpdateExperience = (e: React.FormEvent) => {
@@ -671,9 +711,23 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
                       <h3 className="text-sm font-bold text-slate-900">{p.title}</h3>
                       <p className="text-xs text-slate-600">{p.role}</p>
                       {p.link && <a href={p.link} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline mt-0.5 inline-block">{p.link}</a>}
+                      {evidenceFor("PROJECT", p.id).length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {evidenceFor("PROJECT", p.id).map((file) => (
+                            <span key={file.id} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">
+                              <a href={`/api/evidence/${file.id}`} target="_blank" rel="noreferrer" className="max-w-[180px] truncate hover:text-blue-600">{file.fileName}</a>
+                              <button type="button" onClick={() => deleteEvidence(file.id)} className="text-slate-400 hover:text-red-600">×</button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <label className="cursor-pointer p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Add evidence">
+                      <Upload className="h-4 w-4" />
+                      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadEvidence("PROJECT", p.id, file)); e.currentTarget.value = ""; }} />
+                    </label>
                     <button onClick={() => startEditProject(p)} className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit Project">
                       <Edit2 className="h-4 w-4" />
                     </button>
@@ -728,11 +782,27 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
                     <div>
                       <h3 className="text-sm font-bold text-slate-900">{ach.title}</h3>
                       <p className="text-xs text-slate-600">{ach.issuer} • {ach.date}</p>
+                      {evidenceFor("ACHIEVEMENT", ach.id).length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {evidenceFor("ACHIEVEMENT", ach.id).map((file) => (
+                            <span key={file.id} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">
+                              <a href={`/api/evidence/${file.id}`} target="_blank" rel="noreferrer" className="max-w-[180px] truncate hover:text-blue-600">{file.fileName}</a>
+                              <button type="button" onClick={() => deleteEvidence(file.id)} className="text-slate-400 hover:text-red-600">×</button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <button onClick={() => setAchievements(achievements.filter((i) => i.id !== ach.id))} className="text-slate-400 hover:text-red-600">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <label className="cursor-pointer p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Add evidence">
+                      <Upload className="h-4 w-4" />
+                      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadEvidence("ACHIEVEMENT", ach.id, file)); e.currentTarget.value = ""; }} />
+                    </label>
+                    <button onClick={() => setAchievements(achievements.filter((i) => i.id !== ach.id))} className="text-slate-400 hover:text-red-600">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
