@@ -536,7 +536,7 @@ export default function PublicProfilePage() {
                 return (
                   <div key={platform.id} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/40 px-4 py-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
-                      {logo ? <img src={logo} alt="" className="h-5 w-5" /> : <span className="text-sm font-black text-slate-500">{String(platform.name || "P").slice(0,1).toUpperCase()}</span>}
+                      {String(platform.id).toLowerCase() === "linkedin" ? <Linkedin className="h-5 w-5 text-[#0A66C2]" /> : logo ? <img src={logo} alt="" className="h-5 w-5" /> : <span className="text-sm font-black text-slate-500">{String(platform.name || "P").slice(0,1).toUpperCase()}</span>}
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
