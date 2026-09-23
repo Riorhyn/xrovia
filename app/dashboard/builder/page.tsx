@@ -134,7 +134,8 @@ export default function BuilderPage() {
   });
 
   // Projects State + Editing tracking
-  const [projects, setProjects] = useState<ProjectItem[]>([]);\n  const [evidenceFiles, setEvidenceFiles] = useState<EvidenceFile[]>([]);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [evidenceFiles, setEvidenceFiles] = useState<EvidenceFile[]>([]);
   const [editingProjId, setEditingProjId] = useState<string | null>(null);
   const [projForm, setProjForm] = useState({
     title: "",
