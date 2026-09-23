@@ -20,9 +20,7 @@ export function RequestVerification(){
       const list:Item[]=[];
       (d.experiences||[]).forEach((x:any)=>list.push({id:String(x.id),title:`${x.jobTitle||x.role||"Experience"} — ${x.company||""}`,type:"EXPERIENCE"}));
       (d.educations||[]).forEach((x:any)=>list.push({id:String(x.id),title:`${x.degree||"Education"} — ${x.institution||""}`,type:"EDUCATION"}));
-      (d.projects||[]).forEach((x:any)=>list.push({id:String(x.id),title:x.name||x.title||"Project",type:"PROJECT"}));
-      (d.achievements||[]).forEach((x:any)=>list.push({id:String(x.id),title:x.title||"Achievement",type:"ACHIEVEMENT"}));
-      setItems(list);
+            setItems(list);
       if(list[0])setSelected(list[0].id);
     }).catch(()=>{});
   },[]);
@@ -58,10 +56,10 @@ export function RequestVerification(){
   return <section className="rounded-3xl border border-blue-100 bg-blue-50/40 p-6 sm:p-8 shadow-sm space-y-5">
     <div>
       <div className="flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-blue-600"/><h2 className="text-base font-black text-slate-900">Request Verification</h2></div>
-      <p className="mt-1 text-xs text-slate-600">Send a secure verification request directly to an employer, university representative, professor or project supervisor.</p>
+      <p className="mt-1 text-xs text-slate-600">Send a secure verification request directly to an employer, university representative or professor. Projects and achievements use evidence instead.</p>
     </div>
     {items.length===0
-      ? <p className="rounded-2xl bg-white border border-blue-100 p-4 text-xs text-slate-500">Add an experience, education, project or achievement first.</p>
+      ? <p className="rounded-2xl bg-white border border-blue-100 p-4 text-xs text-slate-500">Add an experience or education record first.</p>
       : <>
         <select value={selected} onChange={e=>setSelected(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm">
           {items.map(x=><option key={x.id} value={x.id}>{x.type}: {x.title}</option>)}
