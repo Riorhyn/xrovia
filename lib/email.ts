@@ -1,5 +1,4 @@
-const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "XROVIA <noreply@xrovia.com>";
+const FROM_EMAIL = "XROVIA <noreply@xrovia.com>";
 
 export async function sendVerificationEmail(
   email: string,
@@ -8,7 +7,7 @@ export async function sendVerificationEmail(
   const apiKey = process.env.RESEND_API_KEY;
 
   if (!apiKey) {
-    throw new Error("RESEND_API_KEY is missing");
+    throw new Error("RESEND_API_KEY is missing in the deployment environment");
   }
 
   const response = await fetch("https://api.resend.com/emails", {
@@ -37,11 +36,13 @@ export async function sendVerificationEmail(
 
   if (!response.ok) {
     console.error("RESEND ERROR:", result);
-    throw new Error(
+
+    const message =
       result?.message ||
-        result?.error?.message ||
-        JSON.stringify(result)
-    );
+      result?.error?.message ||
+      JSON.stringify(result);
+
+    throw new Error(`Resend API error (${response.status}): ${message}`);
   }
 
   return result;
