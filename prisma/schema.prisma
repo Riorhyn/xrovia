@@ -250,3 +250,28 @@ model EvidenceFile {
   createdAt DateTime @default(now())
   @@index([profileId, itemType, itemId])
 }
+
+model Feedback {
+  id String @id @default(cuid())
+  type String
+  message String
+  email String?
+  pageUrl String?
+  status String @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  attachments FeedbackAttachment[]
+  @@index([status, createdAt])
+}
+
+model FeedbackAttachment {
+  id String @id @default(cuid())
+  feedbackId String
+  feedback Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  fileName String
+  mimeType String
+  size Int
+  data Bytes
+  createdAt DateTime @default(now())
+  @@index([feedbackId])
+}
