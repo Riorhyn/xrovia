@@ -7,6 +7,7 @@ import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
 import { ConnectedPlatforms } from "@/components/dashboard/ConnectedPlatforms";
+import { VerificationCenter } from "@/components/dashboard/VerificationCenter";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState({fullName:"Candidate Name",professionalId:"PR-159481"});
@@ -45,6 +46,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        <VerificationCenter />
         <ConnectedPlatforms />
       </div>
     </div>
