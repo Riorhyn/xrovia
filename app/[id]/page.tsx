@@ -288,14 +288,14 @@ export default function PublicProfilePage() {
         </div>
 
         {/* Verified Career Records */}
-        {profile.verificationRequests?.some((r: any) => r.status === "VERIFIED") && (
+        {profile.verificationRequests?.some((r: any) => (r.type === "EDUCATION" || r.type === "EXPERIENCE") && r.status === "VERIFIED") && (
           <div className="rounded-3xl border border-emerald-200 bg-emerald-50/40 p-6 sm:p-8 shadow-sm space-y-4">
             <div className="flex items-start gap-3 border-b border-emerald-100 pb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><ShieldCheck className="h-5 w-5" /></div>
               <div><h2 className="text-base font-black text-slate-900">Verified Career Records</h2><p className="mt-1 text-xs text-slate-600">Records below have been confirmed through a XROVIA verification request.</p></div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {profile.verificationRequests.filter((r: any) => r.status === "VERIFIED").map((r: any) => (
+              {profile.verificationRequests.filter((r: any) => (r.type === "EDUCATION" || r.type === "EXPERIENCE") && r.status === "VERIFIED").map((r: any) => (
                 <div key={r.id} className="rounded-2xl border border-emerald-200 bg-white p-4">
                   <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald-600" /><span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">Verified</span></div>
                   <h3 className="mt-2 text-sm font-bold text-slate-900">{r.title}</h3>
