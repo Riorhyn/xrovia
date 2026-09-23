@@ -1,4 +1,4 @@
-"u
+"use client";
 
 const platformLogo = (id: string) => {
   const logos: Record<string, string> = {
@@ -13,7 +13,7 @@ const platformLogo = (id: string) => {
   return logos[id.toLowerCase()] || null;
 };
 
-"use client";
+
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
