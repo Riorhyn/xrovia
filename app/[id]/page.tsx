@@ -13,6 +13,8 @@ import {
   Award,
   ExternalLink,
   Link2,
+  Linkedin,
+  GraduationCap as GraduationCapIcon,
 } from "lucide-react";
 
 // Format external URLs so they open outside Next.js router
@@ -565,16 +567,112 @@ export default function PublicProfilePage() {
         {profile.connectedPlatforms?.some((p: any) => p.url) && (
           <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-5">
             <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><Link2 className="h-5 w-5" /></div>
-              <div><h2 className="text-base font-bold text-slate-900">Professional Presence</h2><p className="mt-1 text-xs text-slate-500">Explore this professional identity across connected platforms.</p></div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <Link2 className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900">Professional Presence</h2>
+                <p className="mt-1 text-xs text-slate-500">Explore this professional identity across connected platforms.</p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => (
-                <a key={platform.id} href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="group rounded-2xl border border-slate-200 bg-slate-50/60 p-4 transition hover:border-blue-200 hover:bg-white hover:shadow-sm">
-                  <div className="flex items-center justify-between gap-3"><div><h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3><p className="mt-1 text-xs text-slate-500">{platform.description}</p></div><ExternalLink className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-blue-600" /></div>
-                  <p className="mt-3 truncate text-[11px] font-semibold text-blue-600">{platform.url}</p>
-                </a>
-              ))}
+
+            <div className="space-y-3">
+              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => {
+                const isLinkedIn = String(platform.id).toLowerCase() === "linkedin";
+                const linkedInProfile = platform.profile || {};
+                const overviewName = linkedInProfile.name || profile.personal?.fullName;
+                const overviewHeadline = linkedInProfile.headline || profile.personal?.headline;
+                const overviewLocation = linkedInProfile.location || profile.personal?.location;
+                const overviewPhoto = linkedInProfile.photoUrl || profile.personal?.photoUrl;
+                const overviewSkills = Array.isArray(linkedInProfile.skills) && linkedInProfile.skills.length > 0
+                  ? linkedInProfile.skills.slice(0, 4)
+                  : (profile.skills || []).slice(0, 4);
+                const experienceCount = Array.isArray(profile.experiences) ? profile.experiences.length : 0;
+                const latestEducation = Array.isArray(profile.educations) && profile.educations.length > 0
+                  ? profile.educations[0]
+                  : null;
+
+                if (isLinkedIn) {
+                  return (
+                    <div key={platform.id} className="rounded-2xl border border-blue-200 bg-blue-50/30 p-4 sm:p-5">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-11 items-center justify-center rounded-xl bg-[#0A66C2] text-white shadow-sm">
+                            <Linkedin className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-extrabold text-slate-900">LinkedIn</h3>
+                            <p className="mt-0.5 text-[11px] text-slate-500">Professional Overview</p>
+                          </div>
+                        </div>
+                        <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white px-3.5 py-2 text-[11px] font-bold text-blue-700 hover:bg-blue-50">
+                          View LinkedIn Profile
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </div>
+
+                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+                        <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-start">
+                          <div className="flex min-w-0 gap-3">
+                            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 flex items-center justify-center text-sm font-black text-blue-700">
+                              {overviewPhoto ? (
+                                <img src={overviewPhoto} alt={overviewName || "LinkedIn profile"} className="h-full w-full object-cover" />
+                              ) : (
+                                <span>{initials}</span>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <h4 className="truncate text-sm font-extrabold text-slate-900">{overviewName || "Professional Profile"}</h4>
+                                <Linkedin className="h-3.5 w-3.5 shrink-0 text-[#0A66C2]" />
+                              </div>
+                              <p className="mt-1 text-xs font-semibold text-slate-600">{overviewHeadline || "Professional headline"}</p>
+                              {overviewLocation && <p className="mt-1.5 text-[11px] text-slate-500">{overviewLocation}</p>}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-3 text-[11px] text-slate-600 sm:grid-cols-2 md:min-w-[280px] md:grid-cols-1">
+                            {latestEducation && (
+                              <div className="flex gap-2">
+                                <GraduationCapIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                                <div><p className="font-semibold text-slate-400">Education</p><p className="font-bold text-slate-700">{latestEducation.institution || "Education"}</p></div>
+                              </div>
+                            )}
+                            {experienceCount > 0 && (
+                              <div className="flex gap-2">
+                                <Briefcase className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                                <div><p className="font-semibold text-slate-400">Experience</p><p className="font-bold text-slate-700">{experienceCount} {experienceCount === 1 ? "role" : "roles"} on XROVIA</p></div>
+                              </div>
+                            )}
+                            {overviewSkills.length > 0 && (
+                              <div className="flex gap-2">
+                                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                                <div><p className="font-semibold text-slate-400">Top Skills</p><p className="font-bold text-slate-700">{overviewSkills.join(" · ")}</p></div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-[11px] font-bold text-blue-700 hover:bg-blue-100">
+                          View full profile on LinkedIn
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <a key={platform.id} href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 transition hover:border-blue-200 hover:bg-white hover:shadow-sm">
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
+                      <p className="mt-1 text-xs text-slate-500">{platform.description}</p>
+                    </div>
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-600 group-hover:text-blue-600">
+                      View Profile <ExternalLink className="h-3.5 w-3.5" />
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}
