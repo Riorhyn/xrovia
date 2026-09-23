@@ -8,7 +8,7 @@ import {
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const { email, password, adminOnly } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const token = await createSessionToken({
+    if (adminOnly && user.role !== "ADMIN") {\n      return NextResponse.json(\n        { error: "This account does not have administrator access." },\n        { status: 403 }\n      );\n    }\n\n    const token = await createSessionToken({
       userId: user.id,
       email: user.email,
       role: user.role,
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
         user: {
           id: user.id,
           email: user.email,
-          professionalId: user.profile?.professionalId,
+          professionalId: user.profile?.professionalId,\n          role: user.role,
         },
       },
       { status: 200 }
