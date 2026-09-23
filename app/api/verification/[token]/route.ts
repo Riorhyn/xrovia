@@ -16,10 +16,29 @@ export async function GET(_req: Request, { params }: { params: { token: string }
   try {
     const found = await findRequest(params.token);
     if (!found) return NextResponse.json({ error: "Verification request not found." }, { status: 404 });
+
     const request = found.requests[found.index];
+    if (request.expiresAt && new Date(request.expiresAt).getTime() < Date.now() && request.status === "PENDING") {
+      return NextResponse.json({ error: "This verification request has expired." }, { status: 410 });
+    }
+
     return NextResponse.json({
-      request: { id: request.id, type: request.type, title: request.title, verifierName: request.verifierName, status: request.status, createdAt: request.createdAt, verifiedAt: request.verifiedAt },
-      profile: { fullName: found.profile.fullName, professionalId: found.profile.professionalId, headline: found.profile.headline },
+      request: {
+        id: request.id,
+        type: request.type,
+        title: request.title,
+        organizationName: request.organizationName,
+        verifierRole: request.verifierRole,
+        status: request.status,
+        createdAt: request.createdAt,
+        expiresAt: request.expiresAt,
+        verifiedAt: request.verifiedAt,
+      },
+      profile: {
+        fullName: found.profile.fullName,
+        professionalId: found.profile.professionalId,
+        headline: found.profile.headline,
+      },
     });
   } catch (error) {
     console.error("Get verification request error:", error);
@@ -31,15 +50,37 @@ export async function POST(req: Request, { params }: { params: { token: string }
   try {
     const body = await req.json().catch(() => ({}));
     const verifierName = String(body.verifierName || "").trim();
-    const verifierEmail = String(body.verifierEmail || "").trim();
-    if (!verifierName || !verifierEmail) return NextResponse.json({ error: "Verifier name and email are required." }, { status: 400 });
+    const verifierRole = String(body.verifierRole || "").trim();
+    const attested = body.attested === true;
+
+    if (!verifierName || !verifierRole || !attested) {
+      return NextResponse.json({ error: "Verifier name, role and confirmation are required." }, { status: 400 });
+    }
 
     const found = await findRequest(params.token);
     if (!found) return NextResponse.json({ error: "Verification request not found." }, { status: 404 });
-    if (found.requests[found.index].status === "VERIFIED") return NextResponse.json({ message: "Already verified." });
 
-    found.requests[found.index] = { ...found.requests[found.index], status: "VERIFIED", verifierName, verifierEmail, verifiedAt: new Date().toISOString() };
-    await prisma.profile.update({ where: { id: found.profile.id }, data: { fullData: { ...found.data, verificationRequests: found.requests } } });
+    const request = found.requests[found.index];
+    if (request.status === "VERIFIED") return NextResponse.json({ message: "Already verified." });
+    if (request.status !== "PENDING") return NextResponse.json({ error: "This verification request is no longer active." }, { status: 400 });
+    if (request.expiresAt && new Date(request.expiresAt).getTime() < Date.now()) {
+      return NextResponse.json({ error: "This verification request has expired." }, { status: 410 });
+    }
+
+    found.requests[found.index] = {
+      ...request,
+      status: "VERIFIED",
+      verifiedVerifierName: verifierName,
+      verifiedVerifierRole: verifierRole,
+      verifiedAt: new Date().toISOString(),
+      verificationMethod: "EMAIL_INVITATION_ATTESTED",
+    };
+
+    await prisma.profile.update({
+      where: { id: found.profile.id },
+      data: { fullData: { ...found.data, verificationRequests: found.requests } },
+    });
+
     return NextResponse.json({ success: true, message: "Record verified successfully." });
   } catch (error) {
     console.error("Confirm verification error:", error);
