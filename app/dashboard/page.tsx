@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Edit3, ExternalLink, FileText, ShieldCheck, Lock, KeyRound } from "lucide-react";
+import { Edit3, ExternalLink, ShieldCheck, Lock, KeyRound } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
@@ -30,7 +30,6 @@ export default function DashboardPage() {
             <Link href={`/${profile.professionalId}`} target="_blank" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"><ExternalLink className="h-4 w-4 text-slate-500"/>View Public Profile</Link>
             <Link href="/dashboard/builder" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"><Edit3 className="h-4 w-4"/>Edit Profile</Link>
             <Link href="/dashboard/security" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition"><KeyRound className="h-4 w-4"/>Change Password</Link>
-            <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition"><FileText className="h-4 w-4"/>CV View</button>
           </div>
         </div>
         <ProfileCompletionBar />
