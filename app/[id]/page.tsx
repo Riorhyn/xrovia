@@ -212,14 +212,14 @@ export default function PublicProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="min-h-screen bg-white px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl space-y-5">
 
         {/* Navigation */}
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition"
           >
             <ArrowLeft className="h-4 w-4" />
             Home
@@ -227,18 +227,18 @@ export default function PublicProfilePage() {
         </div>
 
         {/* Profile Header */}
-        <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
-          <div className="h-28 bg-gradient-to-r from-slate-950 via-blue-950 to-blue-700" />
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="h-24 bg-gradient-to-r from-blue-50 via-indigo-50 to-sky-100 border-b border-blue-100" />
           <div className="px-5 pb-6 sm:px-8">
-            <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="-mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex items-end gap-4">
-                <div className="h-24 w-24 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-blue-600 text-2xl font-black text-white shadow-lg flex items-center justify-center">
+                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-blue-100 text-2xl font-black text-blue-700 shadow-md flex items-center justify-center">
                   {profile.personal?.photoUrl ? (
                     <img src={profile.personal.photoUrl} alt={profile.personal.fullName} className="h-full w-full object-cover" />
                   ) : <span>{initials}</span>}
                 </div>
                 <div className="pb-1">
-                  <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{profile.personal?.fullName || "Candidate Name"}</h1>
+                  <h1 className="text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">{profile.personal?.fullName || "Candidate Name"}</h1>
                   <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-600">
                     <Briefcase className="h-4 w-4 text-blue-600" />
                     {profile.personal?.headline || "Professional Headline"}
@@ -249,7 +249,7 @@ export default function PublicProfilePage() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:pb-1">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2">
                   <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Professional ID</p>
                   <p className="font-mono text-xs font-black text-slate-800">{profile.professionalId}</p>
                 </div>
@@ -266,14 +266,14 @@ export default function PublicProfilePage() {
               </div>
             )}
 
-            <div className="mt-6 grid grid-cols-2 gap-2 border-t border-slate-100 pt-5 sm:grid-cols-4">
+            <div className="mt-5 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-4">
               {[
                 ["Experience", profile.experiences?.length || 0],
                 ["Education", profile.educations?.length || 0],
                 ["Projects", profile.projects?.length || 0],
                 ["Platforms", profile.connectedPlatforms?.filter((p:any)=>p.url).length || 0],
               ].map(([label,value]) => (
-                <div key={String(label)} className="rounded-2xl bg-slate-50 px-4 py-3">
+                <div key={String(label)} className="rounded-xl bg-blue-50/60 px-4 py-3">
                   <p className="text-lg font-black text-slate-900">{value}</p>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
                 </div>
@@ -284,7 +284,7 @@ export default function PublicProfilePage() {
 
         {/* Core Competencies */}
         {profile.skills?.length > 0 && (
-          <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               Core Competencies
             </h2>
@@ -307,7 +307,7 @@ export default function PublicProfilePage() {
 
         {/* Work Experience */}
         {profile.experiences?.length > 0 && (
-          <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm space-y-5">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-5">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-blue-600" />
               Work Experience
@@ -318,7 +318,7 @@ export default function PublicProfilePage() {
                 (exp: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 space-y-1"
+                    className="rounded-xl border border-slate-100 bg-white p-4 space-y-1"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex items-center gap-2">
@@ -358,7 +358,7 @@ export default function PublicProfilePage() {
 
                     {profile.evidenceFiles?.filter((f: any) => f.itemType === "EXPERIENCE" && f.itemId === String(exp.id)).length > 0 && (
                       <div className="pt-2 mt-2 border-t border-slate-200/60">
-                        <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                        <p className="text-[10px] font-black uppercase tracking-wider text-blue-600 mb-2">Evidence</p>
                         <div className="flex flex-wrap gap-2">
                           {profile.evidenceFiles.filter((f: any) => f.itemType === "EXPERIENCE" && f.itemId === String(exp.id)).map((file: any) => (
                             <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
@@ -377,7 +377,7 @@ export default function PublicProfilePage() {
 
         {/* Academic Background */}
         {profile.educations?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-blue-600" />
               Academic Background
@@ -388,7 +388,7 @@ export default function PublicProfilePage() {
                 (edu: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 space-y-1"
+                    className="rounded-xl border border-slate-100 bg-white p-4 space-y-1"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex items-center gap-2">
@@ -425,7 +425,7 @@ export default function PublicProfilePage() {
 
                     {profile.evidenceFiles?.filter((f: any) => f.itemType === "EDUCATION" && f.itemId === String(edu.id)).length > 0 && (
                       <div className="pt-2 mt-2 border-t border-slate-200/60">
-                        <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                        <p className="text-[10px] font-black uppercase tracking-wider text-blue-600 mb-2">Evidence</p>
                         <div className="flex flex-wrap gap-2">
                           {profile.evidenceFiles.filter((f: any) => f.itemType === "EDUCATION" && f.itemId === String(edu.id)).map((file: any) => (
                             <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
@@ -444,7 +444,7 @@ export default function PublicProfilePage() {
 
         {/* Key Projects */}
         {profile.projects?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <FolderGit2 className="h-5 w-5 text-blue-600" />
               Key Projects
@@ -455,7 +455,7 @@ export default function PublicProfilePage() {
                 (proj: any, i: number) => (
                   <div
                     key={i}
-                    className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 flex flex-col justify-between space-y-3"
+                    className="rounded-xl border border-slate-100 bg-white p-4 flex flex-col justify-between space-y-3"
                   >
                     <div className="space-y-2">
 
@@ -485,7 +485,7 @@ export default function PublicProfilePage() {
 
                       {profile.evidenceFiles?.filter((f: any) => f.itemType === "PROJECT" && f.itemId === String(proj.id)).length > 0 && (
                         <div className="pt-2 border-t border-slate-200/60">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-blue-600 mb-2">
                             Evidence
                           </p>
                           <div className="flex flex-wrap gap-2">
@@ -519,9 +519,9 @@ export default function PublicProfilePage() {
 
         {/* Connected Professional Presence */}
         {profile.connectedPlatforms?.some((p: any) => p.url) && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
             <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                 <Link2 className="h-5 w-5" />
               </div>
               <div>
@@ -534,7 +534,7 @@ export default function PublicProfilePage() {
               {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => {
                 const logo = platformLogo(String(platform.id));
                 return (
-                  <div key={platform.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5">
+                  <div key={platform.id} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/40 px-4 py-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
                       {logo ? <img src={logo} alt="" className="h-5 w-5" /> : <span className="text-sm font-black text-slate-500">{String(platform.name || "P").slice(0,1).toUpperCase()}</span>}
                     </div>
@@ -558,7 +558,7 @@ export default function PublicProfilePage() {
 
         {/* Certifications & Achievements */}
         {profile.achievements?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Award className="h-5 w-5 text-blue-600" />
               Certifications & Honors
@@ -569,7 +569,7 @@ export default function PublicProfilePage() {
                 (ach: any, i: number) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4"
+                    className="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-4"
                   >
                     {ach.certificateUrl && (
                       <img
@@ -590,7 +590,7 @@ export default function PublicProfilePage() {
 
                       {profile.evidenceFiles?.filter((f: any) => f.itemType === "ACHIEVEMENT" && f.itemId === String(ach.id)).length > 0 && (
                         <div className="mt-2">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-emerald-700 mb-2">Evidence</p>
+                          <p className="text-[10px] font-black uppercase tracking-wider text-blue-600 mb-2">Evidence</p>
                           <div className="flex flex-wrap gap-2">
                             {profile.evidenceFiles.filter((f: any) => f.itemType === "ACHIEVEMENT" && f.itemId === String(ach.id)).map((file: any) => (
                               <a key={file.id} href={`/api/evidence/${file.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600 hover:border-blue-200 hover:text-blue-600 truncate max-w-[190px]">
