@@ -35,8 +35,37 @@ export default async function HomePage() {
   const session = await getSession();
   const isAuthenticated = Boolean(session);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://xrovia.com/#organization",
+        name: "XROVIA",
+        url: "https://xrovia.com/",
+        description:
+          "Professional identity platform for building, managing, verifying, and sharing digital career profiles.",
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://xrovia.com/#website",
+        name: "XROVIA",
+        url: "https://xrovia.com/",
+        description:
+          "Create and share a professional identity and career record with one Professional ID.",
+        publisher: {
+          "@id": "https://xrovia.com/#organization",
+        },
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Smooth in-page scrolling for the homepage only; respects reduced motion. */}
       <style>{`html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}`}</style>
 
