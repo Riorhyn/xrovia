@@ -60,7 +60,7 @@ export function ConnectedPlatforms() {
     if(!name||!raw)return;
     try{
       const url=new URL(raw.startsWith("http://") || raw.startsWith("https://") ? raw : `https://${raw}`);
-      savePlatforms([...platforms,{id:`custom-${Date.now()}`,name,description:"Professional profile",placeholder:"https://...",url:url.toString().replace(/\\/$/,"")}]);
+      savePlatforms([...platforms,{id:`custom-${Date.now()}`,name,description:"Professional profile",placeholder:"https://...",url:url.toString()}]);
       setCustomName("");setCustomUrl("");
     }catch{}
   };
