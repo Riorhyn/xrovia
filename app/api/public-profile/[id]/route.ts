@@ -11,8 +11,12 @@ export async function GET(
     const professionalId = decodeURIComponent(id).toUpperCase();
 
     const profile = await prisma.profile.findUnique({
-      where: {
-        professionalId,
+      where: { professionalId },
+      include: {
+        evidenceFiles: {
+          select: { id: true, itemType: true, itemId: true, fileName: true, mimeType: true, size: true, createdAt: true },
+          orderBy: { createdAt: "asc" },
+        },
       },
     });
 
