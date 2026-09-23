@@ -1,4 +1,17 @@
-"use client";
+"u
+
+const platformLogo = (id: string) => {
+  const logos: Record<string, string> = {
+    linkedin: "https://cdn.simpleicons.org/linkedin/0A66C2",
+    github: "https://cdn.simpleicons.org/github/181717",
+    scholar: "https://cdn.simpleicons.org/googlescholar/4285F4",
+    orcid: "https://cdn.simpleicons.org/orcid/A6CE39",
+    researchgate: "https://cdn.simpleicons.org/researchgate/00CCBB",
+    portfolio: "https://cdn.simpleicons.org/googlechrome/4285F4",
+    patents: "https://cdn.simpleicons.org/google/4285F4",
+  };
+  return logos[id.toLowerCase()] || null;
+};se client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -577,29 +590,27 @@ export default function PublicProfilePage() {
             </div>
 
             <div className="space-y-2">
-              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => (
-                <div key={platform.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                    <Link2 className="h-4 w-4" />
+              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => {
+                const logo = platformLogo(String(platform.id));
+                return (
+                  <div key={platform.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
+                      {logo ? <img src={logo} alt="" className="h-5 w-5" /> : <span className="text-sm font-black text-slate-500">{String(platform.name || "P").slice(0,1).toUpperCase()}</span>}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
+                      {platform.showSpecialMessage && platform.specialMessage?.trim() ? (
+                        <p className="mt-1 text-[11px] leading-5 text-slate-500">{platform.specialMessage.trim()}</p>
+                      ) : (
+                        <p className="mt-1 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
+                      )}
+                    </div>
+                    <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+                      View <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
-                    {platform.showSpecialMessage && platform.specialMessage?.trim() ? (
-                      <p className="mt-1 text-[11px] leading-5 text-slate-500">{platform.specialMessage.trim()}</p>
-                    ) : (
-                      <p className="mt-1 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
-                    )}
-                  </div>
-                  <a
-                    href={formatExternalUrl(platform.url)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    View <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
