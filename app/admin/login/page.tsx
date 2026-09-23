@@ -113,11 +113,19 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
-          <Link href="/login" className="text-blue-600 font-semibold hover:underline">
-            Back to professional login
-          </Link>
-        </p>
+        <div className="mt-6 space-y-3 text-center text-sm">
+          <p className="text-slate-500">
+            Need to activate the first administrator account?{" "}
+            <Link href="/admin/setup" className="text-rose-600 font-semibold hover:underline">
+              Admin setup
+            </Link>
+          </p>
+          <p className="text-slate-500">
+            <Link href="/login" className="text-blue-600 font-semibold hover:underline">
+              Back to professional login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
