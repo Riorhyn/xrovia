@@ -59,7 +59,14 @@ export async function POST(req: Request) {
       );
     }
 
-    if (adminOnly && user.role !== "ADMIN") {\n      return NextResponse.json(\n        { error: "This account does not have administrator access." },\n        { status: 403 }\n      );\n    }\n\n    const token = await createSessionToken({
+    if (adminOnly && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "This account does not have administrator access." },
+        { status: 403 }
+      );
+    }
+
+    const token = await createSessionToken({
       userId: user.id,
       email: user.email,
       role: user.role,
