@@ -36,7 +36,6 @@ const formatExternalUrl = (url?: string) => {
 export default function PublicProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [expandedPlatform, setExpandedPlatform] = useState<string | null>(null);
 
   const [profile, setProfile] = useState<any>({
     personal: {
@@ -578,100 +577,29 @@ export default function PublicProfilePage() {
             </div>
 
             <div className="space-y-2">
-              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => {
-                const isOpen = expandedPlatform === String(platform.id);
-                const id = String(platform.id).toLowerCase();
-                const isLinkedIn = id === "linkedin";
-                const isGitHub = id === "github";
-                const linkedInProfile = platform.profile || {};
-                const overviewName = linkedInProfile.name || profile.personal?.fullName;
-                const overviewHeadline = linkedInProfile.headline || profile.personal?.headline;
-                const overviewLocation = linkedInProfile.location || profile.personal?.location;
-                const overviewPhoto = linkedInProfile.photoUrl || profile.personal?.photoUrl;
-                const overviewSkills = Array.isArray(linkedInProfile.skills) && linkedInProfile.skills.length > 0
-                  ? linkedInProfile.skills.slice(0, 4)
-                  : (profile.skills || []).slice(0, 4);
-                const experienceCount = Array.isArray(profile.experiences) ? profile.experiences.length : 0;
-                const latestEducation = Array.isArray(profile.educations) && profile.educations.length > 0 ? profile.educations[0] : null;
-
-                return (
-                  <div key={platform.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                    <div className="flex items-center gap-3 px-4 py-3.5">
-                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${isLinkedIn ? "bg-[#0A66C2] text-white" : isGitHub ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
-                        {isLinkedIn ? <Linkedin className="h-4.5 w-4.5" /> : <Link2 className="h-4.5 w-4.5" />}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
-                          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">Connected</span>
-                        </div>
-                        <p className="mt-0.5 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setExpandedPlatform(isOpen ? null : String(platform.id))}
-                        className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        {isOpen ? "Hide overview" : "View overview"}
-                        <span className="text-xs">{isOpen ? "⌃" : "⌄"}</span>
-                      </button>
-                      <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" aria-label={`Open ${platform.name}`} className="hidden sm:inline-flex rounded-lg border border-slate-200 bg-white p-2 text-slate-400 hover:text-blue-600">
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                    </div>
-
-                    {isOpen && (
-                      <div className="border-t border-slate-100 bg-slate-50/50 p-4">
-                        {(isLinkedIn || isGitHub) ? (
-                          <div className="rounded-xl border border-slate-200 bg-white p-4">
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                              <div className="flex min-w-0 gap-3">
-                                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 flex items-center justify-center text-xs font-black text-blue-700">
-                                  {overviewPhoto ? <img src={overviewPhoto} alt="" className="h-full w-full object-cover" /> : <span>{initials}</span>}
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="flex items-center gap-1.5">
-                                    <h4 className="truncate text-sm font-extrabold text-slate-900">{overviewName || "Professional Profile"}</h4>
-                                    {isLinkedIn && <Linkedin className="h-3.5 w-3.5 shrink-0 text-[#0A66C2]" />}
-                                  </div>
-                                  <p className="mt-1 text-xs font-semibold text-slate-600">{overviewHeadline || platform.description || "Professional profile"}</p>
-                                  {overviewLocation && <p className="mt-1 text-[11px] text-slate-500">{overviewLocation}</p>}
-                                </div>
-                              </div>
-                              <a href={formatExternalUrl(platform.url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[10px] font-bold text-blue-700 hover:bg-blue-100">
-                                Open original profile <ExternalLink className="h-3.5 w-3.5" />
-                              </a>
-                            </div>
-
-                            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                              {latestEducation && <div className="rounded-lg bg-slate-50 p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Education</p><p className="mt-1 text-[11px] font-bold text-slate-700">{latestEducation.institution || "Education"}</p></div>}
-                              {experienceCount > 0 && <div className="rounded-lg bg-slate-50 p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Experience</p><p className="mt-1 text-[11px] font-bold text-slate-700">{experienceCount} {experienceCount === 1 ? "role" : "roles"} on XROVIA</p></div>}
-                              {overviewSkills.length > 0 && <div className="rounded-lg bg-slate-50 p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Top skills</p><p className="mt-1 text-[11px] font-bold text-slate-700">{overviewSkills.join(" · ")}</p></div>}
-                            </div>
-
-                            <p className="mt-3 text-[10px] leading-5 text-slate-400">
-                              {isGitHub ? "GitHub overview will use permitted public/API data when the account is connected." : "LinkedIn overview will use data the member authorizes XROVIA to access."}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="rounded-xl border border-slate-200 bg-white p-4">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="text-xs font-bold text-slate-800">{platform.name} overview</p>
-                                <p className="mt-1 text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
-                              </div>
-                              <span className="rounded-lg bg-slate-100 px-2.5 py-1.5 text-[10px] font-semibold text-slate-500">Overview data will appear here</span>
-                            </div>
-                            <p className="mt-3 text-[10px] leading-5 text-slate-400">
-                              XROVIA will show a compact summary of important information from this platform when a supported API or authorized connection is available.
-                            </p>
-                          </div>
-                        )}
-                      </div>
+              {profile.connectedPlatforms.filter((p: any) => p.url).map((platform: any) => (
+                <div key={platform.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                    <Link2 className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-extrabold text-slate-900">{platform.name}</h3>
+                    {platform.showSpecialMessage && platform.specialMessage?.trim() ? (
+                      <p className="mt-1 text-[11px] leading-5 text-slate-500">{platform.specialMessage.trim()}</p>
+                    ) : (
+                      <p className="mt-1 truncate text-[11px] text-slate-500">{platform.description || "Professional profile"}</p>
                     )}
                   </div>
-                );
-              })}
+                  <a
+                    href={formatExternalUrl(platform.url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    View <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
         )}
