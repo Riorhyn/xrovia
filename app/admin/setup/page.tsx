@@ -1,5 +1,8 @@
 "use client";
 
+// Keep this page independent from authenticated dashboard routing.
+// It is intentionally public until the first ADMIN account exists.
+
 import { useState } from "react";
 import Link from "next/link";
 
@@ -46,6 +49,9 @@ export default function AdminSetupPage() {
         <p className="text-xs font-bold text-rose-600 uppercase tracking-widest">
           One-Time Setup
         </p>
+        <div className="mt-3 text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg p-3">
+          This page is separate from the normal professional dashboard. Use it only to promote the first administrator account.
+        </div>
         <h1 className="text-3xl font-bold text-slate-900 mt-1">Create Admin Access</h1>
         <p className="text-sm text-slate-500 mt-3">
           Promote your existing XROVIA account to administrator. This setup works only
