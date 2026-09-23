@@ -66,7 +66,11 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Profile Reports Table */}
-      <div className="flex flex-wrap gap-3">\n        <a href="/admin/users" className="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Manage Users</a>\n      </div>\n\n      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="flex flex-wrap gap-3">
+        <a href="/admin/users" className="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Manage Users</a>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 className="text-base font-bold text-slate-900">Flagged Profiles & Reports</h2>
           <span className="text-xs text-slate-400">Server-Side Authorization Enforced</span>
