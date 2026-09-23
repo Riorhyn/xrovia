@@ -579,8 +579,22 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
                       {exp.company} • {exp.startDate} - {exp.current ? "Present" : exp.endDate}
                     </p>
                     {exp.description && <p className="text-xs text-slate-500 mt-1">{exp.description}</p>}
+                    {evidenceFor("EXPERIENCE", exp.id).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {evidenceFor("EXPERIENCE", exp.id).map((file) => (
+                          <span key={file.id} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">
+                            <a href={`/api/evidence/${file.id}`} target="_blank" rel="noreferrer" className="max-w-[180px] truncate hover:text-blue-600">{file.fileName}</a>
+                            <button type="button" onClick={() => deleteEvidence(file.id)} className="text-slate-400 hover:text-red-600">×</button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
+                    <label className="cursor-pointer p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Add evidence">
+                      <Upload className="h-4 w-4" />
+                      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadEvidence("EXPERIENCE", exp.id, file)); e.currentTarget.value = ""; }} />
+                    </label>
                     <button
                       onClick={() => startEditExperience(exp)}
                       className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition"
@@ -647,8 +661,22 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
                     <p className="text-xs text-slate-600">
                       {edu.institution} • {edu.startDate} - {edu.current ? "Present" : edu.endDate}
                     </p>
+                    {evidenceFor("EDUCATION", edu.id).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {evidenceFor("EDUCATION", edu.id).map((file) => (
+                          <span key={file.id} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">
+                            <a href={`/api/evidence/${file.id}`} target="_blank" rel="noreferrer" className="max-w-[180px] truncate hover:text-blue-600">{file.fileName}</a>
+                            <button type="button" onClick={() => deleteEvidence(file.id)} className="text-slate-400 hover:text-red-600">×</button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
+                    <label className="cursor-pointer p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Add evidence">
+                      <Upload className="h-4 w-4" />
+                      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadEvidence("EDUCATION", edu.id, file)); e.currentTarget.value = ""; }} />
+                    </label>
                     <button onClick={() => startEditEducation(edu)} className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit Education">
                       <Edit2 className="h-4 w-4" />
                     </button>
@@ -921,8 +949,23 @@ if (dbFullData.publications) setPublications(dbFullData.publications);
                   <div>
                     <h3 className="text-sm font-bold text-slate-900">{pub.title}</h3>
                     <p className="text-xs text-slate-600">{pub.publisher}</p>
+                    {evidenceFor("PUBLICATION", pub.id).length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {evidenceFor("PUBLICATION", pub.id).map((file) => (
+                          <span key={file.id} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-600">
+                            <a href={`/api/evidence/${file.id}`} target="_blank" rel="noreferrer" className="max-w-[180px] truncate hover:text-blue-600">{file.fileName}</a>
+                            <button type="button" onClick={() => deleteEvidence(file.id)} className="text-slate-400 hover:text-red-600">×</button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <button onClick={() => setPublications(publications.filter((i) => i.id !== pub.id))} className="text-slate-400 hover:text-red-600">
+                  <div className="flex items-center gap-2">
+                    <label className="cursor-pointer p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Add evidence">
+                      <Upload className="h-4 w-4" />
+                      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadEvidence("PUBLICATION", pub.id, file)); e.currentTarget.value = ""; }} />
+                    </label>
+                    <button onClick={() => setPublications(publications.filter((i) => i.id !== pub.id))} className="text-slate-400 hover:text-red-600">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
