@@ -1,5 +1,5 @@
 const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+  process.env.RESEND_FROM_EMAIL || "XROVIA <noreply@xrovia.com>";
 
 export async function sendVerificationEmail(
   email: string,
@@ -27,6 +27,7 @@ export async function sendVerificationEmail(
           <p>Your verification code is:</p>
           <h1 style="letter-spacing:8px">${code}</h1>
           <p>This code expires in 10 minutes.</p>
+          <p>If you did not create an XROVIA account, you can ignore this email.</p>
         </div>
       `,
     }),
@@ -38,8 +39,8 @@ export async function sendVerificationEmail(
     console.error("RESEND ERROR:", result);
     throw new Error(
       result?.message ||
-      result?.error?.message ||
-      JSON.stringify(result)
+        result?.error?.message ||
+        JSON.stringify(result)
     );
   }
 
