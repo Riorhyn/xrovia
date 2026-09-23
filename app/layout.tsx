@@ -44,10 +44,10 @@ export default async function RootLayout({
               {session ? (
                 <>
                   <Link
-                    href="/dashboard"
+                    href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
                     className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-800 transition shadow-sm"
                   >
-                    Dashboard
+                    {session.role === "ADMIN" ? "Admin Console" : "Dashboard"}
                   </Link>
                   <LogoutButton />
                 </>
