@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   GraduationCap,
   Briefcase,
@@ -49,6 +50,13 @@ export function Hero({ isAuthenticated }: { isAuthenticated?: boolean }) {
                 Explore How It Works
               </ButtonLink>
             </div>
+
+            <Link
+              href="/feedback"
+              className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-700 transition"
+            >
+              💬 Help us improve XROVIA — Give Feedback
+            </Link>
 
             {/* Feature Badges */}
             <div className="mt-10 border-t border-slate-100 pt-6">
