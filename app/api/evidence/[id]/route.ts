@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { getSession } from "@/lib/auth/session";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
@@ -12,7 +13,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
       return NextResponse.json({ error: "Evidence not found." }, { status: 404 });
     }
 
-    return new NextResponse(evidence.data, {
+    return new NextResponse(new Uint8Array(evidence.data), {
       status: 200,
       headers: {
         "Content-Type": evidence.mimeType,
