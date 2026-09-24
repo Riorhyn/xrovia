@@ -10,15 +10,28 @@ import { ConnectedPlatforms } from "@/components/dashboard/ConnectedPlatforms";
 import { VerificationCenter } from "@/components/dashboard/VerificationCenter";
 
 export default function DashboardPage() {
-  const [profile, setProfile] = useState({fullName:"Candidate Name",professionalId:"PR-159481"});
+  const [profile, setProfile] = useState({ fullName: "Candidate Name", professionalId: "PR-159481" });
+
   const loadDashboardData = async () => {
     try {
-      const res=await fetch("/api/profile"); if(!res.ok)return;
-      const data=await res.json(); const dbProfile=data.user?.profile||{};
-      setProfile({fullName:dbProfile.fullName||data.user?.name||data.user?.email?.split("@")[0]||"Candidate Name",professionalId:dbProfile.professionalId||"PR-159481"});
-    } catch(error){console.error("Failed to load dashboard profile:",error);}
+      const res = await fetch("/api/profile/summary");
+      if (!res.ok) return;
+      const data = await res.json();
+      setProfile({ fullName: data.profile?.fullName || "Candidate Name", professionalId: data.profile?.professionalId || "PR-159481" });
+    } catch (error) {
+      console.error("Failed to load dashboard profile:", error);
+    }
   };
-  useEffect(()=>{loadDashboardData();window.addEventListener("profile_updated",loadDashboardData);window.addEventListener("storage",loadDashboardData);window.addEventListener("focus",loadDashboardData);return()=>{window.removeEventListener("profile_updated",loadDashboardData);window.removeEventListener("storage",loadDashboardData);window.removeEventListener("focus",loadDashboardData);};},[]);
+
+  useEffect(() => {
+    loadDashboardData();
+    window.addEventListener("profile_updated", loadDashboardData);
+    window.addEventListener("focus", loadDashboardData);
+    return () => {
+      window.removeEventListener("profile_updated", loadDashboardData);
+      window.removeEventListener("focus", loadDashboardData);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8">
@@ -29,10 +42,9 @@ export default function DashboardPage() {
             <p className="mt-1 text-sm text-slate-500 flex items-center gap-2"><span>Permanent Professional ID:</span><span className="font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{profile.professionalId}</span></p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Link href={`/${profile.professionalId}`} target="_blank" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"><ExternalLink className="h-4 w-4 text-slate-500"/>View Public Profile</Link>
+            <Link href={"/" + profile.professionalId} target="_blank" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"><ExternalLink className="h-4 w-4 text-slate-500"/>View Public Profile</Link>
             <Link href="/dashboard/builder" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"><Edit3 className="h-4 w-4"/>Edit Profile</Link>
             <Link href="/dashboard/security" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition"><KeyRound className="h-4 w-4"/>Change Password</Link>
-            
           </div>
         </div>
         <ProfileCompletionBar />
