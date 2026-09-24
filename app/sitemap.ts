@@ -12,6 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: baseUrl + "/about",
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: baseUrl + "/professional-identity",
       lastModified: now,
       changeFrequency: "monthly",
