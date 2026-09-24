@@ -272,7 +272,8 @@ model FeedbackAttachment {
   fileName String
   mimeType String
   size Int
-  data Bytes
+  data Bytes?
+  storageKey String?
   createdAt DateTime @default(now())
   @@index([feedbackId])
 }
