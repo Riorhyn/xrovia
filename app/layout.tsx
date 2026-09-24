@@ -5,7 +5,6 @@ import { Search } from "lucide-react";
 import { getSession } from "../lib/auth/session";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
-// FORCE NEXT.JS TO CHECK COOKIES ON EVERY REQUEST
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -18,6 +17,11 @@ export const metadata = {
     "XROVIA is a professional identity platform for creating, managing, verifying, and sharing your career profile, education, experience, skills, projects, and achievements.",
   applicationName: "XROVIA",
   keywords: [
+    "XROVIA",
+    "Xrovia",
+    "XROVIA professional identity",
+    "XROVIA professional profile",
+    "XROVIA career profile",
     "professional identity",
     "professional identity platform",
     "digital professional profile",
@@ -27,7 +31,6 @@ export const metadata = {
     "digital identity",
     "career record",
     "professional ID",
-    "XROVIA",
   ],
   authors: [{ name: "XROVIA" }],
   creator: "XROVIA",
@@ -144,4 +147,4 @@ export default async function RootLayout({
       </body>
     </html>
   );
-} 
+}
