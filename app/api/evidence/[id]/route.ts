@@ -7,11 +7,14 @@ export const runtime = "nodejs";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   try {
-    const evidence = await prisma.evidenceFile.findUnique({
-      where: { id: params.id },
-      select: { id: true, fileName: true, mimeType: true, size: true, data: true, storageKey: true, profile: { select: { isPublic: true } } },
+    const session = await getSession();
+    if (!session?.userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const evidence = await prisma.evidenceFile.findFirst({
+      where: { id: params.id, profile: { userId: session.userId } },
+      select: { id: true, fileName: true, mimeType: true, size: true, data: true, storageKey: true },
     });
-    if (!evidence || !evidence.profile.isPublic) return NextResponse.json({ error: "Evidence not found." }, { status: 404 });
+    if (!evidence) return NextResponse.json({ error: "Evidence not found." }, { status: 404 });
 
     if (evidence.storageKey) {
       const response = await downloadFromGoogleCloudStorage(evidence.storageKey);
