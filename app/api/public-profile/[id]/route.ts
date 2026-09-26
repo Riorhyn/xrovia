@@ -12,12 +12,6 @@ export async function GET(
 
     const profile = await prisma.profile.findUnique({
       where: { professionalId },
-      include: {
-        evidenceFiles: {
-          select: { id: true, itemType: true, itemId: true, fileName: true, mimeType: true, size: true, createdAt: true },
-          orderBy: { createdAt: "asc" },
-        },
-      },
     });
 
     if (!profile || !profile.isPublic) {
