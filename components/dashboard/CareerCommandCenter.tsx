@@ -121,7 +121,7 @@ export function CareerCommandCenter() {
             <Link href={"/" + data.profile.professionalId} target="_blank" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-700"><Eye className="h-4 w-4" /> View profile</Link>
             <button type="button" onClick={copyLink} className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-4 py-2.5 text-xs font-bold text-blue-800 hover:bg-blue-50"><Copy className="h-4 w-4" /> {copied ? "Copied" : "Copy link"}</button>
           </div>
-          <div className="mt-4 flex items-center gap-2 text-[11px] text-slate-500"><Lock className="h-3.5 w-3.5" /> Evidence is private to you unless explicitly shared.</div>
+          <div className="mt-4 flex items-center gap-2 text-[11px] text-slate-500"><Lock className="h-3.5 w-3.5" /> Evidence files are private to you.</div>
         </div>
       </div>
     </section>
