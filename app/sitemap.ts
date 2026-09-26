@@ -21,6 +21,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/career-portfolio", "monthly", 0.8],
     ["/online-cv", "monthly", 0.8],
     ["/project-portfolio-for-students", "monthly", 0.8],
+    ["/career/job-application-profile", "monthly", 0.8],
+    ["/career/how-to-get-a-job", "monthly", 0.8],
+    ["/career/graduate-jobs", "monthly", 0.8],
+    ["/career/engineering-fresher-profile", "monthly", 0.8],
+    ["/career/skills-profile", "monthly", 0.8],
+    ["/career/student-career-profile", "monthly", 0.8],
+    ["/career/certification-profile", "monthly", 0.8],
+    ["/career/technical-portfolio", "monthly", 0.8],
+    ["/career/entry-level-profile", "monthly", 0.8],
+    ["/career/online-professional-identity", "monthly", 0.8],
     ["/feedback", "monthly", 0.3],
   ] as const;
 
