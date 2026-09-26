@@ -38,7 +38,7 @@ function bucketName() {
 export async function uploadToGoogleCloudStorage(objectName: string, data: Buffer, contentType: string) {
   const token = await getAccessToken();
   const url = "https://storage.googleapis.com/upload/storage/v1/b/" + encodeURIComponent(bucketName()) + "/o?uploadType=media&name=" + encodeURIComponent(objectName);
-  const response = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": contentType || "application/octet-stream", "Content-Length": String(data.length) }, body: data });
+  const response = await fetch(url, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": contentType || "application/octet-stream", "Content-Length": String(data.length) }, body: new Uint8Array(data) });
   if (!response.ok) throw new Error("Google Cloud Storage upload failed: " + response.status + " " + await response.text());
   return objectName;
 }
