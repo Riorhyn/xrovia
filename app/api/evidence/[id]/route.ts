@@ -18,7 +18,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 
     if (evidence.storageKey) {
       const response = await downloadFromGoogleCloudStorage(evidence.storageKey);
-      return new NextResponse(response.body, { status: 200, headers: { "Content-Type": evidence.mimeType, "Content-Length": String(evidence.size), "Content-Disposition": 'inline; filename="' + encodeURIComponent(evidence.fileName) + '"', "Cache-Control": "public, max-age=3600", "X-Content-Type-Options": "nosniff" } });
+      return new NextResponse(response.body, { status: 200, headers: { "Content-Type": evidence.mimeType, "Content-Length": String(evidence.size), "Content-Disposition": 'inline; filename="' + encodeURIComponent(evidence.fileName) + '"', "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
     }
 
     if (!evidence.data) return NextResponse.json({ error: "Evidence file is unavailable." }, { status: 404 });
