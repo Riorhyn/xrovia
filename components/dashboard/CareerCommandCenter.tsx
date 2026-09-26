@@ -65,7 +65,7 @@ export function CareerCommandCenter() {
     if (!data) return;
     setVisibilitySaving(true);
     try {
-      const res = await fetch("/api/profile/visibility", {
+      const res = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublic: !data.profile.isPublic }),
