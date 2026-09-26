@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Job Application Profile",
   description: "Create a clear professional profile for job applications | XROVIA",
   keywords: ["job application profile", "job applications", "professional profile", "career profile"],
-  alternates: { canonical: "https://xrovia.com/job-application-profile" },
+  alternates: { canonical: "https://xrovia.com/career/job-application-profile" },
   openGraph: { title: "Job Application Profile", description: "Create a clear professional profile for job applications | XROVIA", url: "https://xrovia.com/job-application-profile", type: "website" },
 };
 
