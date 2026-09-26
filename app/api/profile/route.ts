@@ -63,3 +63,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
   }
 }
+
+
+export async function PATCH(req: Request) {
+  try {
+    const session = await getSession();
+    if (!session?.userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const body = await req.json();
+    if (typeof body.isPublic !== "boolean") {
+      return NextResponse.json({ error: "isPublic must be a boolean" }, { status: 400 });
+    }
+
+    const profile = await prisma.profile.update({
+      where: { userId: session.userId },
+      data: { isPublic: body.isPublic },
+      select: { isPublic: true, professionalId: true },
+    });
+
+    return NextResponse.json({ success: true, profile });
+  } catch (error) {
+    console.error("Profile visibility error:", error);
+    return NextResponse.json({ error: "Unable to update profile visibility" }, { status: 500 });
+  }
+}
