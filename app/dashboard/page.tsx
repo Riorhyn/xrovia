@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Edit3, ExternalLink, Lock, KeyRound } from "lucide-react";
+import { Edit3, ExternalLink, Lock, KeyRound, Upload } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
@@ -44,7 +44,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Link href={"/" + profile.professionalId} target="_blank" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"><ExternalLink className="h-4 w-4 text-slate-500"/>View Public Profile</Link>
-            <Link href="/dashboard/builder" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"><Edit3 className="h-4 w-4"/>Edit Profile</Link>
+            <Link href="/dashboard/import" className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-100 transition"><Upload className="h-4 w-4"/>Import CV</Link><Link href="/dashboard/builder" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"><Edit3 className="h-4 w-4"/>Edit Profile</Link>
             <Link href="/dashboard/security" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition"><KeyRound className="h-4 w-4"/>Change Password</Link>
           </div>
         </div>
