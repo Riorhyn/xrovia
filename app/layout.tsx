@@ -143,7 +143,7 @@ export default async function RootLayout({
               <Link href="/professional-profile" className="hover:text-white">Professional Profile</Link>
               <Link href="/feedback" className="hover:text-white">Feedback</Link>
             </div>
-            <p className="text-xs text-slate-500">© {new Date().getFullYear()} Xrovia Identity Inc. All rights reserved.</p>
+            <p className="text-xs text-slate-500">© {new Date().getFullYear()} XROVIA. All rights reserved.</p>
           </div>
         </footer>
       </body>
