@@ -52,8 +52,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Enter a valid official organization email." }, { status: 400 });
     }
 
-    const emailDomain = getDomain(officialEmail);
-    const websiteDomain = getDomain(websiteUrl.hostname);
+    // emailMatch[1] is the domain after @.
+    const emailDomain = emailMatch[1].replace(/^www\./, "").toLowerCase();
+    const websiteDomain = websiteUrl.hostname.replace(/^www\./, "").toLowerCase();
+
     if (PERSONAL_EMAIL_DOMAINS.has(emailDomain)) {
       return NextResponse.json({ error: "Organization registration requires an official organization email, not a personal email provider." }, { status: 400 });
     }
@@ -105,7 +107,7 @@ export async function POST(req: Request) {
       data: {
         name,
         slug,
-        type: type as "UNIVERSITY" | "COMPANY" | "TRAINING_PROVIDER" | "PROFESSIONAL_BODY" | "OTHER",
+        type: type as "UNIVERSITY" | "COLLEGE" | "COMPANY" | "TRAINING_PROVIDER" | "PROFESSIONAL_BODY" | "OTHER",
         website: websiteUrl.toString().replace(/\/$/, ""),
         officialEmailDomain: websiteDomain,
         country,
