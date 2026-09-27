@@ -18,6 +18,7 @@ export default function OrganizationRegisterPage() {
   const [otp, setOtp] = useState("");
   const [verifyStep, setVerifyStep] = useState(false);
   const [organization, setOrganization] = useState<{name:string;slug:string} | null>(null);
+  const [existingOrganization, setExistingOrganization] = useState<{name:string;slug:string} | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,16 +28,20 @@ export default function OrganizationRegisterPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setError(""); setLoading(true);
+    setError(""); setExistingOrganization(null); setLoading(true);
     try {
       const res = await fetch("/api/organization/register", {
         method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form)
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || "Registration failed."); return; }
+      if (!res.ok) {
+        if (data.organization?.slug) setExistingOrganization(data.organization);
+        setError(data.error || "Registration failed.");
+        return;
+      }
       setOrganization(data.organization);
       if (data.needsEmailVerification) setVerifyStep(true);
-      else router.push("/organization/login?slug=" + encodeURIComponent(data.organization.slug));
+      else router.push(data.redirectTo || "/organization");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally { setLoading(false); }
@@ -65,7 +70,7 @@ export default function OrganizationRegisterPage() {
           <div className="mb-6 grid h-12 w-12 place-items-center rounded-xl bg-blue-600 text-xl font-black text-white">X</div>
           <h1 className="text-3xl font-black text-slate-950">Verify organization email</h1>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            We sent a 6-digit code to <strong>{form.officialEmail}</strong>. Your organization account is ready, but its first administrator must verify the email before signing in.
+            We sent a 6-digit code to <strong>{form.officialEmail}</strong>. Email verification confirms control of this address; it does not automatically make you the organization owner.
           </p>
           <form onSubmit={verify} className="mt-7 space-y-5">
             <input value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,""))} maxLength={6} inputMode="numeric" placeholder="000000" required className="w-full rounded-xl border border-slate-300 px-4 py-4 text-center text-2xl tracking-[0.5em] text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" />
@@ -79,45 +84,32 @@ export default function OrganizationRegisterPage() {
   }
 
   return (
-    <main
-      className="mx-auto max-w-[500px] px-5 py-12"
-    >
-      <h1 className="text-3xl font-black tracking-tight text-slate-950">
-        Register an organization
-      </h1>
-
+    <main className="mx-auto max-w-[500px] px-5 py-12">
+      <h1 className="text-3xl font-black tracking-tight text-slate-950">Register an organization</h1>
       <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-        Create an XROVIA organization workspace for universities, companies and other verified institutions. The registering person becomes the Organization Owner.
+        Create an XROVIA organization request. Registration gives you access to the workspace, but ownership is granted only after a separate XROVIA verification process.
       </p>
 
       <div className="mb-7 mt-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
-        <Link
-          href="/register"
-          className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900"
-        >
-          Personal account
-        </Link>
-        <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">
-          Organization account
-        </div>
+        <Link href="/register" className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900">Personal account</Link>
+        <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">Organization account</div>
       </div>
 
       <form onSubmit={submit} className="space-y-5">
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization name</label><input value={form.name} onChange={e=>update("name",e.target.value)} required placeholder="e.g. ABC University" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization type</label><select value={form.type} onChange={e=>update("type",e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500">{types.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></div>
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Official website</label><input type="url" value={form.website} onChange={e=>update("website",e.target.value)} required placeholder="https://example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Official organization email</label><input type="email" value={form.officialEmail} onChange={e=>update("officialEmail",e.target.value)} required placeholder="admin@example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/><p className="mt-1.5 text-xs text-slate-500">Personal email providers are not accepted. The email domain must match the organization website.</p></div>
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Country</label><input value={form.country} onChange={e=>update("country",e.target.value)} required placeholder="India" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-          <div><label className="mb-2 block text-sm font-bold text-slate-700">Owner password</label><input type="password" value={form.password} onChange={e=>update("password",e.target.value)} minLength={8} required placeholder="Minimum 8 characters" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-          {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-          <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">{loading ? "Creating organization..." : "Create organization account"}</button>
-        </form>
-        <div className="mt-6 text-center text-sm text-slate-500">
-          Already have an organization account?{" "}
-          <Link href="/organization/login" className="font-bold text-blue-600 hover:underline">
-            Organization login
-          </Link>
-        </div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization name</label><input value={form.name} onChange={e=>update("name",e.target.value)} required placeholder="e.g. ABC University" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization type</label><select value={form.type} onChange={e=>update("type",e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500">{types.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Official website</label><input type="url" value={form.website} onChange={e=>update("website",e.target.value)} required placeholder="https://example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Official organization email</label><input type="email" value={form.officialEmail} onChange={e=>update("officialEmail",e.target.value)} required placeholder="admin@example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/><p className="mt-1.5 text-xs text-slate-500">Use an organization-controlled email. The email domain must match the organization website.</p></div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Country</label><input value={form.country} onChange={e=>update("country",e.target.value)} required placeholder="India" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
+        <div><label className="mb-2 block text-sm font-bold text-slate-700">Account password</label><input type="password" value={form.password} onChange={e=>update("password",e.target.value)} minLength={8} required placeholder="Minimum 8 characters" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
+        {error && <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}{existingOrganization && <div className="mt-3"><Link href={"/organization/claim?slug="+encodeURIComponent(existingOrganization.slug)} className="font-bold text-blue-700 underline">Sign in and request ownership of this existing organization</Link></div>}</div>}
+        <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">{loading ? "Creating organization request..." : "Create organization request"}</button>
+      </form>
+
+      <div className="mt-6 text-center text-sm text-slate-500">
+        Already have an organization account?{" "}
+        <Link href="/organization/login" className="font-bold text-blue-600 hover:underline">Organization login</Link>
+      </div>
     </main>
   );
 }
