@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      include: { profile: true },
+      include: { profile: true, organizationMemberships: { where: { status: "ACTIVE" }, select: { organizationId: true } } },
     });
 
     if (!user) {
@@ -100,7 +100,9 @@ export async function POST(req: Request) {
           email: verifiedUser.email,
           professionalId:
             verifiedUser.profile?.professionalId,
+          organizationId: verifiedUser.organizationMemberships[0]?.organizationId,
         },
+        redirectTo: verifiedUser.organizationMemberships[0] ? "/organization" : "/dashboard",
       },
       { status: 200 }
     );
