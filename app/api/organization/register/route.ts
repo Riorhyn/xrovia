@@ -74,6 +74,7 @@ export async function POST(req: Request) {
 
     let user = await prisma.user.findUnique({ where: { email: officialEmail } });
     let needsEmailVerification = false;
+    let createdUser = false;
 
     if (user) {
       const passwordMatches = await bcrypt.compare(password, user.passwordHash);
@@ -96,6 +97,7 @@ export async function POST(req: Request) {
           country,
         },
       });
+      createdUser = true;
       needsEmailVerification = true;
     }
 
@@ -133,7 +135,7 @@ export async function POST(req: Request) {
         await sendVerificationEmail(officialEmail, verificationCode);
       } catch (emailError) {
         await prisma.organization.delete({ where: { id: organization.id } });
-        if (!user.emailVerifiedAt && !user.profile) {
+        if (createdUser) {
           await prisma.user.delete({ where: { id: user.id } }).catch(() => {});
         }
         throw emailError;
