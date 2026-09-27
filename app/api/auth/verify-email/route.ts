@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      include: { profile: true, organizationMemberships: { where: { status: "ACTIVE" }, select: { organizationId: true } } },
+      include: { profile: true, organizationMemberships: { where: { status: "ACTIVE" }, select: { id: true, organizationId: true, role: true } } },
     });
 
     if (!user) {
@@ -97,8 +97,8 @@ export async function POST(req: Request) {
       email: verifiedUser.email,
       role: verifiedUser.role,
       organizationId: verifiedUser.organizationMemberships[0]?.organizationId,
-      organizationMemberId: undefined,
-      organizationRole: undefined,
+      organizationMemberId: verifiedUser.organizationMemberships[0]?.id,
+      organizationRole: verifiedUser.organizationMemberships[0]?.role,
     });
 
     const response = NextResponse.json(
