@@ -11,6 +11,9 @@ export interface AuthSession {
   userId: string;
   email: string;
   role: "USER" | "ADMIN";
+  organizationId?: string;
+  organizationMemberId?: string;
+  organizationRole?: "OWNER" | "ADMIN" | "VERIFIER" | "REVIEWER";
 }
 
 export async function createSessionToken(
@@ -33,6 +36,9 @@ export async function verifySessionToken(
       userId: payload.userId as string,
       email: payload.email as string,
       role: payload.role as "USER" | "ADMIN",
+      organizationId: payload.organizationId as string | undefined,
+      organizationMemberId: payload.organizationMemberId as string | undefined,
+      organizationRole: payload.organizationRole as AuthSession["organizationRole"],
     };
   } catch {
     return null;
