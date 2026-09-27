@@ -148,10 +148,11 @@ export function DigitalIdPreview() {
         <div className="border-b border-slate-100 bg-gradient-to-br from-white via-white to-blue-50/60 p-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-xs font-black tracking-wider text-white shadow-sm">
-                X
-              </div>
-              <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-900">XROVIA</span>
+              <img
+                src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+                alt="XROVIA"
+                className="h-7 w-auto object-contain"
+              />
             </div>
 
             {isVerified ? (
