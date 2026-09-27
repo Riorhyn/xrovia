@@ -102,10 +102,10 @@ export default async function RootLayout({
               {session ? (
                 <>
                   <Link
-                    href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
+                    href={session.organizationId ? "/organization" : session.role === "ADMIN" ? "/admin" : "/dashboard"}
                     className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800"
                   >
-                    {session.role === "ADMIN" ? "Admin Console" : "Dashboard"}
+                    {session.organizationId ? "Organization Dashboard" : session.role === "ADMIN" ? "Admin Console" : "Dashboard"}
                   </Link>
                   <LogoutButton />
                 </>
@@ -152,6 +152,7 @@ export default async function RootLayout({
               <Link href="/career/job-search" className="transition hover:text-white">Career Guides</Link>
               <Link href="/professional-profile" className="transition hover:text-white">Professional Profile</Link>
               <Link href="/feedback" className="transition hover:text-white">Feedback</Link>
+              <Link href="/organization/register" className="transition hover:text-white">For Organizations</Link>
             </nav>
 
             <p className="text-xs text-slate-500 lg:text-right">
