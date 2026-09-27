@@ -57,7 +57,7 @@ export default function OrganizationLoginPage() {
           <div><label className="mb-2 block text-sm font-bold text-slate-700">Work email</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} required placeholder="name@organization.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
           <div><label className="mb-2 block text-sm font-bold text-slate-700">Password</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} required placeholder="Your password" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
           {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-          <button disabled={loading} className="w-full rounded-xl bg-slate-900 py-3.5 font-bold text-white hover:bg-slate-800 disabled:opacity-50">{loading ? "Signing in..." : "Sign in to organization"}</button>
+          <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white hover:bg-blue-700 disabled:opacity-50">{loading ? "Signing in..." : "Sign in to organization"}</button>
         </form>
         <div className="mt-6 text-center text-sm text-slate-500">
           Need a new organization account?{" "}
