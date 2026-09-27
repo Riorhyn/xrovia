@@ -6,11 +6,11 @@ import OwnershipApplicationForm from "@/components/organization/OwnershipApplica
 export const dynamic = "force-dynamic";
 
 export default async function OrganizationClaimPage({ searchParams }: { searchParams: { slug?: string } }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
-
   const slug = String(searchParams?.slug || "").trim();
   if (!slug) redirect("/organization");
+
+  const session = await getSession();
+  if (!session) redirect("/login?next=" + encodeURIComponent("/organization/claim?slug=" + slug));
 
   const organization = await prisma.organization.findUnique({
     where: { slug },
