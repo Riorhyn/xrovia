@@ -80,3 +80,42 @@ export async function sendOrganizationInviteEmail(
     '</div>'
   );
 }
+
+
+export async function sendOrganizationRegistrationCodeEmail(
+  email: string,
+  organizationName: string,
+  code: string,
+  expiresAt: Date,
+) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://xrovia.com";
+  const registrationUrl = baseUrl + "/organization/register?mode=verified&email=" + encodeURIComponent(email);
+  return sendEmail(email, "Your XROVIA organization registration code", 
+    '<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#0f172a">' +
+      '<h2>Your organization verification was approved</h2>' +
+      '<p>XROVIA has approved the verification request for <strong>' + organizationName + '</strong>.</p>' +
+      '<p>Use your existing email address to continue organization registration. Your registration code is:</p>' +
+      '<div style="font-size:28px;font-weight:800;letter-spacing:4px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;text-align:center">' + code + '</div>' +
+      '<p>This code is one-time use and expires on ' + expiresAt.toISOString() + '.</p>' +
+      '<p><a href="' + registrationUrl + '" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700">Continue organization registration</a></p>' +
+      '<p style="font-size:12px;color:#64748b">The email address remains your personal/contact email. The code confirms that XROVIA approved this organization registration request.</p>' +
+    '</div>'
+  );
+}
+
+export async function sendOrganizationVerificationDecisionEmail(
+  email: string,
+  organizationName: string,
+  decision: "MORE_INFORMATION_REQUIRED" | "REJECTED",
+  note: string,
+) {
+  const subject = decision === "REJECTED" ? "XROVIA organization verification update" : "More information required for XROVIA organization verification";
+  return sendEmail(email, subject,
+    '<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#0f172a">' +
+      '<h2>Organization verification update</h2>' +
+      '<p>Your request for <strong>' + organizationName + '</strong> has been marked as <strong>' + decision.replaceAll("_", " ") + '</strong>.</p>' +
+      '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:18px 0">' + note + '</div>' +
+      '<p>Please return to XROVIA to provide additional information if requested.</p>' +
+    '</div>'
+  );
+}
