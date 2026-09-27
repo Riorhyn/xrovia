@@ -55,7 +55,6 @@ model User {
   redemptions BenefitRedemption[]
   organizationMemberships OrganizationMember[]
   ownershipApplications OrganizationOwnershipApplication[]
-  verificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestOrganization") @relation("OwnershipApplicant")
   reviewedOwnershipApplications OrganizationOwnershipApplication[] @relation("OwnershipReviewer")
   reviewedOrganizationVerificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestReviewer")
   @@index([email])
