@@ -54,6 +54,8 @@ model User {
   reportsFiled Report[] @relation("Reporter")
   redemptions BenefitRedemption[]
   organizationMemberships OrganizationMember[]
+  ownershipApplications OrganizationOwnershipApplication[] @relation("OwnershipApplicant")
+  reviewedOwnershipApplications OrganizationOwnershipApplication[] @relation("OwnershipReviewer")
   @@index([email])
 }
 
@@ -238,6 +240,7 @@ model AnalyticsEvent {
   createdAt DateTime @default(now())
   @@index([profileId, eventType])
 }
+
 model EvidenceFile {
   id String @id @default(cuid())
   profileId String
@@ -307,6 +310,13 @@ enum OrganizationInviteStatus {
   REVOKED
 }
 
+enum OrganizationOwnershipApplicationStatus {
+  UNDER_REVIEW
+  MORE_INFORMATION_REQUIRED
+  APPROVED
+  REJECTED
+}
+
 model Organization {
   id String @id @default(cuid())
   name String
@@ -323,6 +333,7 @@ model Organization {
   updatedAt DateTime @updatedAt
   members OrganizationMember[]
   invites OrganizationInvite[]
+  ownershipApplications OrganizationOwnershipApplication[]
   @@index([status])
   @@index([officialEmailDomain])
 }
@@ -358,3 +369,31 @@ model OrganizationInvite {
   @@index([email, status])
 }
 
+model OrganizationOwnershipApplication {
+  id String @id @default(cuid())
+  organizationId String
+  applicantUserId String
+  fullName String
+  jobTitle String
+  department String
+  employmentType String
+  associationDuration String
+  phone String?
+  authorizationReason String
+  officialProfileUrl String?
+  evidenceUrl String?
+  evidenceDescription String?
+  status OrganizationOwnershipApplicationStatus @default(UNDER_REVIEW)
+  reviewNote String?
+  reviewedById String?
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  applicant User @relation("OwnershipApplicant", fields: [applicantUserId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("OwnershipReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([applicantUserId, status])
+}
