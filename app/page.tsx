@@ -51,7 +51,10 @@ export default async function HomePage() {
         name: "XROVIA",
         alternateName: "Xrovia",
         url: "https://xrovia.com/",
-        logo: "https://xrovia.com/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://xrovia.com/ChatGPT%20Image%20Sep%2027,%202026,%2004_14_14%20PM.png",
+        },
         description:
           "XROVIA is a professional identity platform for building, managing, verifying, and sharing digital career profiles and professional records.",
       },
@@ -67,6 +70,34 @@ export default async function HomePage() {
           "@id": "https://xrovia.com/#organization",
         },
         inLanguage: "en",
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://xrovia.com/#webpage",
+        url: "https://xrovia.com/",
+        name: "XROVIA | Professional Identity Platform & Digital Career Profile",
+        description:
+          "XROVIA is a professional identity platform and digital career profile for education, work experience, skills, projects, certifications, achievements, evidence, and one permanent Professional ID.",
+        isPartOf: {
+          "@id": "https://xrovia.com/#website",
+        },
+        about: {
+          "@id": "https://xrovia.com/#organization",
+        },
+        inLanguage: "en",
+      },
+      {
+        "@type": ["SoftwareApplication", "WebApplication"],
+        "@id": "https://xrovia.com/#software",
+        name: "XROVIA",
+        url: "https://xrovia.com/",
+        description:
+          "XROVIA is a web-based professional identity platform and digital career profile for creating, managing, verifying, and sharing professional records.",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web Browser",
+        publisher: {
+          "@id": "https://xrovia.com/#organization",
+        },
       },
     ],
   };
