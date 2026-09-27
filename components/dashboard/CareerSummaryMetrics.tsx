@@ -23,15 +23,30 @@ export function CareerSummaryMetrics() {
     return () => window.removeEventListener("profile_updated", loadCounts);
   }, []);
 
+  const metrics = [
+    { label: "Experience", value: counts.experience, Icon: Briefcase },
+    { label: "Education", value: counts.education, Icon: GraduationCap },
+    { label: "Skills", value: counts.skills, Icon: Wrench },
+    { label: "Projects", value: counts.projects, Icon: FolderGit2 },
+  ];
+
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-      <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Career Records Summary</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1"><Briefcase className="h-5 w-5 text-blue-600 mx-auto mb-1" /><p className="text-2xl font-black text-slate-900 font-mono">{counts.experience}</p><p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Experience</p></div>
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1"><GraduationCap className="h-5 w-5 text-blue-600 mx-auto mb-1" /><p className="text-2xl font-black text-slate-900 font-mono">{counts.education}</p><p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Education</p></div>
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1"><Wrench className="h-5 w-5 text-blue-600 mx-auto mb-1" /><p className="text-2xl font-black text-slate-900 font-mono">{counts.skills}</p><p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Skills</p></div>
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-center space-y-1"><FolderGit2 className="h-5 w-5 text-blue-600 mx-auto mb-1" /><p className="text-2xl font-black text-slate-900 font-mono">{counts.projects}</p><p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Projects</p></div>
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Career records summary</h2>
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {metrics.map(({ label, value, Icon }) => (
+          <div
+            key={label}
+            className="group rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 text-center transition hover:-translate-y-0.5 hover:border-blue-100 hover:bg-white hover:shadow-sm"
+          >
+            <div className="mx-auto grid h-9 w-9 place-items-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100/80 transition group-hover:bg-blue-600 group-hover:text-white">
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </div>
+            <p className="mt-3 font-mono text-2xl font-black tabular-nums text-slate-950">{value}</p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
