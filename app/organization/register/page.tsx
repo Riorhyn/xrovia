@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 const types=[["UNIVERSITY","University / College"],["COMPANY","Company / Employer"],["TRAINING_PROVIDER","Training / Certification Provider"],["PROFESSIONAL_BODY","Professional / Industry Body"],["OTHER","Other Organization"]];
 
 export default function OrganizationRegisterPage(){
-  const params=useSearchParams();
-  const [mode,setMode]=useState(params.get("mode")==="verified"?"personal":"domain");
+  const [mode,setMode]=useState<"domain"|"personal">("domain");
   const [personalStage,setPersonalStage]=useState<"request"|"register">("request");
   const [form,setForm]=useState({
     name:"",type:"UNIVERSITY",website:"",email:params.get("email")||"",country:"India",password:"",
