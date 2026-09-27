@@ -467,6 +467,27 @@ export default function RegisterPage() {
             {loading ? "Creating account..." : "Create account"}
           </button>
         )}
+
+        <div
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+            fontSize: "14px",
+            color: "#64748b",
+          }}
+        >
+          Already have a personal account?{" "}
+          <Link
+            href="/login"
+            style={{
+              color: "#2563eb",
+              fontWeight: "700",
+              textDecoration: "none",
+            }}
+          >
+            Log in
+          </Link>
+        </div>
       </form>
     </main>
   );
