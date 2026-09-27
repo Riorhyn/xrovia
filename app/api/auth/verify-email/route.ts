@@ -83,13 +83,22 @@ export async function POST(req: Request) {
         emailVerificationExpiresAt: null,
         emailVerificationSentAt: null,
       },
-      include: { profile: true },
+      include: {
+        profile: true,
+        organizationMemberships: {
+          where: { status: "ACTIVE" },
+          select: { organizationId: true },
+        },
+      },
     });
 
     const token = await createSessionToken({
       userId: verifiedUser.id,
       email: verifiedUser.email,
       role: verifiedUser.role,
+      organizationId: verifiedUser.organizationMemberships[0]?.organizationId,
+      organizationMemberId: undefined,
+      organizationRole: undefined,
     });
 
     const response = NextResponse.json(
