@@ -43,15 +43,11 @@ export function IdCardPreview({ variant = "full" }: { variant?: Variant }) {
             aria-hidden
             className="absolute left-1/2 top-2 h-1.5 w-14 -translate-x-1/2 rounded-full bg-slate-700"
           />
-          <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-            <span
-              aria-hidden
-              className="grid h-6 w-6 place-items-center rounded-md bg-blue-600 text-xs font-bold"
-            >
-              X
-            </span>
-            XROVIA
-          </span>
+          <img
+            src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+            alt="XROVIA"
+            className="h-7 w-auto object-contain"
+          />
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium">
             Sample preview
           </span>
