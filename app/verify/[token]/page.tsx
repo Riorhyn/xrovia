@@ -3,7 +3,7 @@
 import { useEffect,useState } from "react";
 import { CheckCircle2,ShieldCheck,ShieldAlert } from "lucide-react";
 
-const ID_TYPES = ["Government ID","Passport","National ID","Driver License","Professional Registration ID"];
+const ID_TYPES = ["Government ID","Passport","National ID","Driver License"];
 
 export default function VerifyRequestPage(){
   const [data,setData]=useState<any>(null),[error,setError]=useState(""),[name,setName]=useState(""),[email,setEmail]=useState(""),[role,setRole]=useState(""),[idType,setIdType]=useState("Government ID"),[idNumber,setIdNumber]=useState(""),[attested,setAttested]=useState(false),[done,setDone]=useState(false),[saving,setSaving]=useState(false);
