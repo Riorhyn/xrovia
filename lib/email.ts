@@ -60,3 +60,23 @@ export async function sendVerificationInvitationEmail(
       <p style="font-size:12px;color:#64748b">This link is intended for the recipient of this email. If you are not the appropriate person to verify this record, do not approve it.</p>
     </div>`);
 }
+
+
+export async function sendOrganizationInviteEmail(
+  email: string,
+  organizationName: string,
+  role: string,
+  inviteUrl: string,
+) {
+  return sendEmail(
+    email,
+    "Invitation to join " + organizationName + " on XROVIA",
+    '<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;color:#0f172a">' +
+      '<h2>Join ' + organizationName + ' on XROVIA</h2>' +
+      '<p>You have been invited to join <strong>' + organizationName + '</strong> as an <strong>' + role + '</strong>.</p>' +
+      '<p>XROVIA organization accounts let authorized staff manage organization verification workflows and professional records.</p>' +
+      '<p><a href="' + inviteUrl + '" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700">Accept invitation</a></p>' +
+      '<p style="font-size:12px;color:#64748b">This invitation expires in 72 hours. If you were not expecting it, you can ignore this email.</p>' +
+    '</div>'
+  );
+}
