@@ -51,7 +51,7 @@ export default async function HomePage() {
         name: "XROVIA",
         alternateName: "Xrovia",
         url: "https://xrovia.com/",
-        logo: "https://xrovia.com/xrovia-logo.webp",
+        logo: "https://xrovia.com/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
         description:
           "XROVIA is a professional identity platform for building, managing, verifying, and sharing digital career profiles and professional records.",
       },
