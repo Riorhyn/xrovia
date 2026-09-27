@@ -45,7 +45,7 @@ export function UserDigitalIdCard() {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
       <div className="flex justify-between items-start">
-        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">XROVIA ID</span>
+        <img src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png" alt="XROVIA" className="h-7 w-auto object-contain" />
         <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">
           <ShieldAlert className="h-3 w-3 text-amber-600" /> Self-Reported
         </span>
