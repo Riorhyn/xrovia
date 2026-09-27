@@ -1,17 +1,21 @@
 import Image from "next/image";
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function OrganizationLoginPage() {
-  const params = useSearchParams();
-  const [slug, setSlug] = useState(params.get("slug") || "");
+  const [slug, setSlug] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const initialSlug = params.get("slug");
+    if (initialSlug) setSlug(initialSlug);
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault(); setError(""); setLoading(true);
