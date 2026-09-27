@@ -29,7 +29,7 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
         <div className="text-center mb-8">
-          <Image src="/xrovia-logo-mark.webp" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
+          <Image src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
           <h1 className="text-3xl font-bold text-slate-900">Welcome back</h1>
           <p className="text-slate-500 mt-2">Sign in to your XROVIA account.</p>
         </div>
