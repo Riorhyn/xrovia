@@ -153,11 +153,11 @@ export default async function RootLayout({
             <div>
               <div className="flex items-center gap-2.5">
                 <Image
-                  src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+                  src="/ChatGPT Image Sep 27, 2026, 04_32_11 PM.png"
                   alt="XROVIA"
-                  width={140}
-                  height={79}
-                  className="h-8 w-auto object-contain"
+                  width={180}
+                  height={48}
+                  className="h-9 w-[180px] object-cover object-center"
                 />
               </div>
               <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
