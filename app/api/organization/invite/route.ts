@@ -23,6 +23,9 @@ export async function POST(req: Request) {
     if (!ROLES.has(normalizedRole)) {
       return NextResponse.json({ error: "Choose a valid organization role." }, { status: 400 });
     }
+    if (access.member.role === "ADMIN" && normalizedRole === "ADMIN") {
+      return NextResponse.json({ error: "Only the Organization Owner can invite another organization Admin." }, { status: 403 });
+    }
 
     const domain = normalizedEmail.split("@")[1];
     if (!(domain === access.organization.officialEmailDomain || domain.endsWith("." + access.organization.officialEmailDomain))) {
