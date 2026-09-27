@@ -30,7 +30,19 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Image src="/xrovia-logo-mark.webp" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
           <h1 className="text-3xl font-bold text-slate-900">Welcome back</h1>
-          <p className="text-slate-500 mt-2">Sign in to your PROVIA account.</p>
+          <p className="text-slate-500 mt-2">Sign in to your XROVIA account.</p>
+        </div>
+
+        <div className="mb-6 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+          <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">
+            Personal account
+          </div>
+          <Link
+            href="/organization/login"
+            className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900"
+          >
+            Organization account
+          </Link>
         </div>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div><label className="block text-sm font-medium text-slate-700 mb-2">Email address</label>
