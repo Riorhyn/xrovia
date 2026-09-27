@@ -52,8 +52,11 @@ export const metadata = {
     },
   },
   icons: {
-    icon: "/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
-    apple: "/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
+    icon: [
+      { url: "/favicon.png", type: "image/png", sizes: "96x96" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.png",
   },
   openGraph: {
     type: "website",
