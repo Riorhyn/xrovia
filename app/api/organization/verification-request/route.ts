@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       department:department||null,employmentType:employmentType||null,associationDuration:associationDuration||null,
       phone:phone||null,authorizationReason,officialProfileUrl:officialProfileUrl||null,evidenceUrl:evidenceUrl||null,
       evidenceDescription:evidenceDescription||null
-    },select:{id:name as any,status:true,createdAt:true}});
+    },select:{id:true,status:true,createdAt:true}});
     return NextResponse.json({message:"Verification request submitted to XROVIA for review.",requestId:request.id,status:request.status},{status:201});
   } catch(error){ console.error("Organization verification request error:",error); return NextResponse.json({error:"Could not submit the organization verification request."},{status:500}); }
 }
