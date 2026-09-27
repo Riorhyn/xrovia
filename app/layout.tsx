@@ -76,29 +76,34 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
-        <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black tracking-wider">
+        <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/85 shadow-[0_1px_0_rgba(15,23,42,0.02)] backdrop-blur-xl">
+          <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="group flex items-center gap-2.5" aria-label="XROVIA home">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-sm font-black tracking-wider text-white shadow-sm shadow-blue-600/20 transition-transform group-hover:scale-105">
                 X
               </div>
-              <span className="font-extrabold text-xl text-slate-900 tracking-tight">XROVIA</span>
+              <span className="text-xl font-black tracking-[-0.03em] text-slate-950">XROVIA</span>
             </Link>
 
-            <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
-              <Link href="/#how-it-works" className="hover:text-blue-600 transition">How it works</Link>
-              <Link href="/#benefits" className="hover:text-blue-600 transition">Benefits</Link>
-              <Link href="/#search-id" className="hover:text-blue-600 transition flex items-center gap-1">
-                <Search className="w-4 h-4" /> Search ID
+            <nav className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/80 p-1 text-sm font-semibold text-slate-600 md:flex">
+              <Link href="/#how-it-works" className="rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
+                How it works
+              </Link>
+              <Link href="/#benefits" className="rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
+                Benefits
+              </Link>
+              <Link href="/#search-id" className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
+                <Search className="h-4 w-4" />
+                Search ID
               </Link>
             </nav>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2">
               {session ? (
                 <>
                   <Link
                     href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
-                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-800 transition shadow-sm"
+                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800"
                   >
                     {session.role === "ADMIN" ? "Admin Console" : "Dashboard"}
                   </Link>
@@ -108,15 +113,16 @@ export default async function RootLayout({
                 <>
                   <Link
                     href="/login"
-                    className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2"
+                    className="hidden rounded-xl px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:inline-flex"
                   >
                     Login
                   </Link>
                   <Link
                     href="/register"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm"
+                    className="inline-flex rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
                   >
-                    Create Professional ID
+                    <span className="hidden sm:inline">Create Professional ID</span>
+                    <span className="sm:hidden">Create ID</span>
                   </Link>
                 </>
               )}
@@ -126,24 +132,32 @@ export default async function RootLayout({
 
         <main className="flex-1">{children}</main>
 
-        <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer className="border-t border-slate-800 bg-slate-950 text-slate-400">
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_auto] lg:px-8 lg:py-14">
             <div>
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xs">X</div>
-                <span className="font-bold text-white text-base tracking-wider">XROVIA</span>
+              <div className="flex items-center gap-2.5">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-xs font-black text-white">
+                  X
+                </div>
+                <span className="font-black tracking-wider text-white">XROVIA</span>
               </div>
-              <p className="text-xs text-slate-400 mt-2">Your permanent professional identity and career record.</p>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
+                Your permanent professional identity and career record.
+              </p>
             </div>
-            <div className="flex gap-6 text-sm">
-              <Link href="/#search-id" className="hover:text-white">Search ID</Link>
-              <Link href="/#benefits" className="hover:text-white">Member Benefits</Link>
-              <Link href="/admin" className="hover:text-white">Admin</Link>
-              <Link href="/career/job-search" className="hover:text-white">Career Guides</Link>
-              <Link href="/professional-profile" className="hover:text-white">Professional Profile</Link>
-              <Link href="/feedback" className="hover:text-white">Feedback</Link>
-            </div>
-            <p className="text-xs text-slate-500">© {new Date().getFullYear()} XROVIA. All rights reserved.</p>
+
+            <nav className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-2" aria-label="Footer">
+              <Link href="/#search-id" className="transition hover:text-white">Search ID</Link>
+              <Link href="/#benefits" className="transition hover:text-white">Member Benefits</Link>
+              <Link href="/admin" className="transition hover:text-white">Admin</Link>
+              <Link href="/career/job-search" className="transition hover:text-white">Career Guides</Link>
+              <Link href="/professional-profile" className="transition hover:text-white">Professional Profile</Link>
+              <Link href="/feedback" className="transition hover:text-white">Feedback</Link>
+            </nav>
+
+            <p className="text-xs text-slate-500 lg:text-right">
+              © {new Date().getFullYear()} XROVIA.<br className="hidden lg:block" /> All rights reserved.
+            </p>
           </div>
         </footer>
       </body>
