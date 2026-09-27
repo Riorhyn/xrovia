@@ -22,7 +22,6 @@ export async function GET(req: Request) {
     });
 
     if (!organization) return NextResponse.json({ error: "Organization not found." }, { status: 404 });
-
     return NextResponse.json({ organization, application }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
     console.error("Organization ownership GET error:", error);
@@ -66,27 +65,37 @@ export async function POST(req: Request) {
     if (existingOwner) return NextResponse.json({ error: "You are already an organization owner." }, { status: 409 });
 
     const existing = await prisma.organizationOwnershipApplication.findFirst({
-      where: {
-        organizationId,
-        applicantUserId: session.userId,
-        status: { in: ["UNDER_REVIEW", "MORE_INFORMATION_REQUIRED"] },
-      },
+      where: { organizationId, applicantUserId: session.userId, status: { in: ["UNDER_REVIEW", "MORE_INFORMATION_REQUIRED"] } },
+      orderBy: { createdAt: "desc" },
     });
-    if (existing) return NextResponse.json({ error: "You already have an ownership application under review.", application: existing }, { status: 409 });
+
+    if (existing?.status === "UNDER_REVIEW") {
+      return NextResponse.json({ error: "You already have an ownership application under review.", application: existing }, { status: 409 });
+    }
+
+    if (existing?.status === "MORE_INFORMATION_REQUIRED") {
+      const application = await prisma.organizationOwnershipApplication.update({
+        where: { id: existing.id },
+        data: {
+          fullName, jobTitle, department, employmentType, associationDuration,
+          phone: phone || null, authorizationReason,
+          officialProfileUrl: officialProfileUrl || null,
+          evidenceUrl: evidenceUrl || null,
+          evidenceDescription: evidenceDescription || null,
+          status: "UNDER_REVIEW",
+          reviewNote: null,
+          reviewedById: null,
+          reviewedAt: null,
+        },
+      });
+      return NextResponse.json({ message: "Updated ownership information submitted for review.", application });
+    }
 
     const application = await prisma.organizationOwnershipApplication.create({
       data: {
-        organizationId,
-        applicantUserId: session.userId,
-        fullName,
-        jobTitle,
-        department,
-        employmentType,
-        associationDuration,
-        phone: phone || null,
-        authorizationReason,
-        officialProfileUrl: officialProfileUrl || null,
-        evidenceUrl: evidenceUrl || null,
+        organizationId, applicantUserId: session.userId, fullName, jobTitle, department,
+        employmentType, associationDuration, phone: phone || null, authorizationReason,
+        officialProfileUrl: officialProfileUrl || null, evidenceUrl: evidenceUrl || null,
         evidenceDescription: evidenceDescription || null,
       },
     });
