@@ -54,7 +54,7 @@ model User {
   reportsFiled Report[] @relation("Reporter")
   redemptions BenefitRedemption[]
   organizationMemberships OrganizationMember[]
-  ownershipApplications OrganizationOwnershipApplication[]
+  ownershipApplications OrganizationOwnershipApplication[] @relation("OwnershipApplicant")
   reviewedOwnershipApplications OrganizationOwnershipApplication[] @relation("OwnershipReviewer")
   reviewedOrganizationVerificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestReviewer")
   @@index([email])
@@ -343,6 +343,7 @@ model Organization {
   members OrganizationMember[]
   invites OrganizationInvite[]
   ownershipApplications OrganizationOwnershipApplication[]
+  verificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestOrganization")
   @@index([status])
   @@index([officialEmailDomain])
 }
