@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getSession } from "@/lib/auth/session";
 
 export const ORGANIZATION_ROLES = ["OWNER", "ADMIN", "VERIFIER", "REVIEWER"] as const;
-export type OrganizationRole = (typeof ORGANIZATION_ROLES)[number];
+type OrganizationRole = (typeof ORGANIZATION_ROLES)[number];
 
 export function canManageOrganization(role?: string) {
   return role === "OWNER" || role === "ADMIN";
@@ -30,5 +30,16 @@ export async function getOrganizationAccess() {
 
   if (!member) return null;
 
-  return { session, member, organization: member.organization };
+  const effectiveRole =
+    member.organization.status === "VERIFIED"
+      ? member.role
+      : member.role === "OWNER"
+        ? "REVIEWER"
+        : member.role;
+
+  return {
+    session,
+    member: { ...member, role: effectiveRole },
+    organization: member.organization,
+  };
 }
