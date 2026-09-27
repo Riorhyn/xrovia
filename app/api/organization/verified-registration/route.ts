@@ -24,7 +24,8 @@ export async function POST(req:Request){
 
     const passwordHash=await bcrypt.hash(password,12);
     const result=await prisma.$transaction(async tx=>{
-      const user=existingUser || await tx.user.create({data:{email,passwordHash,country:request.country,emailVerifiedAt:new Date()}});\n      if(existingUser && !existingUser.emailVerifiedAt) await tx.user.update({where:{id:existingUser.id},data:{emailVerifiedAt:new Date()}});
+      const user=existingUser || await tx.user.create({data:{email,passwordHash,country:request.country,emailVerifiedAt:new Date()}});
+      if(existingUser && !existingUser.emailVerifiedAt) await tx.user.update({where:{id:existingUser.id},data:{emailVerifiedAt:new Date()}});
       const base=slugify(request.name)||"organization"; let slug=base;
       for(let i=0;i<5;i++){const found=await tx.organization.findUnique({where:{slug}});if(!found)break;slug=base+"-"+String(1000+i);}
       if(await tx.organization.findUnique({where:{slug}}))throw new Error("Could not create unique organization identifier.");
