@@ -54,8 +54,10 @@ model User {
   reportsFiled Report[] @relation("Reporter")
   redemptions BenefitRedemption[]
   organizationMemberships OrganizationMember[]
-  ownershipApplications OrganizationOwnershipApplication[] @relation("OwnershipApplicant")
+  ownershipApplications OrganizationOwnershipApplication[]
+  verificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestOrganization") @relation("OwnershipApplicant")
   reviewedOwnershipApplications OrganizationOwnershipApplication[] @relation("OwnershipReviewer")
+  reviewedOrganizationVerificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestReviewer")
   @@index([email])
 }
 
@@ -317,6 +319,14 @@ enum OrganizationOwnershipApplicationStatus {
   REJECTED
 }
 
+enum OrganizationVerificationRequestStatus {
+  UNDER_REVIEW
+  MORE_INFORMATION_REQUIRED
+  APPROVED
+  REJECTED
+  REGISTERED
+}
+
 model Organization {
   id String @id @default(cuid())
   name String
@@ -396,4 +406,37 @@ model OrganizationOwnershipApplication {
 
   @@index([organizationId, status])
   @@index([applicantUserId, status])
+}
+
+model OrganizationVerificationRequest {
+  id String @id @default(cuid())
+  name String
+  type OrganizationType
+  website String?
+  country String
+  contactEmail String
+  applicantName String
+  jobTitle String
+  department String?
+  employmentType String?
+  associationDuration String?
+  phone String?
+  authorizationReason String
+  officialProfileUrl String?
+  evidenceUrl String?
+  evidenceDescription String?
+  status OrganizationVerificationRequestStatus @default(UNDER_REVIEW)
+  reviewNote String?
+  reviewedById String?
+  reviewedAt DateTime?
+  registrationCodeHash String?
+  registrationCodeExpiresAt DateTime?
+  registrationCodeUsedAt DateTime?
+  registeredOrganizationId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviewedBy User? @relation("VerificationRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  registeredOrganization Organization? @relation("VerificationRequestOrganization", fields: [registeredOrganizationId], references: [id], onDelete: SetNull)
+  @@index([status, createdAt])
+  @@index([contactEmail, status])
 }
