@@ -32,7 +32,6 @@ export default function OrganizationRegisterPage(){
       })});
       const d=await r.json();if(!r.ok){setError(d.error||"Could not submit request.");return;}
       setMessage("Request submitted successfully. XROVIA will review it and, after approval, send a one-time registration code to this same email address.");
-      setPersonalStage("register");
     }catch{setError("Something went wrong. Please try again.");}finally{setLoading(false);}
   }
 
