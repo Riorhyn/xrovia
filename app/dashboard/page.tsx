@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Edit3, ExternalLink, Lock, KeyRound, Upload, ArrowUpRight } from "lucide-react";
+import { Edit3, ExternalLink, Lock, KeyRound, ArrowUpRight } from "lucide-react";
 import { DigitalIdPreview } from "@/components/home/DigitalIdPreview";
 import { CareerSummaryMetrics } from "@/components/dashboard/CareerSummaryMetrics";
 import { ProfileCompletionBar } from "@/components/dashboard/ProfileCompletionBar";
@@ -66,13 +66,6 @@ export default function DashboardPage() {
               >
                 <ExternalLink className="h-4 w-4 text-slate-500" />
                 View Profile
-              </Link>
-              <Link
-                href="/dashboard/import"
-                className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-xs font-bold text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-100"
-              >
-                <Upload className="h-4 w-4" />
-                Import CV
               </Link>
               <Link
                 href="/dashboard/builder"
