@@ -80,7 +80,7 @@ export default function OrganizationRegisterPage() {
 
   return (
     <main
-      className="mx-auto max-w-2xl px-4 py-12 sm:py-16"
+      className="mx-auto max-w-[500px] px-5 py-12"
     >
       <h1 className="text-3xl font-black tracking-tight text-slate-950">
         Register an organization
