@@ -18,15 +18,17 @@ export function Container({
 type Variant = "primary" | "secondary" | "inverse" | "outlineInverse";
 
 const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.98]";
 
 const VARIANTS: Record<Variant, string> = {
-  primary: "bg-blue-700 text-white hover:bg-blue-800 focus-visible:outline-blue-700",
+  primary:
+    "bg-blue-600 text-white shadow-sm shadow-blue-600/20 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-600/20 focus-visible:outline-blue-600",
   secondary:
-    "border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 focus-visible:outline-blue-700",
-  inverse: "bg-white text-slate-900 hover:bg-slate-100 focus-visible:outline-white",
+    "border border-slate-200 bg-white text-slate-800 shadow-sm hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md focus-visible:outline-blue-600",
+  inverse:
+    "bg-white text-slate-900 shadow-sm hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-md focus-visible:outline-white",
   outlineInverse:
-    "border border-white/40 text-white hover:bg-white/10 focus-visible:outline-white",
+    "border border-white/30 bg-white/5 text-white hover:bg-white/10 hover:border-white/50 focus-visible:outline-white",
 };
 
 const SIZES = {
@@ -39,7 +41,6 @@ type ButtonLinkProps = ComponentProps<typeof Link> & {
   size?: keyof typeof SIZES;
 };
 
-/** A real <a> link styled as a button. Every button on the page navigates somewhere. */
 export function ButtonLink({
   variant = "primary",
   size = "md",
