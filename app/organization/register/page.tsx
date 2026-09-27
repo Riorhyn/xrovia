@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -80,14 +79,30 @@ export default function OrganizationRegisterPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
-        <div className="mb-8">
-          <Image src="/xrovia-logo-mark.webp" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
-          <h1 className="text-3xl font-black tracking-tight text-slate-950">Register an organization</h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Create an XROVIA organization workspace for universities, companies and other verified institutions. The registering person becomes the Organization Owner.</p>
+    <main
+      className="mx-auto max-w-2xl px-4 py-12 sm:py-16"
+    >
+      <h1 className="text-3xl font-black tracking-tight text-slate-950">
+        Register an organization
+      </h1>
+
+      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+        Create an XROVIA organization workspace for universities, companies and other verified institutions. The registering person becomes the Organization Owner.
+      </p>
+
+      <div className="mb-7 mt-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+        <Link
+          href="/register"
+          className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900"
+        >
+          Personal account
+        </Link>
+        <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">
+          Organization account
         </div>
-        <form onSubmit={submit} className="space-y-5">
+      </div>
+
+      <form onSubmit={submit} className="space-y-5">
           <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization name</label><input value={form.name} onChange={e=>update("name",e.target.value)} required placeholder="e.g. ABC University" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
           <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization type</label><select value={form.type} onChange={e=>update("type",e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500">{types.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></div>
           <div><label className="mb-2 block text-sm font-bold text-slate-700">Official website</label><input type="url" value={form.website} onChange={e=>update("website",e.target.value)} required placeholder="https://example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
@@ -97,11 +112,12 @@ export default function OrganizationRegisterPage() {
           {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
           <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">{loading ? "Creating organization..." : "Create organization account"}</button>
         </form>
-        <div className="mt-6 flex flex-col gap-2 text-center text-sm text-slate-500 sm:flex-row sm:justify-center sm:gap-5">
-          <Link href="/organization/login" className="font-bold text-blue-600 hover:underline">Organization login</Link>
-          <Link href="/register" className="font-bold text-slate-700 hover:underline">Personal account</Link>
+        <div className="mt-6 text-center text-sm text-slate-500">
+          Already have an organization account?{" "}
+          <Link href="/organization/login" className="font-bold text-blue-600 hover:underline">
+            Organization login
+          </Link>
         </div>
-      </div>
     </main>
   );
 }
