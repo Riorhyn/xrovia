@@ -86,8 +86,8 @@ export default async function HomePage() {
           aria-labelledby="about-xrovia"
           className="bg-white border-y border-slate-100 py-16"
         >
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
               <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
                 About XROVIA
               </p>
