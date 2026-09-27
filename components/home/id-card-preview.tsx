@@ -44,7 +44,7 @@ export function IdCardPreview({ variant = "full" }: { variant?: Variant }) {
             className="absolute left-1/2 top-2 h-1.5 w-14 -translate-x-1/2 rounded-full bg-slate-700"
           />
           <img
-            src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+            src="/ChatGPT Image Sep 27, 2026, 04_32_11 PM.png"
             alt="XROVIA"
             className="h-7 w-auto object-contain"
           />
