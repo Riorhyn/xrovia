@@ -87,7 +87,7 @@ export async function POST(req: Request) {
         profile: true,
         organizationMemberships: {
           where: { status: "ACTIVE" },
-          select: { organizationId: true },
+          select: { id: true, organizationId: true, role: true },
         },
       },
     });
