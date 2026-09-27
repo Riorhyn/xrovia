@@ -149,7 +149,6 @@ export default async function RootLayout({
             <nav className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-2" aria-label="Footer">
               <Link href="/#search-id" className="transition hover:text-white">Search ID</Link>
               <Link href="/#benefits" className="transition hover:text-white">Member Benefits</Link>
-              <Link href="/admin" className="transition hover:text-white">Admin</Link>
               <Link href="/career/job-search" className="transition hover:text-white">Career Guides</Link>
               <Link href="/professional-profile" className="transition hover:text-white">Professional Profile</Link>
               <Link href="/feedback" className="transition hover:text-white">Feedback</Link>
