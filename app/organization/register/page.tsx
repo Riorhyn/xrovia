@@ -1,3 +1,4 @@
+import Image from "next/image";
 "use client";
 
 import { useState } from "react";
@@ -82,7 +83,7 @@ export default function OrganizationRegisterPage() {
     <main className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
         <div className="mb-8">
-          <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-blue-600 text-xl font-black text-white">X</div>
+          <Image src="/xrovia-logo-mark.webp" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
           <h1 className="text-3xl font-black tracking-tight text-slate-950">Register an organization</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Create an XROVIA organization workspace for universities, companies and other verified institutions. The registering person becomes the Organization Owner.</p>
         </div>
