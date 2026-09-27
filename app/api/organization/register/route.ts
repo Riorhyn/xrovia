@@ -16,10 +16,6 @@ function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70);
 }
 
-function getDomain(value: string) {
-  return value.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0].replace(/^www\./, "");
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -52,7 +48,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Enter a valid official organization email." }, { status: 400 });
     }
 
-    // emailMatch[1] is the domain after @.
     const emailDomain = emailMatch[1].replace(/^www\./, "").toLowerCase();
     const websiteDomain = websiteUrl.hostname.replace(/^www\./, "").toLowerCase();
 
@@ -61,6 +56,25 @@ export async function POST(req: Request) {
     }
     if (!(emailDomain === websiteDomain || emailDomain.endsWith("." + websiteDomain))) {
       return NextResponse.json({ error: "Your official email domain must match the organization website domain." }, { status: 400 });
+    }
+
+    // Do not let a second person create a second organization for the same official domain.
+    const existingOrganization = await prisma.organization.findFirst({
+      where: {
+        OR: [
+          { officialEmailDomain: websiteDomain },
+          { name: { equals: name, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true, name: true, slug: true, status: true },
+    });
+
+    if (existingOrganization) {
+      return NextResponse.json({
+        error: "This organization already exists on XROVIA. If you are an authorized representative, use the existing organization and request ownership instead of creating a second organization.",
+        organization: existingOrganization,
+        claimUrl: "/organization/claim?slug=" + encodeURIComponent(existingOrganization.slug),
+      }, { status: 409 });
     }
 
     const baseSlug = slugify(name) || "organization";
@@ -83,21 +97,11 @@ export async function POST(req: Request) {
       if (!passwordMatches) {
         return NextResponse.json({ error: "An XROVIA account already uses this email. Sign in with that account or use a different official organization email." }, { status: 409 });
       }
-      const existingMembership = await prisma.organizationMember.findFirst({
-        where: { userId: user.id, organization: { officialEmailDomain: emailDomain } },
-      });
-      if (existingMembership) {
-        return NextResponse.json({ error: "This account is already connected to an organization." }, { status: 409 });
-      }
       needsEmailVerification = !user.emailVerifiedAt;
     } else {
       const passwordHash = await bcrypt.hash(password, 12);
       user = await prisma.user.create({
-        data: {
-          email: officialEmail,
-          passwordHash,
-          country,
-        },
+        data: { email: officialEmail, passwordHash, country },
       });
       createdUser = true;
       needsEmailVerification = true;
@@ -107,15 +111,17 @@ export async function POST(req: Request) {
       data: {
         name,
         slug,
-        type: type as "UNIVERSITY" | "COLLEGE" | "COMPANY" | "TRAINING_PROVIDER" | "PROFESSIONAL_BODY" | "OTHER",
+        type: type as "UNIVERSITY" | "COMPANY" | "TRAINING_PROVIDER" | "PROFESSIONAL_BODY" | "OTHER",
         website: websiteUrl.toString().replace(/\/$/, ""),
         officialEmailDomain: websiteDomain,
         country,
         members: {
+          // Registration creates a normal member, NOT an owner.
+          // Ownership is granted only after a separate application is reviewed.
           create: {
             userId: user.id,
-            role: "OWNER",
-            jobTitle: "Organization Owner",
+            role: "REVIEWER",
+            jobTitle: "Organization account applicant",
           },
         },
       },
@@ -145,13 +151,16 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({
-      message: needsEmailVerification ? "Organization created. Verify your email to continue." : "Organization created.",
+      message: needsEmailVerification
+        ? "Organization request created. Verify your email to continue."
+        : "Organization request created.",
       email: officialEmail,
-      organization: { id: organization.id, name: organization.name, slug: organization.slug, status: organization.status },
+      organization,
       needsEmailVerification,
+      redirectTo: "/organization",
     }, { status: 201 });
   } catch (error) {
     console.error("Organization registration error:", error);
-    return NextResponse.json({ error: "Could not create the organization account. Please try again." }, { status: 500 });
+    return NextResponse.json({ error: "Could not create the organization request. Please try again." }, { status: 500 });
   }
 }
