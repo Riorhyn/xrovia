@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { getSession } from "../lib/auth/session";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { AccountSwitcher } from "@/components/auth/AccountSwitcher";
 
 export const dynamic = "force-dynamic";
 
@@ -107,12 +108,10 @@ export default async function RootLayout({
             <div className="flex items-center gap-2">
               {session ? (
                 <>
-                  <Link
-                    href={session.organizationId ? "/organization" : session.role === "ADMIN" ? "/admin" : "/dashboard"}
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800"
-                  >
-                    {session.organizationId ? "Organization Dashboard" : session.role === "ADMIN" ? "Admin Console" : "Dashboard"}
-                  </Link>
+                  <AccountSwitcher
+                    isAdmin={session.role === "ADMIN"}
+                    activeOrganizationId={session.organizationId}
+                  />
                   <LogoutButton />
                 </>
               ) : (
