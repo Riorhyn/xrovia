@@ -20,7 +20,7 @@ export async function GET(_req: Request, { params }: { params: { token: string }
     const request = found.requests[found.index];
     if (request.expiresAt && new Date(request.expiresAt).getTime() < Date.now() && request.status === "PENDING") return NextResponse.json({ error: "This verification request has expired." }, { status: 410 });
     return NextResponse.json({
-      request: { id: request.id, type: request.type, title: request.title, organizationName: request.organizationName, verifierEmail: request.verifierEmail, verifierRole: request.verifierRole, status: request.status, createdAt: request.createdAt, expiresAt: request.expiresAt, verifiedAt: request.verifiedAt },
+      request: { id: request.id, type: request.type, title: request.title, organizationName: request.organizationName, verifierRole: request.verifierRole, status: request.status, createdAt: request.createdAt, expiresAt: request.expiresAt, verifiedAt: request.verifiedAt },
       profile: { fullName: found.profile.fullName, professionalId: found.profile.professionalId, headline: found.profile.headline },
     });
   } catch (error) {
