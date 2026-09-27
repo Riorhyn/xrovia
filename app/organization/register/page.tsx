@@ -2,114 +2,79 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-const types = [
-  ["UNIVERSITY", "University / College"],
-  ["COMPANY", "Company / Employer"],
-  ["TRAINING_PROVIDER", "Training / Certification Provider"],
-  ["PROFESSIONAL_BODY", "Professional / Industry Body"],
-  ["OTHER", "Other Organization"],
-];
+const types=[["UNIVERSITY","University / College"],["COMPANY","Company / Employer"],["TRAINING_PROVIDER","Training / Certification Provider"],["PROFESSIONAL_BODY","Professional / Industry Body"],["OTHER","Other Organization"]];
 
-export default function OrganizationRegisterPage() {
-  const router = useRouter();
-  const [form, setForm] = useState({ name:"", type:"UNIVERSITY", website:"", officialEmail:"", country:"India", password:"" });
-  const [otp, setOtp] = useState("");
-  const [verifyStep, setVerifyStep] = useState(false);
-  const [organization, setOrganization] = useState<{name:string;slug:string} | null>(null);
-  const [existingOrganization, setExistingOrganization] = useState<{name:string;slug:string} | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function OrganizationRegisterPage(){
+  const params=useSearchParams();
+  const [mode,setMode]=useState(params.get("mode")==="verified"?"verified":"domain");
+  const [form,setForm]=useState({name:"",type:"UNIVERSITY",website:"",email:params.get("email")||"",country:"India",password:"",applicantName:"",jobTitle:"",department:"",employmentType:"",associationDuration:"",phone:"",authorizationReason:"",officialProfileUrl:"",evidenceUrl:"",evidenceDescription:"",code:""});
+  const [message,setMessage]=useState(""); const [error,setError]=useState(""); const [loading,setLoading]=useState(false);
 
-  function update(key: keyof typeof form, value: string) {
-    setForm(prev => ({ ...prev, [key]: value }));
+  function update(key:string,value:string){setForm(p=>({...p,[key]:value}));}
+  async function submitRequest(e:React.FormEvent){
+    e.preventDefault();setError("");setMessage("");setLoading(true);
+    try{
+      const r=await fetch("/api/organization/verification-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        name:form.name,type:form.type,website:form.website,country:form.country,contactEmail:form.email,applicantName:form.applicantName,jobTitle:form.jobTitle,department:form.department,employmentType:form.employmentType,associationDuration:form.associationDuration,phone:form.phone,authorizationReason:form.authorizationReason,officialProfileUrl:form.officialProfileUrl,evidenceUrl:form.evidenceUrl,evidenceDescription:form.evidenceDescription
+      })});
+      const d=await r.json(); if(!r.ok){setError(d.error||"Could not submit request.");return;}
+      setMessage("Request submitted. XROVIA will review the organization and send a one-time registration code to this same email after approval.");
+    }catch{setError("Something went wrong. Please try again.");}finally{setLoading(false);}
+  }
+  async function registerApproved(e:React.FormEvent){
+    e.preventDefault();setError("");setMessage("");setLoading(true);
+    try{
+      const r=await fetch("/api/organization/verified-registration",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:form.email,code:form.code,password:form.password})});
+      const d=await r.json();if(!r.ok){setError(d.error||"Registration failed.");return;}
+      window.location.href=d.redirectTo||"/organization";
+    }catch{setError("Something went wrong. Please try again.");}finally{setLoading(false);}
   }
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(""); setExistingOrganization(null); setLoading(true);
-    try {
-      const res = await fetch("/api/organization/register", {
-        method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form)
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.organization?.slug) setExistingOrganization(data.organization);
-        setError(data.error || "Registration failed.");
-        return;
-      }
-      setOrganization(data.organization);
-      if (data.needsEmailVerification) setVerifyStep(true);
-      else router.push(data.redirectTo || "/organization");
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally { setLoading(false); }
-  }
+  return <main className="mx-auto max-w-2xl px-5 py-12">
+    <h1 className="text-3xl font-black text-slate-950">Register an organization</h1>
+    <p className="mt-2 text-sm leading-6 text-slate-500">Organizations with an official domain can use domain-email verification. If your organization only has a personal email such as Gmail or Outlook, request XROVIA verification first.</p>
+    <div className="mb-7 mt-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+      <Link href="/register" className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white">Personal account</Link>
+      <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">Organization account</div>
+    </div>
+    <div className="mb-6 grid grid-cols-2 gap-2 rounded-xl border border-slate-200 p-1">
+      <button type="button" onClick={()=>setMode("domain")} className={mode==="domain"?"rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-bold text-white":"rounded-lg px-3 py-2.5 text-sm font-bold text-slate-600"}>I have an organization email</button>
+      <button type="button" onClick={()=>setMode("verified")} className={mode==="verified"?"rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-bold text-white":"rounded-lg px-3 py-2.5 text-sm font-bold text-slate-600"}>I only have personal email</button>
+    </div>
 
-  async function verify(e: React.FormEvent) {
-    e.preventDefault();
-    setError(""); setLoading(true);
-    try {
-      const res = await fetch("/api/auth/verify-email", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({email:form.officialEmail, code:otp})
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || "Verification failed."); return; }
-      window.location.href = data.redirectTo || "/organization";
-    } catch {
-      setError("Verification failed. Please try again.");
-    } finally { setLoading(false); }
-  }
-
-  if (verifyStep) {
-    return (
-      <main className="mx-auto max-w-lg px-4 py-16">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="mb-6 grid h-12 w-12 place-items-center rounded-xl bg-blue-600 text-xl font-black text-white">X</div>
-          <h1 className="text-3xl font-black text-slate-950">Verify organization email</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-500">
-            We sent a 6-digit code to <strong>{form.officialEmail}</strong>. Email verification confirms control of this address; it does not automatically make you the organization owner.
-          </p>
-          <form onSubmit={verify} className="mt-7 space-y-5">
-            <input value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,""))} maxLength={6} inputMode="numeric" placeholder="000000" required className="w-full rounded-xl border border-slate-300 px-4 py-4 text-center text-2xl tracking-[0.5em] text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" />
-            {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-            <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3 font-bold text-white hover:bg-blue-700 disabled:opacity-50">{loading ? "Verifying..." : "Verify and continue"}</button>
-          </form>
-          {organization && <p className="mt-5 text-xs text-slate-500">Organization ID: <span className="font-mono font-bold text-slate-700">{organization.slug}</span></p>}
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="mx-auto max-w-[500px] px-5 py-12">
-      <h1 className="text-3xl font-black tracking-tight text-slate-950">Register an organization</h1>
-      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-        Create an XROVIA organization request. Registration gives you access to the workspace, but ownership is granted only after a separate XROVIA verification process.
-      </p>
-
-      <div className="mb-7 mt-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
-        <Link href="/register" className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900">Personal account</Link>
-        <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">Organization account</div>
-      </div>
-
-      <form onSubmit={submit} className="space-y-5">
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization name</label><input value={form.name} onChange={e=>update("name",e.target.value)} required placeholder="e.g. ABC University" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Organization type</label><select value={form.type} onChange={e=>update("type",e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500">{types.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></div>
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Official website</label><input type="url" value={form.website} onChange={e=>update("website",e.target.value)} required placeholder="https://example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Official organization email</label><input type="email" value={form.officialEmail} onChange={e=>update("officialEmail",e.target.value)} required placeholder="admin@example.edu" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/><p className="mt-1.5 text-xs text-slate-500">Use an organization-controlled email. The email domain must match the organization website.</p></div>
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Country</label><input value={form.country} onChange={e=>update("country",e.target.value)} required placeholder="India" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-        <div><label className="mb-2 block text-sm font-bold text-slate-700">Account password</label><input type="password" value={form.password} onChange={e=>update("password",e.target.value)} minLength={8} required placeholder="Minimum 8 characters" className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-blue-500"/></div>
-        {error && <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}{existingOrganization && <div className="mt-3"><Link href={"/organization/claim?slug="+encodeURIComponent(existingOrganization.slug)} className="font-bold text-blue-700 underline">Sign in and request ownership of this existing organization</Link></div>}</div>}
-        <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50">{loading ? "Creating organization request..." : "Create organization request"}</button>
-      </form>
-
-      <div className="mt-6 text-center text-sm text-slate-500">
-        Already have an organization account?{" "}
-        <Link href="/organization/login" className="font-bold text-blue-600 hover:underline">Organization login</Link>
-      </div>
-    </main>
-  );
+    {mode==="domain" ? <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+      <h2 className="font-black text-slate-900">Official organization email registration</h2>
+      <p className="mt-2 text-sm text-slate-600">Use the existing organization registration process when your email domain is controlled by the organization.</p>
+      <Link href="/organization/register" className="mt-4 inline-flex rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white">Continue with organization email</Link>
+      <p className="mt-4 text-xs text-slate-500">Enter the organization details below on the standard form. If you do not have an official domain email, choose the other option above.</p>
+      <DomainForm form={form} update={update}/>
+    </div> :
+    <form onSubmit={registerApproved} className="space-y-5">
+      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5"><h2 className="font-black text-slate-900">Approved registration</h2><p className="mt-2 text-sm leading-6 text-slate-600">Use the same personal email that you submitted to XROVIA. You can continue only after XROVIA approves your verification request and sends a one-time code to that email.</p></div>
+      <Field label="Email"><input type="email" value={form.email} onChange={e=>update("email",e.target.value)} required className="input"/></Field>
+      <Field label="XROVIA registration code"><input value={form.code} onChange={e=>update("code",e.target.value.replace(/\D/g,""))} inputMode="numeric" maxLength={8} required placeholder="8-digit code" className="input text-center tracking-[0.35em]"/></Field>
+      <Field label="Create organization account password"><input type="password" value={form.password} onChange={e=>update("password",e.target.value)} minLength={8} required className="input"/></Field>
+      {error&&<Alert text={error}/>} {message&&<Success text={message}/>}
+      <button disabled={loading} className="w-full rounded-xl bg-blue-600 py-3.5 font-bold text-white disabled:opacity-50">{loading?"Creating organization...":"Complete organization registration"}</button>
+      <p className="text-xs leading-5 text-slate-500">Your personal email remains the account/contact email. The code is only proof that XROVIA approved this organization registration request.</p>
+    </form>}
+    {mode==="verified"&&<button type="button" onClick={()=>setMode("domain")} className="mt-5 text-sm font-bold text-blue-600 hover:underline">Back to organization email registration</button>}
+  </main>;
 }
+
+function DomainForm({form,update}:{form:any;update:(k:string,v:string)=>void}){
+  return <div className="mt-5 space-y-4">
+    <Field label="Organization name"><input value={form.name} onChange={e=>update("name",e.target.value)} className="input"/></Field>
+    <Field label="Organization type"><select value={form.type} onChange={e=>update("type",e.target.value)} className="input bg-white">{types.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></Field>
+    <Field label="Official website"><input type="url" value={form.website} onChange={e=>update("website",e.target.value)} className="input" placeholder="https://example.edu"/></Field>
+    <Field label="Official organization email"><input type="email" value={form.email} onChange={e=>update("email",e.target.value)} className="input" placeholder="admin@example.edu"/></Field>
+    <Field label="Country"><input value={form.country} onChange={e=>update("country",e.target.value)} className="input"/></Field>
+    <Field label="Account password"><input type="password" value={form.password} onChange={e=>update("password",e.target.value)} className="input"/></Field>
+    <p className="text-xs text-slate-500">The standard domain-email flow is preserved. If this email is Gmail/Outlook/etc., use “I only have personal email” instead.</p>
+  </div>;
+}
+function Field({label,children}:{label:string;children:React.ReactNode}){return <div><label className="mb-2 block text-sm font-bold text-slate-700">{label}</label>{children}</div>}
+function Alert({text}:{text:string}){return <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{text}</div>}
+function Success({text}:{text:string}){return <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{text}</div>}
