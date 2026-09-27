@@ -282,6 +282,18 @@ export default function RegisterPage() {
         Create your XROVIA professional identity.
       </p>
 
+      <div className="mb-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+        <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">
+          Personal account
+        </div>
+        <Link
+          href="/organization/register"
+          className="rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-white hover:text-slate-900"
+        >
+          Organization account
+        </Link>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "18px" }}>
           <label
