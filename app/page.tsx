@@ -51,7 +51,7 @@ export default async function HomePage() {
         name: "XROVIA",
         alternateName: "Xrovia",
         url: "https://xrovia.com/",
-        logo: "https://xrovia.com/icon.svg",
+        logo: "https://xrovia.com/xrovia-logo.webp",
         description:
           "XROVIA is a professional identity platform for building, managing, verifying, and sharing digital career profiles and professional records.",
       },
