@@ -23,10 +23,32 @@ export function ProfileCompletionBar() {
   }, []);
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-      <div className="flex justify-between items-center text-xs font-bold"><span className="text-slate-700">Profile Completion Status</span><span className="text-blue-600 font-mono">{percentage}% Completed</span></div>
-      <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-600 transition-all duration-500 rounded-full" style={{ width: percentage + "%" }} /></div>
-      <p className="text-[11px] text-slate-400">Add your photo, summary, achievements, publications, hobbies, and social links to reach 100%.</p>
-    </div>
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 className="text-sm font-black text-slate-900">Profile completion</h2>
+          <p className="mt-0.5 text-[11px] text-slate-500">Keep the record useful by filling the important sections.</p>
+        </div>
+        <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 font-mono text-xs font-bold text-blue-700">
+          {percentage}% complete
+        </span>
+      </div>
+      <div
+        className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-slate-100"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percentage}
+        aria-label="Profile completion"
+      >
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-500"
+          style={{ width: percentage + "%" }}
+        />
+      </div>
+      <p className="mt-3 text-[11px] leading-5 text-slate-400">
+        Add your photo, summary, achievements, publications, hobbies, and social links to reach 100%.
+      </p>
+    </section>
   );
 }
