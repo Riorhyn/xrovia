@@ -150,7 +150,7 @@ export const DigitalIdCard: React.FC<DigitalIdCardProps> = ({
             </div>
 
             <div className="text-center pt-4 border-t border-slate-800 text-[11px] text-slate-400">
-              <p>PROVIA Universal Career Identity</p>
+              <p>XROVIA Universal Career Identity</p>
               <p className="text-[9px] text-slate-500 mt-0.5">Tap or click anywhere to flip card</p>
             </div>
           </div>
