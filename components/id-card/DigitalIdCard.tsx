@@ -41,7 +41,7 @@ export const DigitalIdCard: React.FC<DigitalIdCardProps> = ({
               <div className="flex justify-between items-start border-b border-slate-700 pb-4">
                 <div className="flex items-center space-x-2">
                   <Image
-                    src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+                    src="/ChatGPT Image Sep 27, 2026, 04_32_11 PM.png"
                     alt="XROVIA"
                     width={96}
                     height={54}
