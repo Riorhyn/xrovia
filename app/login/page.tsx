@@ -60,11 +60,6 @@ export default function LoginPage() {
         <p className="text-center text-sm text-slate-500 mt-6">Don&apos;t have an account?{" "}
           <Link href="/register" className="text-blue-600 font-semibold hover:underline">Create Professional ID</Link>
         </p>
-        <p className="text-center text-sm text-slate-500 mt-3">
-          <Link href="/organization/login" className="font-semibold text-slate-700 hover:underline">Organization login</Link>
-          <span className="mx-2 text-slate-300">·</span>
-          <Link href="/organization/register" className="font-semibold text-slate-700 hover:underline">Register organization</Link>
-        </p>
       </div>
     </div>
   );
