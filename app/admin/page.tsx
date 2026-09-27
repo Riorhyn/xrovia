@@ -67,7 +67,7 @@ export default async function AdminDashboardPage() {
 
       {/* Profile Reports Table */}
       <div className="flex flex-wrap gap-3">
-        <a href="/admin/users" className="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Manage Users</a>
+        <a href="/admin/users" className="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Manage Users</a>\n        <a href="/admin/organization-verification" className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Organization Verification Requests</a>\n        <a href="/admin/organization-ownership" className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Ownership Review</a>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
