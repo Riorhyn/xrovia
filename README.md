@@ -18,3 +18,6 @@ Website: https://xrovia.com/
 - Student project portfolio: https://xrovia.com/project-portfolio-for-students
 
 XROVIA is designed to complement CVs, resumes, portfolios, and other professional platforms by giving people one place to maintain their education, experience, skills, projects, certifications, achievements, and supporting evidence.
+
+
+<!-- Deployment trigger: 2026-09-27 -->
