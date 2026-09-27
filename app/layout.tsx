@@ -51,6 +51,10 @@ export const metadata = {
       "max-video-preview": -1,
     },
   },
+  icons: {
+    icon: "/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
+    apple: "/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
+  },
   openGraph: {
     type: "website",
     url: "https://xrovia.com/",
@@ -59,6 +63,14 @@ export const metadata = {
     description:
       "Create, manage, verify, and share your professional identity with one permanent Professional ID.",
     locale: "en_US",
+    images: [
+      {
+        url: "/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png",
+        width: 2048,
+        height: 1152,
+        alt: "XROVIA logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -82,14 +94,13 @@ export default async function RootLayout({
           <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link href="/" className="group flex items-center gap-2.5" aria-label="XROVIA home">
               <Image
-                src="/xrovia-logo-mark.webp"
+                src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
                 alt="XROVIA"
-                width={38}
-                height={38}
+                width={160}
+                height={90}
                 priority
-                className="h-9 w-9 object-contain transition-transform group-hover:scale-105"
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
               />
-              <span className="text-xl font-black tracking-[-0.03em] text-slate-950">XROVIA</span>
             </Link>
 
             <nav className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/80 p-1 text-sm font-semibold text-slate-600 md:flex">
@@ -142,13 +153,12 @@ export default async function RootLayout({
             <div>
               <div className="flex items-center gap-2.5">
                 <Image
-                  src="/xrovia-logo-mark.webp"
-                  alt=""
-                  width={30}
-                  height={30}
-                  className="h-7 w-7 object-contain"
+                  src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+                  alt="XROVIA"
+                  width={140}
+                  height={79}
+                  className="h-8 w-auto object-contain"
                 />
-                <span className="font-black tracking-wider text-white">XROVIA</span>
               </div>
               <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
                 Your permanent professional identity and career record.
