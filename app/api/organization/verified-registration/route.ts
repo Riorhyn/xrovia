@@ -17,14 +17,14 @@ export async function POST(req:Request){
     if(!(await bcrypt.compare(code,request.registrationCodeHash)))return NextResponse.json({error:"Invalid registration code."},{status:400});
 
     const existingUser=await prisma.user.findUnique({where:{email}});
-    if(existingUser)return NextResponse.json({error:"An XROVIA account already uses this email. Sign in with that account instead of creating another account."},{status:409});
+    if(existingUser && !(await bcrypt.compare(password,existingUser.passwordHash))) return NextResponse.json({error:"This email already has an XROVIA account. Enter that account password to add the verified organization to the same account."},{status:409});
 
     const existingOrg=await prisma.organization.findFirst({where:{name:{equals:request.name,mode:"insensitive"}}});
     if(existingOrg)return NextResponse.json({error:"This organization already exists on XROVIA."},{status:409});
 
     const passwordHash=await bcrypt.hash(password,12);
     const result=await prisma.$transaction(async tx=>{
-      const user=await tx.user.create({data:{email,passwordHash,country:request.country,emailVerifiedAt:new Date()}});
+      const user=existingUser || await tx.user.create({data:{email,passwordHash,country:request.country,emailVerifiedAt:new Date()}});\n      if(existingUser && !existingUser.emailVerifiedAt) await tx.user.update({where:{id:existingUser.id},data:{emailVerifiedAt:new Date()}});
       const base=slugify(request.name)||"organization"; let slug=base;
       for(let i=0;i<5;i++){const found=await tx.organization.findUnique({where:{slug}});if(!found)break;slug=base+"-"+String(1000+i);}
       if(await tx.organization.findUnique({where:{slug}}))throw new Error("Could not create unique organization identifier.");
