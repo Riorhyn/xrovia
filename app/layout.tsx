@@ -1,5 +1,6 @@
 import "./globals.css";
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { getSession } from "../lib/auth/session";
@@ -79,9 +80,14 @@ export default async function RootLayout({
         <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/85 shadow-[0_1px_0_rgba(15,23,42,0.02)] backdrop-blur-xl">
           <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link href="/" className="group flex items-center gap-2.5" aria-label="XROVIA home">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-sm font-black tracking-wider text-white shadow-sm shadow-blue-600/20 transition-transform group-hover:scale-105">
-                X
-              </div>
+              <Image
+                src="/xrovia-logo-mark.webp"
+                alt="XROVIA"
+                width={38}
+                height={38}
+                priority
+                className="h-9 w-9 object-contain transition-transform group-hover:scale-105"
+              />
               <span className="text-xl font-black tracking-[-0.03em] text-slate-950">XROVIA</span>
             </Link>
 
@@ -136,9 +142,13 @@ export default async function RootLayout({
           <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_auto] lg:px-8 lg:py-14">
             <div>
               <div className="flex items-center gap-2.5">
-                <div className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-xs font-black text-white">
-                  X
-                </div>
+                <Image
+                  src="/xrovia-logo-mark.webp"
+                  alt=""
+                  width={30}
+                  height={30}
+                  className="h-7 w-7 object-contain"
+                />
                 <span className="font-black tracking-wider text-white">XROVIA</span>
               </div>
               <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
