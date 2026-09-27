@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { randomInt } from "crypto";
 
 const TYPES = new Set(["UNIVERSITY","COMPANY","TRAINING_PROVIDER","PROFESSIONAL_BODY","OTHER"]);
 const PERSONAL_EMAIL_DOMAINS = new Set(["gmail.com","googlemail.com","yahoo.com","yahoo.co.in","outlook.com","hotmail.com","live.com","msn.com","icloud.com","me.com","proton.me","protonmail.com","mail.com","aol.com","gmx.com","zoho.com"]);
