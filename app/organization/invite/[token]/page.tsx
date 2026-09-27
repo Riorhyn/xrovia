@@ -1,3 +1,4 @@
+import Image from "next/image";
 "use client";
 
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ export default function OrganizationInvitePage({ params }: { params:{token:strin
     <main className="mx-auto max-w-lg px-4 py-16">
       <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="mb-7">
-          <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-blue-600 text-xl font-black text-white">X</div>
+          <Image src="/xrovia-logo-mark.webp" alt="XROVIA" width={48} height={48} className="h-12 w-12 object-contain" />
           <h1 className="text-3xl font-black text-slate-950">Join an organization</h1>
           {info && <p className="mt-2 text-sm leading-6 text-slate-500"><strong>{info.organization.name}</strong> invited you as an <strong>{info.role}</strong>.</p>}
         </div>
