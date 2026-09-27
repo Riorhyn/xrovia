@@ -30,9 +30,17 @@ export async function POST(req: Request) {
       where:{contactEmail,status:{in:["UNDER_REVIEW","MORE_INFORMATION_REQUIRED","APPROVED"]}},
       orderBy:{createdAt:"desc"}
     });
-    if(existing) return NextResponse.json({error:"You already have an active XROVIA organization verification request for this email.",requestId:existing.id,status:existing.status},{status:409});
+    if(existing?.status==="UNDER_REVIEW" || existing?.status==="APPROVED")
+      return NextResponse.json({error:"You already have an active XROVIA organization verification request for this email.",requestId:existing.id,status:existing.status},{status:409});
 
-    const request=await prisma.organizationVerificationRequest.create({data:{
+    const request=existing?.status==="MORE_INFORMATION_REQUIRED"
+      ? await prisma.organizationVerificationRequest.update({where:{id:existing.id},data:{
+          name,type:type as any,website:website||null,country,contactEmail,applicantName,jobTitle,
+          department:department||null,employmentType:employmentType||null,associationDuration:associationDuration||null,
+          phone:phone||null,authorizationReason,officialProfileUrl:officialProfileUrl||null,evidenceUrl:evidenceUrl||null,
+          evidenceDescription:evidenceDescription||null,status:"UNDER_REVIEW",reviewNote:null,reviewedById:null,reviewedAt:null
+        },select:{id:true,status:true,createdAt:true}})
+      : await prisma.organizationVerificationRequest.create({data:{
       name,type:type as any,website:website||null,country,contactEmail,applicantName,jobTitle,
       department:department||null,employmentType:employmentType||null,associationDuration:associationDuration||null,
       phone:phone||null,authorizationReason,officialProfileUrl:officialProfileUrl||null,evidenceUrl:evidenceUrl||null,
