@@ -54,6 +54,15 @@ export async function POST(req: Request, { params }: { params: { token: string }
       if (!(await bcrypt.compare(password, user.passwordHash))) {
         return NextResponse.json({ error: "Incorrect account password." }, { status: 401 });
       }
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerifiedAt: user.emailVerifiedAt || new Date(),
+          emailVerificationCodeHash: null,
+          emailVerificationExpiresAt: null,
+          emailVerificationSentAt: null,
+        },
+      });
     } else {
       if (!fullName) {
         return NextResponse.json({ error: "Full name is required for a new staff account." }, { status: 400 });
