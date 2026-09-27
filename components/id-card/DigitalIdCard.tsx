@@ -40,10 +40,13 @@ export const DigitalIdCard: React.FC<DigitalIdCardProps> = ({
               {/* Header */}
               <div className="flex justify-between items-start border-b border-slate-700 pb-4">
                 <div className="flex items-center space-x-2">
-                  <div className="w-7 h-7 rounded bg-blue-600 flex items-center justify-center font-black tracking-widest text-xs">
-                    P
-                  </div>
-                  <span className="font-bold tracking-wider text-sm">PROVIA</span>
+                  <Image
+                    src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
+                    alt="XROVIA"
+                    width={96}
+                    height={54}
+                    className="h-7 w-auto object-contain"
+                  />
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Professional ID</div>
@@ -96,11 +99,11 @@ export const DigitalIdCard: React.FC<DigitalIdCardProps> = ({
             <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
               <div className="flex flex-col text-[11px] text-slate-400">
                 <span className="font-medium text-slate-300">Scan to verify profile</span>
-                <span className="text-[10px] text-slate-500 font-mono">provia.id/{profile.professionalId}</span>
+                <span className="text-[10px] text-slate-500 font-mono">xrovia.com/{profile.professionalId}</span>
               </div>
               <div className="bg-white p-1 rounded-lg shadow">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrDataUrl} alt="Provia Profile QR" className="w-16 h-16" />
+                <img src={qrDataUrl} alt="XROVIA Profile QR" className="w-16 h-16" />
               </div>
             </div>
           </div>
