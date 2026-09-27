@@ -1,6 +1,6 @@
-import Image from "next/image";
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type InviteInfo = { organization:{name:string;slug:string}; email:string; role:string; existingAccount:boolean };
