@@ -23,6 +23,16 @@ export function Hero({ isAuthenticated }: { isAuthenticated?: boolean }) {
       </div>
 
       <Container>
+        <Link
+          href={ROUTES.register}
+          className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm shadow-sm transition hover:border-blue-200 hover:bg-blue-100 sm:px-5"
+        >
+          <span className="font-bold text-blue-900">
+            🎉 Create your XROVIA Professional ID — Free
+          </span>
+          <span className="shrink-0 font-extrabold text-blue-700">Register Free →</span>
+        </Link>
+
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-6">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-xs font-bold text-blue-700 shadow-sm">
