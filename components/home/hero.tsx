@@ -49,7 +49,7 @@ export function Hero({ isAuthenticated }: { isAuthenticated?: boolean }) {
                 </ButtonLink>
               ) : (
                 <ButtonLink href={ROUTES.register} size="md" variant="primary">
-                  Create Your Professional ID — Free
+                  Create Your Professional ID
                 </ButtonLink>
               )}
 
