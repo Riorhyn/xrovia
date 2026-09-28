@@ -36,6 +36,9 @@ export async function POST(request: Request) {
   }
 
   const targetUserId = body.targetUserId ? String(body.targetUserId) : null;
+  if (targetUserId && targetUserId === session.userId) {
+    return NextResponse.json({ error: "You cannot send a collaboration request to yourself." }, { status: 400 });
+  }
   if ((type === "ROLE_PROPOSAL" || type === "ADVISOR_ASSOCIATION") && !targetUserId && !body.proposedEmail) {
     return NextResponse.json({ error: "Select an existing Professional ID or provide the person's details." }, { status: 400 });
   }
@@ -62,6 +65,12 @@ export async function POST(request: Request) {
       note: body.note ? String(body.note).trim() : null,
     },
   });
+
+  if (type === "ROLE_PROPOSAL" && targetUserId) {
+    await prisma.collaborationRequestApproval.create({
+      data: { requestId: created.id, userId: targetUserId },
+    });
+  }
 
   if (type === "ADVISOR_ASSOCIATION") {
     const approvalUserIds = Array.from(new Set([
@@ -94,7 +103,14 @@ export async function GET() {
       ],
     },
     include: {
-      project: { select: { id: true, name: true, status: true } },
+      project: {
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          members: { select: { userId: true, status: true, role: true } },
+        },
+      },
       requester: { include: { profile: { select: { fullName: true, professionalId: true } } } },
       targetUser: { include: { profile: { select: { fullName: true, professionalId: true } } } },
       approvals: { include: { user: { include: { profile: { select: { fullName: true, professionalId: true } } } } } },
@@ -102,7 +118,24 @@ export async function GET() {
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json({ requests });
+  const enriched = requests.map((item) => {
+    const targetApproval = item.approvals.find((a) => a.userId === item.targetUserId);
+    const isTarget = item.targetUserId === session.userId;
+    const isManager = item.project.members.some(
+      (m) => m.userId === session.userId && m.status === "CONFIRMED" && ["Team Leader", "Co-Leader"].includes(m.role)
+    );
+
+    return {
+      ...item,
+      canReview: item.type === "ADVISOR_ASSOCIATION"
+        ? item.approvals.some((a) => a.userId === session.userId)
+        : isTarget || isManager,
+      targetAccepted: targetApproval?.status === "APPROVED",
+      targetRejected: targetApproval?.status === "REJECTED",
+    };
+  });
+
+  return NextResponse.json({ requests: enriched });
 }
 
 export async function PATCH(request: Request) {
@@ -157,14 +190,97 @@ export async function PATCH(request: Request) {
   }
 
   const manager = await canManage(item.projectId, session.userId);
-  if (!manager) return NextResponse.json({ error: "Only the project leader can review this request." }, { status: 403 });
+  const targetApproval = item.targetUserId
+    ? item.approvals.find((a) => a.userId === item.targetUserId)
+    : null;
+  const isTarget = item.targetUserId === session.userId;
+
+  if (item.type === "ROLE_PROPOSAL") {
+    if (!isTarget && !manager) {
+      return NextResponse.json({ error: "Only the proposed collaborator or project leader can review this request." }, { status: 403 });
+    }
+
+    if (isTarget) {
+      if (!targetApproval) {
+        return NextResponse.json({ error: "This collaboration request is not awaiting your response." }, { status: 403 });
+      }
+
+      await prisma.collaborationRequestApproval.update({
+        where: { id: targetApproval.id },
+        data: {
+          status: decision === "APPROVE" ? "APPROVED" : "REJECTED",
+          reviewedAt: new Date(),
+        },
+      });
+
+      if (decision === "REJECT") {
+        const updated = await prisma.collaborationRequest.update({
+          where: { id: requestId },
+          data: { status: "REJECTED", reviewedById: session.userId, reviewedAt: new Date() },
+        });
+        return NextResponse.json({ request: updated, message: "You declined the collaboration request." });
+      }
+
+      return NextResponse.json({
+        message: "You accepted the proposed collaboration. The project leader must now confirm your membership.",
+      });
+    }
+
+    if (!manager) {
+      return NextResponse.json({ error: "Only the project leader can confirm this collaboration." }, { status: 403 });
+    }
+
+    if (!targetApproval || targetApproval.status !== "APPROVED") {
+      return NextResponse.json({ error: "The collaborator must accept the request before you can confirm the relationship." }, { status: 409 });
+    }
+
+    const userId = item.targetUserId;
+    if (!userId) return NextResponse.json({ error: "A collaborator is required." }, { status: 400 });
+
+    await prisma.collaborationMember.upsert({
+      where: { projectId_userId: { projectId: item.projectId, userId } },
+      create: {
+        projectId: item.projectId,
+        userId,
+        role: item.proposedRole || "Member",
+        responsibility: item.proposedResponsibility || null,
+        status: "CONFIRMED",
+        confirmedAt: new Date(),
+      },
+      update: {
+        role: item.proposedRole || "Member",
+        responsibility: item.proposedResponsibility || null,
+        status: "CONFIRMED",
+        confirmedAt: new Date(),
+      },
+    });
+
+    await prisma.collaborationProject.update({
+      where: { id: item.projectId },
+      data: { status: "TEAM_CONFIRMED" },
+    });
+
+    const updated = await prisma.collaborationRequest.update({
+      where: { id: requestId },
+      data: { status: "APPROVED", reviewedById: session.userId, reviewedAt: new Date() },
+    });
+
+    return NextResponse.json({ request: updated, message: "Collaboration confirmed. The member is now part of the project team." });
+  }
+
+  if (!manager) {
+    return NextResponse.json({ error: "Only the project leader can review this request." }, { status: 403 });
+  }
 
   if (decision === "REJECT") {
-    const updated = await prisma.collaborationRequest.update({ where: { id: requestId }, data: { status: "REJECTED", reviewedById: session.userId, reviewedAt: new Date() } });
+    const updated = await prisma.collaborationRequest.update({
+      where: { id: requestId },
+      data: { status: "REJECTED", reviewedById: session.userId, reviewedAt: new Date() },
+    });
     return NextResponse.json({ request: updated });
   }
 
-  if (item.type === "JOIN_PROJECT" || item.type === "ROLE_PROPOSAL") {
+  if (item.type === "JOIN_PROJECT") {
     const userId = item.targetUserId;
     if (userId) {
       await prisma.collaborationMember.upsert({
@@ -176,6 +292,9 @@ export async function PATCH(request: Request) {
     }
   }
 
-  const updated = await prisma.collaborationRequest.update({ where: { id: requestId }, data: { status: "APPROVED", reviewedById: session.userId, reviewedAt: new Date() } });
+  const updated = await prisma.collaborationRequest.update({
+    where: { id: requestId },
+    data: { status: "APPROVED", reviewedById: session.userId, reviewedAt: new Date() },
+  });
   return NextResponse.json({ request: updated });
 }
