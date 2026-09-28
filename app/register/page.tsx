@@ -275,7 +275,7 @@ export default function RegisterPage() {
           fontWeight: "bold",
         }}
       >
-        Create Professional ID
+        Create Your Professional ID — Free
       </h1>
 
       <p style={{ color: "#64748b", marginBottom: "28px" }}>
@@ -464,7 +464,7 @@ export default function RegisterPage() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "Creating account..." : "Create account"}
+            {loading ? "Creating account..." : "Register Free"}
           </button>
         )}
 
