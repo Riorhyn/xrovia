@@ -281,9 +281,6 @@ export default function RegisterPage() {
       <p style={{ color: "#64748b", marginBottom: "10px" }}>
         Create your XROVIA professional identity.
       </p>
-      <p style={{ color: "#2563eb", marginBottom: "28px", fontSize: "14px", fontWeight: 700 }}>
-        Registration is currently free.
-      </p>
 
       <div className="mb-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
         <div className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-900 shadow-sm">
