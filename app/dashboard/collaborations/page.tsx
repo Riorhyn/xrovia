@@ -119,7 +119,7 @@ export default function CollaborationsPage() {
           {projects.map(p => (
             <article key={p.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between gap-3">
-                <div><h2 className="text-lg font-black text-slate-900">{p.name}</h2><p className="mt-1 text-xs font-semibold text-slate-400">{p.status.replaceAll("_"," ")}</p></div>
+                <div><Link href={"/project/" + p.id} className="text-lg font-black text-slate-900 hover:text-blue-700">{p.name}</Link><p className="mt-1 text-xs font-semibold text-slate-400">{p.status.replaceAll("_"," ")}</p></div>
                 {p.status === "TEAM_CONFIRMED" ? <CheckCircle2 className="h-5 w-5 text-emerald-600" /> : <Clock3 className="h-5 w-5 text-amber-500" />}
               </div>
               {p.description && <p className="mt-4 text-sm leading-6 text-slate-600">{p.description}</p>}
