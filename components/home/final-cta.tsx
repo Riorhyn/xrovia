@@ -11,6 +11,9 @@ export function FinalCta({ isAuthenticated }: { isAuthenticated: boolean }) {
         <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-200">
           Get one Professional ID and keep your career information in one place.
         </p>
+        <p className="mt-3 text-sm font-bold text-blue-300">
+          Free to register. Start building your professional identity today.
+        </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           {isAuthenticated ? (
             <>
