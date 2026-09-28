@@ -26,6 +26,7 @@ export default function CollaborationsPage() {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<any[]>([]);
   const [invite, setInvite] = useState({ role: "Member", responsibility: "" });
+  const [external, setExternal] = useState({ name: "", email: "", role: "Member", responsibility: "" });
   const [message, setMessage] = useState("");
 
   const load = async () => {
@@ -75,6 +76,18 @@ export default function CollaborationsPage() {
     await load();
   };
 
+  const sendExternal = async () => {
+    if (!selectedProject || !external.name.trim()) return;
+    const res = await fetch("/api/collaborations/requests", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectId: selectedProject.id, type: "ROLE_PROPOSAL", proposedName: external.name, proposedEmail: external.email, proposedRole: external.role, proposedResponsibility: external.responsibility }),
+    });
+    const data = await res.json();
+    setMessage(res.ok ? "External collaborator recorded as a proposed relationship. They are not treated as a confirmed XROVIA member until they join and the relationship is approved." : (data.error || "Unable to record collaborator."));
+    setExternal({ name: "", email: "", role: "Member", responsibility: "" });
+    await load();
+  };
+
   const isLeader = (p: Project) => p.members.some(m => m.role === "Team Leader" && m.status === "CONFIRMED");
 
   return (
@@ -121,10 +134,23 @@ export default function CollaborationsPage() {
         {selectedProject && (
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between gap-3"><div><h2 className="text-lg font-black text-slate-900">Manage {selectedProject.name}</h2><p className="text-sm text-slate-500">Invite a person or propose their responsibility. Team relationships become confirmed only through the approval flow.</p></div><button onClick={() => setSelectedProject(null)} className="text-sm font-bold text-slate-500">Close</button></div>
-            <div className="mt-5 grid gap-4 md:grid-cols-[1fr_180px_1fr]">
+            <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Existing XROVIA professional</p>
+              <div className="mt-3 grid gap-4 md:grid-cols-[1fr_180px_1fr]">
               <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name or Professional ID" className="w-full rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm" />{users.length>0 && <div className="absolute z-20 mt-2 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-xl">{users.map(u=><button key={u.id} onClick={()=>sendRequest(u.id,invite.role,invite.responsibility)} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-50"><p className="text-sm font-bold text-slate-800">{u.profile?.fullName}</p><p className="text-xs text-slate-500">{u.profile?.professionalId} · {u.profile?.headline || "Professional"}</p></button>)}</div>}</div>
               <select value={invite.role} onChange={e=>setInvite({...invite,role:e.target.value})} className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm"><option>Member</option><option>Mechanical Designer</option><option>Engineer</option><option>Developer</option><option>Researcher</option><option>Analyst</option><option>Project Manager</option><option>Coordinator</option><option>Faculty Advisor</option><option>Other</option></select>
               <input value={invite.responsibility} onChange={e=>setInvite({...invite,responsibility:e.target.value})} placeholder="Responsibility" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+            </div>
+            </div>
+            <div className="mt-5 border-t border-slate-200 pt-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Person not on XROVIA yet</p>
+              <p className="mt-1 text-xs text-slate-500">Record the proposed relationship without creating a profile or claiming their identity.</p>
+              <div className="mt-3 grid gap-3 md:grid-cols-4">
+                <input value={external.name} onChange={e=>setExternal({...external,name:e.target.value})} placeholder="Full name" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+                <input value={external.email} onChange={e=>setExternal({...external,email:e.target.value})} placeholder="Email (optional)" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+                <input value={external.responsibility} onChange={e=>setExternal({...external,responsibility:e.target.value})} placeholder="Responsibility" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+                <button onClick={sendExternal} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white">Record Proposed Member</button>
+              </div>
             </div>
           </section>
         )}
