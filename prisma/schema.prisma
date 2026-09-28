@@ -62,6 +62,7 @@ model User {
   collaborationRequestsSent CollaborationRequest[] @relation("CollaborationRequestRequester")
   collaborationRequestsReceived CollaborationRequest[] @relation("CollaborationRequestTarget")
   collaborationRequestsReviewed CollaborationRequest[] @relation("CollaborationRequestReviewer")
+  collaborationRequestApprovals CollaborationRequestApproval[] @relation("CollaborationApprovalUser")
   @@index([email])
 }
 
@@ -530,7 +531,21 @@ model CollaborationRequest {
   requester User @relation("CollaborationRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
   targetUser User? @relation("CollaborationRequestTarget", fields: [targetUserId], references: [id], onDelete: SetNull)
   reviewedBy User? @relation("CollaborationRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  approvals CollaborationRequestApproval[]
   @@index([projectId, status])
   @@index([requesterId, status])
   @@index([targetUserId, status])
+}
+
+
+model CollaborationRequestApproval {
+  id String @id @default(cuid())
+  requestId String
+  userId String
+  status CollaborationRequestStatus @default(PENDING)
+  reviewedAt DateTime?
+  request CollaborationRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user User @relation("CollaborationApprovalUser", fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([requestId, userId])
+  @@index([userId, status])
 }
