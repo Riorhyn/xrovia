@@ -25,6 +25,7 @@ export default function CollaborationsPage() {
   const [form, setForm] = useState({ name: "", description: "", responsibility: "" });
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [invite, setInvite] = useState({ role: "Member", responsibility: "" });
   const [external, setExternal] = useState({ name: "", email: "", role: "Member", responsibility: "" });
   const [message, setMessage] = useState("");
@@ -57,15 +58,24 @@ export default function CollaborationsPage() {
     await load();
   };
 
-  const sendRequest = async (targetUserId: string, role: string, responsibility: string) => {
-    if (!selectedProject) return;
+  const sendRequest = async () => {
+    if (!selectedProject || !selectedUser || !invite.responsibility.trim()) return;
     const res = await fetch("/api/collaborations/requests", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId: selectedProject.id, type: "ROLE_PROPOSAL", targetUserId, proposedRole: role, proposedResponsibility: responsibility }),
+      body: JSON.stringify({
+        projectId: selectedProject.id,
+        type: "ROLE_PROPOSAL",
+        targetUserId: selectedUser.id,
+        proposedRole: invite.role,
+        proposedResponsibility: invite.responsibility.trim(),
+      }),
     });
     const data = await res.json();
-    setMessage(res.ok ? "Collaboration request sent. The person must accept/confirm the relationship." : (data.error || "Unable to send request."));
-    setSearch(""); setUsers([]);
+    setMessage(res.ok ? "Collaboration request sent. The person must accept the relationship." : (data.error || "Unable to send request."));
+    setSearch("");
+    setUsers([]);
+    setSelectedUser(null);
+    setInvite({ role: "Member", responsibility: "" });
     await load();
   };
 
@@ -137,10 +147,24 @@ export default function CollaborationsPage() {
             <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Existing XROVIA professional</p>
               <div className="mt-3 grid gap-4 md:grid-cols-[1fr_180px_1fr]">
-              <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name or Professional ID" className="w-full rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm" />{users.length>0 && <div className="absolute z-20 mt-2 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-xl">{users.map(u=><button key={u.id} onClick={()=>sendRequest(u.id,invite.role,invite.responsibility)} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-50"><p className="text-sm font-bold text-slate-800">{u.profile?.fullName}</p><p className="text-xs text-slate-500">{u.profile?.professionalId} · {u.profile?.headline || "Professional"}</p></button>)}</div>}</div>
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search by name or Professional ID" className="w-full rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm" />
+                {users.length>0 && <div className="absolute z-20 mt-2 w-full rounded-xl border border-slate-200 bg-white p-2 shadow-xl">{users.map(u=><button type="button" key={u.id} onClick={()=>{setSelectedUser(u);setSearch(u.profile?.fullName || u.profile?.professionalId || "");setUsers([])}} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-50"><p className="text-sm font-bold text-slate-800">{u.profile?.fullName}</p><p className="text-xs text-slate-500">{u.profile?.professionalId} · {u.profile?.headline || "Professional"}</p></button>)}</div>}
+              </div>
               <select value={invite.role} onChange={e=>setInvite({...invite,role:e.target.value})} className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm"><option>Member</option><option>Mechanical Designer</option><option>Engineer</option><option>Developer</option><option>Researcher</option><option>Analyst</option><option>Project Manager</option><option>Coordinator</option><option>Faculty Advisor</option><option>Other</option></select>
-              <input value={invite.responsibility} onChange={e=>setInvite({...invite,responsibility:e.target.value})} placeholder="Responsibility" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+              <input required value={invite.responsibility} onChange={e=>setInvite({...invite,responsibility:e.target.value})} placeholder="Responsibility *" className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
             </div>
+            {selectedUser && (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">Selected: {selectedUser.profile?.fullName || "Professional"}</p>
+                  <p className="text-xs text-slate-500">{selectedUser.profile?.professionalId || "Professional ID"}</p>
+                </div>
+                <button type="button" disabled={!invite.responsibility.trim()} onClick={sendRequest} className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">Send Collaboration Request</button>
+              </div>
+            )}
+            <p className="mt-2 text-xs text-slate-500">Select a professional first, then enter their role and responsibility. No relationship is created until the request is accepted and confirmed.</p>
             </div>
             <div className="mt-5 border-t border-slate-200 pt-5">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Person not on XROVIA yet</p>
