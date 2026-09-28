@@ -40,6 +40,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Select an existing Professional ID or provide the person's details." }, { status: 400 });
   }
 
+  if (targetUserId) {
+    const existingPending = await prisma.collaborationRequest.findFirst({
+      where: { projectId, targetUserId, type: type as any, status: "PENDING" },
+    });
+    if (existingPending) {
+      return NextResponse.json({ error: "A pending collaboration request already exists for this person in this project." }, { status: 409 });
+    }
+  }
+
   const created = await prisma.collaborationRequest.create({
     data: {
       projectId,
@@ -76,6 +85,7 @@ export async function GET() {
 
   const requests = await prisma.collaborationRequest.findMany({
     where: {
+      status: "PENDING",
       OR: [
         { requesterId: session.userId },
         { targetUserId: session.userId },
