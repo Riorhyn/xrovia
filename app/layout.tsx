@@ -140,8 +140,8 @@ export default async function RootLayout({
                     href="/register"
                     className="inline-flex rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
                   >
-                    <span className="hidden sm:inline">Register Free</span>
-                    <span className="sm:hidden">Register Free</span>
+                    <span className="hidden sm:inline">Create Professional ID</span>
+                    <span className="sm:hidden">Create ID</span>
                   </Link>
                 </>
               )}
