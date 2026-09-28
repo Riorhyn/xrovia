@@ -126,7 +126,7 @@ export function HowItWorks() {
               {/* Action Button */}
               <div className="mt-5 pt-2">
                 <ButtonLink href={ROUTES.register} className="w-full justify-center" size="md">
-                  Get Your Professional ID — Free <ArrowRight className="h-4 w-4" />
+                  Get Your Professional ID <ArrowRight className="h-4 w-4" />
                 </ButtonLink>
               </div>
             </div>
