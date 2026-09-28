@@ -88,6 +88,19 @@ export default function DashboardPage() {
         <ProfileCompletionBar />
         <CareerCommandCenter />
 
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">Projects & Collaborations</p>
+              <h2 className="mt-1 text-lg font-black text-slate-900">Connect your professional work with the people behind it</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-500">Create project teams, assign responsibilities and manage confirmed collaboration relationships.</p>
+            </div>
+            <Link href="/dashboard/collaborations" className="inline-flex shrink-0 items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700">
+              Manage Projects
+            </Link>
+          </div>
+        </section>
+
         <div className="grid items-start gap-6 lg:grid-cols-12 lg:gap-8">
           <div className="space-y-3 lg:col-span-5">
             <div className="flex items-center justify-between px-1">
