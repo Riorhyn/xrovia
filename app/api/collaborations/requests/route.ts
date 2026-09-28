@@ -155,13 +155,15 @@ export async function PATCH(request: Request) {
   }
 
   if (item.type === "JOIN_PROJECT" || item.type === "ROLE_PROPOSAL") {
-    const userId = item.targetUserId || item.requesterId;
-    await prisma.collaborationMember.upsert({
-      where: { projectId_userId: { projectId: item.projectId, userId } },
-      create: { projectId: item.projectId, userId, role: item.proposedRole || "Member", responsibility: item.proposedResponsibility || null, status: "CONFIRMED", confirmedAt: new Date() },
-      update: { role: item.proposedRole || "Member", responsibility: item.proposedResponsibility || null, status: "CONFIRMED", confirmedAt: new Date() },
-    });
-    await prisma.collaborationProject.update({ where: { id: item.projectId }, data: { status: "TEAM_CONFIRMED" } });
+    const userId = item.targetUserId;
+    if (userId) {
+      await prisma.collaborationMember.upsert({
+        where: { projectId_userId: { projectId: item.projectId, userId } },
+        create: { projectId: item.projectId, userId, role: item.proposedRole || "Member", responsibility: item.proposedResponsibility || null, status: "CONFIRMED", confirmedAt: new Date() },
+        update: { role: item.proposedRole || "Member", responsibility: item.proposedResponsibility || null, status: "CONFIRMED", confirmedAt: new Date() },
+      });
+      await prisma.collaborationProject.update({ where: { id: item.projectId }, data: { status: "TEAM_CONFIRMED" } });
+    }
   }
 
   const updated = await prisma.collaborationRequest.update({ where: { id: requestId }, data: { status: "APPROVED", reviewedById: session.userId, reviewedAt: new Date() } });
