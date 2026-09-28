@@ -12,7 +12,8 @@ type Project = {
 
 type CollaborationRequest = {
   id: string; type: string; proposedRole?: string | null; proposedResponsibility?: string | null;
-  proposedName?: string | null; status: string; project: { id: string; name: string };
+  proposedName?: string | null; status: string; canReview?: boolean; targetAccepted?: boolean; targetRejected?: boolean;
+  project: { id: string; name: string };
   requester?: { id: string; profile?: { fullName: string; professionalId: string } | null };
   targetUser?: { id: string; profile?: { fullName: string; professionalId: string } | null };
 };
