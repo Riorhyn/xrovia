@@ -21,8 +21,29 @@ export async function GET(
       );
     }
 
+    const collaborationProjects = await prisma.collaborationProject.findMany({
+      where: {
+        status: { in: ["SELF_REPORTED", "TEAM_CONFIRMED", "ORGANIZATION_VERIFIED"] },
+        members: { some: { userId: profile.userId, status: "CONFIRMED" } },
+      },
+      include: {
+        members: {
+          where: { status: "CONFIRMED" },
+          include: { user: { include: { profile: { select: { fullName: true, professionalId: true, isPublic: true } } } } },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 20,
+    });
+
+    const publicCollaborations = collaborationProjects.map((project) => ({
+      ...project,
+      members: project.members.filter((member) => member.user.profile?.isPublic),
+    }));
+
     return NextResponse.json(
-      { profile },
+      { profile, collaborationProjects: publicCollaborations },
       {
         status: 200,
         headers: {
