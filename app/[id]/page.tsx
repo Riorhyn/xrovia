@@ -52,6 +52,8 @@ export default function PublicProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
+  const [collaborationProjects, setCollaborationProjects] = useState<any[]>([]);
+
   const [profile, setProfile] = useState<any>({
     personal: {
       fullName: "",
@@ -104,6 +106,7 @@ export default function PublicProfilePage() {
       const data = await res.json();
 
       const dbProfile = data.profile;
+      setCollaborationProjects(data.collaborationProjects || []);
 
       if (!dbProfile) {
         setNotFound(true);
@@ -446,6 +449,38 @@ export default function PublicProfilePage() {
               )}
             </div>
           </div>
+        )}
+
+        {/* XROVIA Project Collaborations */}
+        {collaborationProjects.length > 0 && (
+          <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-blue-600">Projects & Collaborations</p>
+                <h2 className="mt-1 text-xl font-black text-slate-900">Team Projects</h2>
+                <p className="mt-1 text-sm text-slate-500">Professional projects connected to this identity through confirmed team relationships.</p>
+              </div>
+            </div>
+            <div className="mt-5 space-y-4">
+              {collaborationProjects.map((project) => (
+                <Link key={project.id} href={"/project/" + project.id} className="block rounded-2xl border border-slate-100 bg-slate-50/60 p-5 transition hover:border-blue-100 hover:bg-blue-50/30">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="font-black text-slate-900">{project.name}</h3>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{project.status.replaceAll("_", " ")}</span>
+                  </div>
+                  {project.description && <p className="mt-2 text-sm leading-6 text-slate-600">{project.description}</p>}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.members.map((member: any) => (
+                      <span key={member.id} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs">
+                        <span className="font-bold text-slate-800">{member.user.profile?.fullName}</span>
+                        <span className="ml-1 text-slate-500">· {member.role}</span>
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Key Projects */}
