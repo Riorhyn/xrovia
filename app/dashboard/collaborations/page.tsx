@@ -183,7 +183,19 @@ export default function CollaborationsPage() {
           <h2 className="text-lg font-black text-slate-900">Collaboration Requests</h2>
           <div className="mt-4 space-y-3">
             {requests.length === 0 && <p className="text-sm text-slate-500">No collaboration requests.</p>}
-            {requests.map(r => <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4"><div><p className="text-sm font-bold text-slate-900">{r.type.replaceAll("_"," ")}</p><p className="text-xs text-slate-500">{r.project.name} · {r.requester?.profile?.fullName || "Professional"}{r.proposedRole ? " · " + r.proposedRole : ""}{r.proposedResponsibility ? " · " + r.proposedResponsibility : ""}</p></div>{r.status === "PENDING" && <div className="flex gap-2"><button onClick={()=>approve(r.id,"APPROVE")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white">Approve</button><button onClick={()=>approve(r.id,"REJECT")} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700">Reject</button></div>}</div>)}
+            {requests.map(r => <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+              <div>
+                <p className="text-sm font-bold text-slate-900">{r.type.replaceAll("_"," ")}</p>
+                <p className="text-xs text-slate-500">{r.project.name} · {r.requester?.profile?.fullName || "Professional"}{r.targetUser?.profile?.fullName ? " → " + r.targetUser.profile.fullName : ""}{r.proposedRole ? " · " + r.proposedRole : ""}{r.proposedResponsibility ? " · " + r.proposedResponsibility : ""}</p>
+                {r.type === "ROLE_PROPOSAL" && <p className="mt-1 text-xs font-semibold text-slate-500">{r.targetAccepted ? "Collaborator accepted — waiting for project leader confirmation." : "Waiting for collaborator to accept the request."}</p>}
+              </div>
+              {r.status === "PENDING" && r.canReview && <div className="flex gap-2">
+                <button disabled={r.type === "ROLE_PROPOSAL" && !r.targetAccepted && !!r.targetUser} onClick={()=>approve(r.id,"APPROVE")} className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">
+                  {r.type === "ROLE_PROPOSAL" ? (r.targetAccepted ? "Confirm Member" : "Accept") : "Approve"}
+                </button>
+                <button onClick={()=>approve(r.id,"REJECT")} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700">Reject</button>
+              </div>}
+            </div>)}
           </div>
         </section>
       </div>
