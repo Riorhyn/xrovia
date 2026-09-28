@@ -275,11 +275,14 @@ export default function RegisterPage() {
           fontWeight: "bold",
         }}
       >
-        Create Your Professional ID — Free
+        Create Your Professional ID
       </h1>
 
-      <p style={{ color: "#64748b", marginBottom: "28px" }}>
+      <p style={{ color: "#64748b", marginBottom: "10px" }}>
         Create your XROVIA professional identity.
+      </p>
+      <p style={{ color: "#2563eb", marginBottom: "28px", fontSize: "14px", fontWeight: 700 }}>
+        Registration is currently free.
       </p>
 
       <div className="mb-7 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
@@ -464,7 +467,7 @@ export default function RegisterPage() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "Creating account..." : "Register Free"}
+            {loading ? "Creating account..." : "Create account"}
           </button>
         )}
 
