@@ -24,7 +24,7 @@ export function FinalCta({ isAuthenticated }: { isAuthenticated: boolean }) {
           ) : (
             <>
               <ButtonLink href={ROUTES.register} variant="inverse">
-                Create Your Professional ID — Free
+                Create Your Professional ID
               </ButtonLink>
               <ButtonLink href={ROUTES.login} variant="outlineInverse">
                 Sign in
