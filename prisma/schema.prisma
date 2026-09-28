@@ -57,6 +57,11 @@ model User {
   ownershipApplications OrganizationOwnershipApplication[] @relation("OwnershipApplicant")
   reviewedOwnershipApplications OrganizationOwnershipApplication[] @relation("OwnershipReviewer")
   reviewedOrganizationVerificationRequests OrganizationVerificationRequest[] @relation("VerificationRequestReviewer")
+  collaborationProjectsCreated CollaborationProject[] @relation("CollaborationProjectCreator")
+  collaborationMemberships CollaborationMember[] @relation("CollaborationMemberships")
+  collaborationRequestsSent CollaborationRequest[] @relation("CollaborationRequestRequester")
+  collaborationRequestsReceived CollaborationRequest[] @relation("CollaborationRequestTarget")
+  collaborationRequestsReviewed CollaborationRequest[] @relation("CollaborationRequestReviewer")
   @@index([email])
 }
 
@@ -439,4 +444,93 @@ model OrganizationVerificationRequest {
   registeredOrganization Organization? @relation("VerificationRequestOrganization", fields: [registeredOrganizationId], references: [id], onDelete: SetNull)
   @@index([status, createdAt])
   @@index([contactEmail, status])
+}
+
+
+enum CollaborationProjectStatus {
+  SELF_REPORTED
+  TEAM_CONFIRMED
+  ORGANIZATION_VERIFIED
+  ARCHIVED
+}
+
+enum CollaborationMemberStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  REMOVED
+}
+
+enum CollaborationRequestType {
+  JOIN_PROJECT
+  ROLE_PROPOSAL
+  ADVISOR_ASSOCIATION
+  LEADERSHIP_PROPOSAL
+}
+
+enum CollaborationRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CollaborationProject {
+  id String @id @default(cuid())
+  name String
+  description String?
+  startDate DateTime?
+  endDate DateTime?
+  projectUrl String?
+  imageUrl String?
+  status CollaborationProjectStatus @default(SELF_REPORTED)
+  createdById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy User @relation("CollaborationProjectCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  members CollaborationMember[]
+  requests CollaborationRequest[]
+  @@index([createdById])
+  @@index([status, createdAt])
+}
+
+model CollaborationMember {
+  id String @id @default(cuid())
+  projectId String
+  userId String
+  role String
+  responsibility String?
+  status CollaborationMemberStatus @default(PENDING)
+  confirmedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project CollaborationProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user User @relation("CollaborationMemberships", fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([projectId, userId])
+  @@index([userId, status])
+  @@index([projectId, status])
+}
+
+model CollaborationRequest {
+  id String @id @default(cuid())
+  projectId String
+  requesterId String
+  targetUserId String?
+  type CollaborationRequestType
+  proposedRole String?
+  proposedResponsibility String?
+  proposedName String?
+  proposedEmail String?
+  note String?
+  status CollaborationRequestStatus @default(PENDING)
+  reviewedById String?
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project CollaborationProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  requester User @relation("CollaborationRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  targetUser User? @relation("CollaborationRequestTarget", fields: [targetUserId], references: [id], onDelete: SetNull)
+  reviewedBy User? @relation("CollaborationRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  @@index([projectId, status])
+  @@index([requesterId, status])
+  @@index([targetUserId, status])
 }
