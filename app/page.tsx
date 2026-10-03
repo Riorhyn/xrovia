@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getSession } from "@/lib/auth/session";
 import { Audience } from "@/components/home/audience";
-import { Features } from "@/components/home/features";
 import { FinalCta } from "@/components/home/final-cta";
 import { Hero } from "@/components/home/hero";
 import { HowItWorks } from "@/components/home/how-it-works";
