@@ -1,41 +1,19 @@
 import {
-  // Navigation & Actions
-  UserPlus,
   Fingerprint,
-  ClipboardList,
   ShieldCheck,
-  Share2,
-  RefreshCw,
-  // Problem Section
-  Layers,
-  Clock,
-  FolderKanban,
-  Zap,
-  Repeat,
-  UserCheck,
-  // Features Section
-  CreditCard,
-  Globe,
-  FileText,
-  QrCode,
-  Lock,
-  // Audiences Section
-  GraduationCap,
-  Sparkles,
-  Briefcase,
-  Code2,
-  Palette,
-  Microscope,
-  Compass,
-  Search,
-  // Benefits Section
-  FileCheck2,
+  Link2,
   History,
-  Eye,
+  Users,
+  Building2,
+  FileCheck2,
+  Search,
+  ArrowRight,
+  BriefcaseBusiness,
+  GraduationCap,
+  FolderKanban,
   type LucideIcon,
 } from "lucide-react";
 
-/** Global routes */
 export const ROUTES = {
   home: "/",
   login: "/login",
@@ -44,220 +22,141 @@ export const ROUTES = {
   search: "/search",
 } as const;
 
-/** Example ID used across preview cards */
 export const SAMPLE_ID = "PR-159481";
 
-/** How It Works Steps */
-export type Step = { title: string; body: string; icon: LucideIcon };
-
-export const STEPS: Step[] = [
+export type Problem = { title: string; body: string; icon: LucideIcon };
+export const PROBLEMS: Problem[] = [
   {
-    title: "Create your account",
-    body: "Register for a Xrovia account with your details.",
-    icon: UserPlus,
+    title: "Your professional story is scattered",
+    body: "Education, work, projects, certificates and evidence live in different places. Your history gets rebuilt whenever someone asks for it.",
+    icon: FolderKanban,
   },
   {
-    title: "Get your Professional ID",
-    body: "A unique ID such as PR-159481 is generated for you automatically and stays yours.",
+    title: "A claim is not the same as proof",
+    body: "A CV or profile can say what you did. It does not automatically show which parts were confirmed by the people or organizations involved.",
+    icon: FileCheck2,
+  },
+  {
+    title: "Your record keeps changing",
+    body: "A career is not a document you finish once. New work, skills, projects and qualifications keep getting added.",
+    icon: History,
+  },
+  {
+    title: "The people behind your work disappear",
+    body: "Projects often become a line on a CV even though the real story includes roles, collaborators, responsibilities and organizations.",
+    icon: Users,
+  },
+];
+
+export type Step = { title: string; body: string; icon: LucideIcon };
+export const STEPS: Step[] = [
+  {
+    title: "Create one Professional ID",
+    body: "Start one professional record instead of another document that becomes outdated.",
     icon: Fingerprint,
   },
   {
     title: "Build your career record",
-    body: "Add your headline, summary and skills, and keep your education, experience and projects together in one structured record.",
-    icon: ClipboardList,
+    body: "Add education, experience, skills, projects, certifications, achievements and supporting evidence.",
+    icon: BriefcaseBusiness,
   },
   {
-    title: "Verify your background",
-    body: "Get education verified by your school, college, or university, and work experience verified by your employer.",
+    title: "Add confirmation where it matters",
+    body: "Request verification or collaboration confirmation from relevant people and organizations.",
     icon: ShieldCheck,
   },
   {
-    title: "Share your profile",
-    body: "Give people your Professional ID so they can open your public profile. QR code sharing is coming soon.",
-    icon: Share2,
+    title: "Share the record",
+    body: "Give someone your Professional ID or public profile when they need to understand your background.",
+    icon: Link2,
   },
   {
-    title: "Keep your record updated",
-    body: "Return as you study, change roles or finish projects. Your ID stays the same while your record grows.",
-    icon: RefreshCw,
+    title: "Keep it alive",
+    body: "Your ID stays the same while your professional history grows and changes.",
+    icon: History,
   },
 ];
 
-/** Problem Section Items */
-export type Problem = { title: string; body: string; icon: LucideIcon };
-
-export const PROBLEMS: Problem[] = [
-  {
-    title: "Your information lives in many places",
-    body: "CV files, LinkedIn profiles, certificates and other documents each hold a piece of your story.",
-    icon: Layers,
-  },
-  {
-    title: "CVs go out of date",
-    body: "A file you saved last year does not include what you did this year.",
-    icon: Clock,
-  },
-  {
-    title: "Achievements are hard to organize",
-    body: "Roles, projects and skills pile up without a clear structure to keep them in.",
-    icon: FolderKanban,
-  },
-  {
-    title: "Others need quick access",
-    body: "Employers and institutions may want to see a professional record without searching through attachments.",
-    icon: Zap,
-  },
-  {
-    title: "You re-enter the same details",
-    body: "Many people retype their background into a new form or template every time they are asked.",
-    icon: Repeat,
-  },
-  {
-    title: "No single record follows you",
-    body: "From student to professional, there is rarely one structured place that grows with every stage of a career.",
-    icon: UserCheck,
-  },
-];
-
-/** Features List */
 export type Feature = {
   title: string;
   description: string;
   icon: LucideIcon;
-  status: "live" | "soon";
+  label?: string;
 };
-
 export const FEATURES: Feature[] = [
   {
-    title: "Permanent Professional ID",
-    description:
-      "Get a lifelong, tamper-proof ID like PR-159481 generated automatically upon registration.",
+    title: "One permanent Professional ID",
+    description: "A single identity that stays with your professional record as it grows.",
     icon: Fingerprint,
-    status: "live",
+    label: "Identity",
   },
   {
-    title: "Digital ID Card",
-    description:
-      "A sleek digital identity card displaying your verified credentials and essential background details.",
-    icon: CreditCard,
-    status: "live",
+    title: "Structured career record",
+    description: "Keep education, work, skills, projects, certifications and achievements connected instead of scattered.",
+    icon: BriefcaseBusiness,
+    label: "Record",
   },
   {
-    title: "Verified Background",
-    description:
-      "Have your degrees, diplomas, and past job roles officially verified by universities and employers.",
+    title: "Verification",
+    description: "Separate information you entered yourself from information that has been independently confirmed.",
     icon: ShieldCheck,
-    status: "live",
+    label: "Trust",
   },
   {
-    title: "Public Professional Profile",
-    description:
-      "Share your verified record with recruiters, universities, and partners via a clean, memorable URL.",
-    icon: Globe,
-    status: "live",
+    title: "Projects & collaborations",
+    description: "Connect people to real work through roles, responsibilities and mutual confirmation.",
+    icon: Users,
+    label: "Relationships",
   },
   {
-    title: "Structured CV View",
-    description:
-      "Instantly generate an executive-ready CV layout straight from your verified career history.",
-    icon: FileText,
-    status: "live",
-  },
-  {
-    title: "Career Record Builder",
-    description:
-      "Organize education, employment history, skills, and projects in one centralized database.",
-    icon: ClipboardList,
-    status: "live",
-  },
-  {
-    title: "Instant QR Sharing",
-    description:
-      "Let anyone scan your dynamic QR code to immediately view, verify, or download your profile.",
-    icon: QrCode,
-    status: "live",
-  },
-  {
-    title: "Granular Privacy Controls",
-    description:
-      "Tailor exactly what details are visible publicly and what remains accessible only to verified entities.",
-    icon: Lock,
-    status: "soon",
-  },
-];
-
-/** Target Audiences */
-export type AudienceItem = {
-  title: string;
-  icon: LucideIcon;
-};
-
-export const AUDIENCES: AudienceItem[] = [
-  { title: "University Students", icon: GraduationCap },
-  { title: "Fresh Graduates", icon: Sparkles },
-  { title: "Working Professionals", icon: Briefcase },
-  { title: "Freelancers & Consultants", icon: UserCheck },
-  { title: "Software & Field Engineers", icon: Code2 },
-  { title: "Designers & Creatives", icon: Palette },
-  { title: "Academic Researchers", icon: Microscope },
-  { title: "Career Changers", icon: Compass },
-  { title: "Active Job Seekers", icon: Search },
-];
-
-/** Platform Benefits */
-export type BenefitItem = {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-};
-
-export const BENEFITS: BenefitItem[] = [
-  {
-    title: "Unified Career Ledger",
-    description:
-      "Consolidate degrees, diplomas, employment history, and key skills into one structured, immutable digital record.",
-    icon: Layers,
-  },
-  {
-    title: "Verified Credentials",
-    description:
-      "Eliminate background check friction with official verification badges issued by universities and employers.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "One Lifelong ID",
-    description:
-      "Share a single Professional ID (e.g., PR-159481) that stays permanently connected to you throughout your career.",
+    title: "Evidence",
+    description: "Attach supporting material to parts of your professional history where evidence is useful.",
     icon: FileCheck2,
+    label: "Evidence",
   },
   {
-    title: "Automated CV Generation",
-    description:
-      "Instantly export executive-ready resumes directly from your verified background without re-typing data.",
-    icon: Clock,
+    title: "Public professional profile",
+    description: "Share a readable version of your record without sending a folder of separate files.",
+    icon: Link2,
+    label: "Sharing",
+  },
+];
+
+export type AudienceItem = { title: string; icon: LucideIcon };
+export const AUDIENCES: AudienceItem[] = [
+  { title: "Students building their first record", icon: GraduationCap },
+  { title: "Graduates entering professional life", icon: BriefcaseBusiness },
+  { title: "Professionals growing a long-term record", icon: History },
+  { title: "Researchers and project teams", icon: Users },
+  { title: "Organizations verifying people and work", icon: Building2 },
+];
+
+export const WHY_XROVIA = [
+  {
+    title: "Not another profile",
+    body: "The profile is only the surface. The underlying idea is a structured record that can grow, connect to evidence and carry confirmation.",
+    icon: Fingerprint,
   },
   {
-    title: "Instant QR & Link Sharing",
-    description:
-      "Allow recruiters and hiring managers to instantly view and audit your background via dynamic QR codes.",
-    icon: Share2,
+    title: "Not a replacement for credentials",
+    body: "XROVIA can sit alongside certificates, institutional records and existing professional platforms rather than pretending to replace them.",
+    icon: ShieldCheck,
   },
   {
-    title: "Continuous Record Growth",
-    description:
-      "Seamlessly attach new certifications, publications, and promotions as your professional journey evolves.",
+    title: "Built around the record",
+    body: "Your career is a timeline of education, work, projects, skills, relationships and evidence—not a single frozen document.",
     icon: History,
   },
   {
-    title: "Recruiter-Ready Access",
-    description:
-      "Provide employers with direct, structured, and trustworthy proof of your qualifications in seconds.",
-    icon: Eye,
-  },
-  {
-    title: "Privacy & Data Ownership",
-    description:
-      "Maintain full control over your personal branding with customizable visibility settings for every entry.",
-    icon: Lock,
+    title: "Useful before you need a job",
+    body: "The record starts while you are learning and working, so you do not have to reconstruct your professional history later.",
+    icon: ArrowRight,
   },
 ];
+
+export const SEARCH_EXAMPLE = {
+  id: SAMPLE_ID,
+  name: "Example Professional",
+  headline: "Mechanical Engineer",
+  verifiedItems: 3,
+};
