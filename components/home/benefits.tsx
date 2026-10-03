@@ -1,43 +1,41 @@
 "use client";
 
 import React from "react";
-import { BENEFITS } from "./config";
+import { WHY_XROVIA } from "./config";
 import { Container } from "./ui";
 
 export function Benefits() {
-  const benefitsList = BENEFITS ?? [];
-
   return (
-    <section id="benefits" className="scroll-mt-20 bg-white py-16 sm:py-24 border-b border-slate-200/60">
+    <section id="why-xrovia" className="scroll-mt-20 bg-slate-950 py-16 text-white sm:py-24">
       <Container>
-        {/* Section Header */}
         <div className="max-w-3xl">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
-            Platform Benefits
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            One Permanent Professional ID. One Verified Career Record.
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-300">Why XROVIA</span>
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
+            The profile is not the product. The record is.
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">
-            Eliminate fragmented resumes and unverified profiles. Xrovia equips you with a trustworthy, lifelong career record built for modern hiring ecosystems.
+          <p className="mt-5 text-lg leading-8 text-slate-300">
+            A public profile is easy to copy. What takes time is building a history that stays structured, can carry evidence, and can accumulate confirmation over years.
           </p>
         </div>
 
-        {/* Benefits Grid */}
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {benefitsList.map(({ title, description, icon: Icon }) => (
-            <li
-              key={title}
-              className="group rounded-2xl border border-slate-200/80 bg-slate-50/50 p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-blue-200 hover:bg-white hover:shadow-md"
-            >
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-100/70 text-blue-800 transition-colors group-hover:bg-blue-700 group-hover:text-white">
-                <Icon className="h-5 w-5" aria-hidden="true" />
+        <div className="mt-12 grid gap-5 md:grid-cols-2">
+          {WHY_XROVIA.map(({ title, body, icon: Icon }) => (
+            <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-6">
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-blue-300">
+                <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-base font-bold text-slate-900">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>
-            </li>
+              <h3 className="mt-5 text-lg font-bold">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">{body}</p>
+            </div>
           ))}
-        </ul>
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-blue-400/20 bg-blue-500/10 p-6">
+          <p className="text-sm font-semibold text-blue-200">The long-term idea</p>
+          <p className="mt-2 max-w-4xl text-xl font-semibold leading-8 text-white">
+            Build your professional history once. Keep improving it. Let the record become more useful as more parts of it are supported by evidence and trusted relationships.
+          </p>
+        </div>
       </Container>
     </section>
   );
