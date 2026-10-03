@@ -31,7 +31,7 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />
       <style>{`html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}`}</style>
-      <div><Hero isAuthenticated={isAuthenticated} /><ProblemSection /><HowItWorks /><Features /><Audience /><SearchId /><FinalCta isAuthenticated={isAuthenticated} /></div>
+      <div><Hero isAuthenticated={isAuthenticated} /><ProblemSection /><HowItWorks /><Audience /><SearchId /><FinalCta isAuthenticated={isAuthenticated} /></div>
     </>
   );
 }
