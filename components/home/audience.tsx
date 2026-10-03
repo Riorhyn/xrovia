@@ -6,19 +6,13 @@ import { Container, IconBox, SectionHeader } from "./ui";
 
 export function Audience() {
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section className="bg-white py-14 sm:py-20">
       <Container>
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
-          <SectionHeader eyebrow="Who it is for" title="Start before your career is fully formed." description="XROVIA is useful when your record is small and when it has grown for years. The point is to keep adding to the same identity instead of starting over with every new stage." />
-
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {AUDIENCES.map(({ title, icon: Icon }) => (
-              <li key={title} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <IconBox small>
-                  <Icon className="h-4 w-4" />
-                </IconBox>
-                <span className="text-sm font-semibold text-slate-800">{title}</span>
-              </li>
+        <div className="flex flex-col gap-6 border-y border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
+          <SectionHeader eyebrow="For people building a career" title="Start with what you have. Keep adding as you grow." description="Students, graduates and working professionals can begin with the information they already have." />
+          <ul className="grid shrink-0 grid-cols-2 gap-2 sm:w-[360px]">
+            {AUDIENCES.slice(0, 3).map(({ title, icon: Icon }) => (
+              <li key={title} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3"><IconBox small><Icon className="h-4 w-4" /></IconBox><span className="text-xs font-semibold text-slate-800">{title}</span></li>
             ))}
           </ul>
         </div>
