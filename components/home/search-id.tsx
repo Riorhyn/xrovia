@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { Search, ShieldCheck } from "lucide-react";
 import { SAMPLE_ID } from "./config";
-import { Container } from "./ui";
+import { Button, Container, IconBox, SectionHeader, Surface } from "./ui";
 
 function normalizeId(raw: string): string | null {
   const value = raw.trim().toUpperCase();
@@ -36,13 +36,7 @@ export function SearchId() {
       <Container>
         <div className="grid gap-10 rounded-3xl border border-slate-200 bg-white p-6 sm:p-10 lg:grid-cols-[1fr_420px] lg:p-12">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Try the concept</span>
-            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-              A Professional ID should lead to a record—not a dead-end number.
-            </h2>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              If you have someone's XROVIA Professional ID, you can look up the public profile they chose to share.
-            </p>
+            <SectionHeader eyebrow="Try the concept" title="A Professional ID should lead to a record—not a dead-end number." description="If you have someone's XROVIA Professional ID, you can look up the public profile they chose to share." />
 
             <form onSubmit={onSubmit} noValidate className="mt-8 max-w-xl">
               <label htmlFor={inputId} className="block text-sm font-semibold text-slate-900">Professional ID</label>
@@ -61,20 +55,20 @@ export function SearchId() {
                   aria-describedby={error ? errorId : undefined}
                   className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base tabular-nums text-slate-900 placeholder:text-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700"
                 />
-                <button type="submit" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-base font-semibold text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700">
+                <Button type="submit" className="shrink-0">
                   <Search className="h-4 w-4" />
                   Search
-                </button>
+                </Button>
               </div>
               {error && <p id={errorId} role="alert" className="mt-2 text-sm font-medium text-red-700">{error}</p>}
             </form>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <Surface className="bg-slate-50 shadow-none">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-700">
+              <IconBox>
                 <ShieldCheck className="h-5 w-5" />
-              </div>
+              </IconBox>
               <div>
                 <p className="text-sm font-bold text-slate-950">What the ID is for</p>
                 <p className="text-xs text-slate-500">A stable way to find a shared professional record.</p>
@@ -85,7 +79,7 @@ export function SearchId() {
               <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">See which information is self-added</div>
               <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">See available verification status</div>
             </div>
-          </div>
+          </Surface>
         </div>
       </Container>
     </section>
