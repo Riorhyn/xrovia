@@ -6,9 +6,13 @@ import { Container, IconBox, SectionHeader, Surface } from "./ui";
 
 export function ProblemSection() {
   return (
-    <section id="why-xrovia" className="border-b border-slate-200 bg-slate-50 py-20 sm:py-28">
+    <section id="why-xrovia" className="border-b border-slate-200 bg-white py-20 sm:py-28">
       <Container>
-        <SectionHeader eyebrow="Why XROVIA" title="Build a professional record that is ready when you need it." description="Keep your professional information organized, make important details easier to verify, and share one consistent identity as your career develops." />
+        <SectionHeader
+          eyebrow="Why XROVIA"
+          title="Build a professional record that is ready when you need it."
+          description="Keep your professional information organized, make important details easier to verify, and share one consistent identity as your career develops."
+        />
         <ul className="mt-12 grid gap-6 md:grid-cols-3">
           {PROBLEMS.map(({ title, body, icon: Icon }) => (
             <li key={title}>
