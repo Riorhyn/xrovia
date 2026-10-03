@@ -1,9 +1,30 @@
 "use client";
-import { FileCheck2, FolderKanban, History } from "lucide-react";
-import { Container } from "./ui";
-const items=[
-["Your work is scattered","Education sits in one place. Experience in another. Projects, certificates and proof somewhere else.","01",FolderKanban],
-["Your information is not equally trustworthy","Some details are self-added. Others can be confirmed by an organization or collaborator.","02",FileCheck2],
-["Your identity keeps getting rebuilt","Every application, introduction and opportunity asks you to assemble the same story again.","03",History],
-] as const;
-export function ProblemSection(){return <section className="border-b border-slate-200 bg-white py-20 sm:py-28"><Container><div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-blue-600">The problem</p><h2 className="mt-4 max-w-xl text-4xl font-black tracking-[-.04em] text-slate-950 sm:text-5xl">Your professional story is bigger than a document.</h2></div><p className="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">Your career creates information continuously. XROVIA is designed to keep that information connected instead of making you rebuild it every time you need to show who you are.</p></div><div className="mt-14 divide-y divide-slate-200 border-y border-slate-200">{items.map(([title,body,num,Icon])=><div key={title} className="grid gap-5 py-8 sm:grid-cols-[70px_1fr_1.2fr] sm:items-center"><span className="font-mono text-sm font-black text-slate-300">{num}</span><div className="flex items-center gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-700"><Icon className="h-5 w-5"/></span><h3 className="text-lg font-black text-slate-950">{title}</h3></div><p className="text-sm leading-7 text-slate-600 sm:pl-3">{body}</p></div>)}</div></Container></section>}
+
+import React from "react";
+import { PROBLEMS } from "./config";
+import { Container, IconBox, SectionHeader, Surface } from "./ui";
+
+export function ProblemSection() {
+  return (
+    <section id="why-xrovia" className="border-b border-slate-200 bg-white py-20 sm:py-28">
+      <Container>
+        <SectionHeader
+          eyebrow="Why XROVIA"
+          title="Build a professional record that is ready when you need it."
+          description="Keep your professional information organized, make important details easier to verify, and share one consistent identity as your career develops."
+        />
+        <ul className="mt-12 grid gap-6 md:grid-cols-3">
+          {PROBLEMS.map(({ title, body, icon: Icon }) => (
+            <li key={title}>
+              <Surface className="h-full min-h-[235px]">
+                <IconBox><Icon className="h-5 w-5" aria-hidden="true" /></IconBox>
+                <h3 className="mt-6 text-xl font-bold tracking-tight text-slate-950">{title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{body}</p>
+              </Surface>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  );
+}
