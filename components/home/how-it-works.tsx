@@ -32,11 +32,11 @@ export function HowItWorks() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div><p className="text-xs font-semibold text-slate-400">Professional ID</p><p className="mt-1 font-mono text-xl font-black">{SAMPLE_ID}</p></div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300"><CheckCircle2 className="h-3 w-3" /> 6 verified</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-300/20 px-2.5 py-1 text-[10px] font-black text-emerald-200 ring-1 ring-emerald-300/30"><CheckCircle2 className="h-3 w-3" /> 6 verified</span>
             </div>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               {[["Education","B.E. Mechanical Engineering",true],["Experience","Product Design Engineer · 5+ years",true],["Skills","CAD · GD&T · Manufacturing · Python",true],["Projects","Solar tracking system · 4 collaborators",false]].map(([label,value,verified]) => (
-                <div key={label as string} className="rounded-xl border border-white/10 bg-white/[0.04] p-3"><div className="flex items-center justify-between gap-2"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label as string}</span>{verified ? <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" /> : <Link2 className="h-3.5 w-3.5 text-blue-300" />}</div><p className="mt-1 text-xs font-semibold text-slate-200">{value as string}</p></div>
+                <div key={label as string} className="group rounded-xl border border-white/10 bg-white/[0.04] p-3 transition-all duration-200 hover:border-blue-300/40 hover:bg-blue-400/[0.08] hover:shadow-[0_0_24px_rgba(37,99,235,0.12)]"><div className="flex items-center justify-between gap-2"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label as string}</span>{verified ? <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" /> : <Link2 className="h-3.5 w-3.5 text-blue-300" />}</div><p className="mt-1 text-xs font-semibold text-slate-200">{value as string}</p></div>
               ))}
             </div>
           </div>
