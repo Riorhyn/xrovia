@@ -1,4 +1,29 @@
 "use client";
-import { ArrowUpRight, GraduationCap, BriefcaseBusiness, Users } from "lucide-react";
-import { Container } from "./ui";
-export function Audience(){const rows=[["Students","Start building your professional record before your career gets complicated.",GraduationCap],["Graduates","Carry your education, projects and early experience into one identity.",BriefcaseBusiness],["Working professionals","Keep adding experience, skills, evidence and collaborations as you progress.",Users]] as const;return <section id="record" className="border-b border-slate-200 bg-white py-20 sm:py-28"><Container><div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-blue-600">A record that grows with you</p><h2 className="mt-4 max-w-2xl text-4xl font-black tracking-[-.04em] text-slate-950 sm:text-5xl">Start with what you have. Keep adding.</h2></div><p className="max-w-md text-sm leading-7 text-slate-600">XROVIA is useful from your first qualification through the work and projects that follow.</p></div><div className="mt-12 grid gap-4 md:grid-cols-3">{rows.map(([title,body,Icon])=><div key={title} className="group rounded-[1.5rem] border border-slate-200 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_45px_rgba(15,23,42,.08)]"><div className="flex items-center justify-between"><span className="grid h-11 w-11 place-items-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-blue-50 group-hover:text-blue-700"><Icon className="h-5 w-5"/></span><ArrowUpRight className="h-4 w-4 text-slate-300 transition group-hover:text-blue-600"/></div><h3 className="mt-8 text-xl font-black text-slate-950">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600">{body}</p></div>)}</div></Container></section>}
+
+import React from "react";
+import { AUDIENCES } from "./config";
+import { Container, IconBox, SectionHeader } from "./ui";
+
+export function Audience() {
+  return (
+    <section className="border-b border-slate-200 bg-white py-20 sm:py-24">
+      <Container>
+        <div className="grid gap-10 lg:grid-cols-[1fr_400px] lg:items-center">
+          <SectionHeader
+            eyebrow="Who it is for"
+            title="Start with what you have. Keep adding as you grow."
+            description="Students, graduates and working professionals can begin with the information they already have."
+          />
+          <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {AUDIENCES.slice(0, 3).map(({ title, icon: Icon }) => (
+              <li key={title} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-md">
+                <IconBox small><Icon className="h-4 w-4" /></IconBox>
+                <span className="text-sm font-bold text-slate-800">{title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Container>
+    </section>
+  );
+}
