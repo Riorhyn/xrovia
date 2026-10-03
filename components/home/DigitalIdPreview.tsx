@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Briefcase, Check, CheckCircle2, Copy, FolderGit2, GraduationCap, MapPin, Share2, ShieldCheck, Wrench, X } from "lucide-react";
 
@@ -16,7 +16,16 @@ const DEMO_PROFILE = {
 export function DigitalIdPreview() {
   const [showQrModal, setShowQrModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [strengthVisible, setStrengthVisible] = useState(false);
   const shareUrl = typeof window !== "undefined" ? window.location.origin + "/" + DEMO_PROFILE.professionalId : "https://xrovia.com/PR-159481";
+
+  useEffect(() => {
+    const el = document.getElementById("record-strength-bar");
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setStrengthVisible(true); observer.disconnect(); } }, { threshold: 0.5 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const recordItems = [
     { label: "Education", count: "01", summary: "B.E. Mechanical Engineering", Icon: GraduationCap, status: "Verified" },
@@ -71,16 +80,16 @@ export function DigitalIdPreview() {
           </div>
           <div className="grid grid-cols-2 gap-2.5">
             {recordItems.map(({label,count,summary,Icon,status}) => (
-              <div key={label} className="min-h-[76px] rounded-xl border border-slate-200/80 bg-slate-50/60 p-3">
+              <div key={label} className="min-h-[76px] rounded-xl border border-slate-200/80 bg-slate-50/60 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-md">
                 <div className="flex items-center justify-between gap-2"><span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800"><Icon className="h-3.5 w-3.5 text-blue-600" />{label}</span><span className="text-xs font-black text-blue-600">{count}</span></div>
                 <p className="mt-2 line-clamp-2 text-[10px] font-semibold leading-tight text-slate-600">{summary}</p>
                 <span className={`mt-2 inline-flex rounded-full px-1.5 py-0.5 text-[8px] font-bold ${status === "Verified" ? "bg-emerald-50 text-emerald-700" : status === "Collaborative" ? "bg-blue-50 text-blue-700" : "bg-slate-200 text-slate-600"}`}>{status}</span>
               </div>
             ))}
           </div>
-          <div className="rounded-xl border border-blue-100 bg-blue-50/60 px-3 py-2.5 text-[11px]">
+          <div className="rounded-xl border border-blue-100 bg-blue-50/60 px-3 py-2.5 text-[11px]" id="record-strength-bar">
             <div className="flex items-center justify-between"><span className="font-bold text-slate-700">Record strength</span><span className="font-black text-blue-700">Strong</span></div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-blue-100"><div className="h-full w-[82%] rounded-full bg-blue-600" /></div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-blue-100"><div className={`h-full rounded-full bg-blue-600 transition-[width] duration-1000 ease-out ${strengthVisible ? "w-[82%]" : "w-0"}`} /></div>
           </div>
         </div>
       </div>
