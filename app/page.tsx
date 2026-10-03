@@ -12,26 +12,23 @@ import { ProblemSection } from "@/components/home/problem-section";
 import { SearchId } from "@/components/home/search-id";
 
 export const metadata: Metadata = {
-  title: "XROVIA | Professional Identity Platform & Digital Career Profile",
+  title: "XROVIA | Your Professional Record",
   description:
-    "XROVIA is a professional identity platform and digital career profile for education, work experience, skills, projects, certifications, achievements, evidence, and one permanent Professional ID.",
+    "XROVIA gives your professional history one permanent identity—a structured record of education, work, projects, skills, evidence and verification that grows with you.",
   keywords: [
     "XROVIA",
-    "Xrovia",
-    "XROVIA professional identity",
-    "XROVIA professional profile",
-    "XROVIA career profile",
-    "professional identity platform",
-    "digital professional profile",
-    "digital career profile",
-    "professional ID",
+    "professional identity",
+    "professional record",
     "career record",
+    "Professional ID",
+    "verified professional profile",
+    "career history",
   ],
   alternates: { canonical: "https://xrovia.com/" },
   openGraph: {
-    title: "XROVIA | Professional Identity Platform",
+    title: "XROVIA | Your Professional Record",
     description:
-      "Build, verify, manage, and share your professional identity and career record with one Professional ID.",
+      "One permanent Professional ID for a professional record that grows with you.",
     url: "https://xrovia.com/",
     type: "website",
     siteName: "XROVIA",
@@ -49,41 +46,33 @@ export default async function HomePage() {
         "@type": "Organization",
         "@id": "https://xrovia.com/#organization",
         name: "XROVIA",
-        alternateName: "Xrovia",
         url: "https://xrovia.com/",
         logo: {
           "@type": "ImageObject",
           url: "https://xrovia.com/ChatGPT%20Image%20Sep%2027,%202026,%2004_14_14%20PM.png",
         },
         description:
-          "XROVIA is a professional identity platform for building, managing, verifying, and sharing digital career profiles and professional records.",
+          "XROVIA is a professional identity platform for building, managing, verifying and sharing a structured professional record.",
       },
       {
         "@type": "WebSite",
         "@id": "https://xrovia.com/#website",
         name: "XROVIA",
-        alternateName: "Xrovia",
         url: "https://xrovia.com/",
         description:
-          "XROVIA helps people create and share a professional identity, digital professional profile, and career record with one Professional ID.",
-        publisher: {
-          "@id": "https://xrovia.com/#organization",
-        },
+          "A permanent professional identity and structured career record.",
+        publisher: { "@id": "https://xrovia.com/#organization" },
         inLanguage: "en",
       },
       {
         "@type": "WebPage",
         "@id": "https://xrovia.com/#webpage",
         url: "https://xrovia.com/",
-        name: "XROVIA | Professional Identity Platform & Digital Career Profile",
+        name: "XROVIA | Your Professional Record",
         description:
-          "XROVIA is a professional identity platform and digital career profile for education, work experience, skills, projects, certifications, achievements, evidence, and one permanent Professional ID.",
-        isPartOf: {
-          "@id": "https://xrovia.com/#website",
-        },
-        about: {
-          "@id": "https://xrovia.com/#organization",
-        },
+          "A permanent professional identity and structured career record.",
+        isPartOf: { "@id": "https://xrovia.com/#website" },
+        about: { "@id": "https://xrovia.com/#organization" },
         inLanguage: "en",
       },
       {
@@ -92,12 +81,10 @@ export default async function HomePage() {
         name: "XROVIA",
         url: "https://xrovia.com/",
         description:
-          "XROVIA is a web-based professional identity platform and digital career profile for creating, managing, verifying, and sharing professional records.",
+          "A web-based professional identity and career record platform.",
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web Browser",
-        publisher: {
-          "@id": "https://xrovia.com/#organization",
-        },
+        publisher: { "@id": "https://xrovia.com/#organization" },
       },
     ],
   };
@@ -112,43 +99,11 @@ export default async function HomePage() {
 
       <div>
         <Hero isAuthenticated={isAuthenticated} />
-
-        <section
-          aria-labelledby="about-xrovia"
-          className="bg-white border-y border-slate-100 py-16"
-        >
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-                About XROVIA
-              </p>
-              <h2
-                id="about-xrovia"
-                className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900"
-              >
-                What is XROVIA?
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-slate-600">
-                XROVIA is a professional identity platform for creating a digital
-                professional profile and permanent career record. It brings
-                education, work experience, skills, projects, certifications,
-                achievements, and supporting evidence together under one
-                Professional ID.
-              </p>
-              <p className="mt-4 text-base leading-7 text-slate-600">
-                XROVIA is also referred to as Xrovia. The official XROVIA website
-                is xrovia.com, where people can create, manage, verify, and share
-                their professional identity and career profile.
-              </p>
-            </div>
-          </div>
-        </section>
-
         <ProblemSection />
         <HowItWorks />
         <Features />
-        <Audience />
         <Benefits />
+        <Audience />
         <SearchId />
         <FinalCta isAuthenticated={isAuthenticated} />
       </div>
