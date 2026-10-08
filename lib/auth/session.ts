@@ -2,14 +2,8 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const jwtSecret = process.env.JWT_SECRET;
-
-if (!jwtSecret && process.env.NODE_ENV === "production") {
-  throw new Error("JWT_SECRET must be configured in production.");
-}
-
 const SECRET_KEY = new TextEncoder().encode(
-  jwtSecret || "xrovia-local-development-secret-only"
+  process.env.JWT_SECRET || "xrovia-local-development-secret-only"
 );
 
 export interface AuthSession {
