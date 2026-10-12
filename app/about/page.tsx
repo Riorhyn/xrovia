@@ -85,8 +85,8 @@ export default function AboutPage() {
                 Why a professional identity?
               </h2>
               <p className="mt-4 text-lg leading-8 text-slate-600">
-                A CV can change for every opportunity. XROVIA is designed as a
-                continuing professional record that can be updated as a person's
+                Traditional documents are static and fragmented. XROVIA is designed as a
+                continuing professional record that evolves as a person's
                 education, experience, skills, projects, and achievements grow.
               </p>
             </div>

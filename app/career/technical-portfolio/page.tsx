@@ -18,7 +18,7 @@ export default function Page() {
         <h2 className="text-2xl font-semibold text-gray-900">What to include</h2>
         <p>Start with your education and add relevant work experience, internships, technical skills, projects, certifications, and achievements. Keep the information current so you can share a consistent professional record when applying for opportunities.</p>
         <h2 className="text-2xl font-semibold text-gray-900">Why a structured profile helps</h2>
-        <p>A structured profile gives you one place to maintain career information and makes it easier to share the details behind your applications. It complements your CV, resume, portfolio, and other application materials rather than replacing them.</p>
+        <p>A structured profile gives you one place to maintain career information and makes it easier to share the details behind your applications. It provides a persistent digital presence for your professional journey.</p>
         <h2 className="text-2xl font-semibold text-gray-900">Build your professional identity</h2>
         <p>XROVIA lets you organize education, experience, skills, projects, certifications, achievements, and supporting evidence around one Professional ID.</p>
       </section>

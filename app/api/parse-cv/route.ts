@@ -15,10 +15,10 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const file = formData.get("file");
-    if (!(file instanceof File)) return NextResponse.json({ error: "No CV file uploaded." }, { status: 400 });
+    if (!(file instanceof File)) return NextResponse.json({ error: "No document file uploaded." }, { status: 400 });
     if (file.size === 0) return NextResponse.json({ error: "The uploaded file is empty." }, { status: 400 });
-    if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "CV files must be 10 MB or smaller." }, { status: 400 });
-    if (!ALLOWED_TYPES.has(file.type)) return NextResponse.json({ error: "Supported CV formats are PDF, JPG, PNG, and WEBP." }, { status: 400 });
+    if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: "Document files must be 10 MB or smaller." }, { status: 400 });
+    if (!ALLOWED_TYPES.has(file.type)) return NextResponse.json({ error: "Supported document formats are PDF, JPG, PNG, and WEBP." }, { status: 400 });
 
     const arrayBuffer = await file.arrayBuffer();
     const base64Data = Buffer.from(arrayBuffer).toString("base64");
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       model: "gemini-2.5-flash",
       contents: [
         { inlineData: { mimeType: file.type, data: base64Data } },
-        "Extract only information explicitly present in this CV/Resume. Do not invent, infer, or improve facts. Return empty strings or empty arrays when information is missing. This is a draft for the user to review before saving.",
+        "Extract only information explicitly present in this professional document. Do not invent, infer, or improve facts. Return empty strings or empty arrays when information is missing. This is a draft for the user to review before saving.",
       ],
       config: {
         responseMimeType: "application/json",
@@ -87,11 +87,11 @@ export async function POST(req: Request) {
 
     let parsedData: unknown;
     try { parsedData = JSON.parse(outputText); }
-    catch { return NextResponse.json({ error: "The CV parser returned invalid data. Please try again." }, { status: 422 }); }
+    catch { return NextResponse.json({ error: "The document parser returned invalid data. Please try again." }, { status: 422 }); }
 
     return NextResponse.json({ profile: parsedData });
   } catch (err: any) {
-    console.error("Gemini CV Parsing Error:", err);
-    return NextResponse.json({ error: err?.message || "Failed to parse CV." }, { status: 500 });
+    console.error("Gemini Document Parsing Error:", err);
+    return NextResponse.json({ error: err?.message || "Failed to parse document." }, { status: 500 });
   }
 }
