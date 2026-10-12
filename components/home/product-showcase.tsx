@@ -53,7 +53,7 @@ export function ProductShowcase() {
                 </span>
                 <h3 className="text-2xl font-black text-white sm:text-3xl">One Permanent ID for Your History</h3>
                 <p className="text-sm leading-relaxed text-slate-300">
-                  Replace fragmented resumes with a single permanent digital identifier (`PR-XXXXXX`). Your ID stays connected as you move between institutions and roles.
+                  Establish a single permanent digital identifier (`PR-XXXXXX`) that stays connected as you move between institutions and roles.
                 </p>
                 <ul className="space-y-2.5 pt-2 text-xs font-medium text-slate-300">
                   <li className="flex items-center gap-2">

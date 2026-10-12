@@ -10,13 +10,13 @@ export function ProblemSection() {
       <Container>
         <SectionHeader
           eyebrow="Why XROVIA"
-          title="Identity instead of another document."
-          description="Resumes and CVs are static PDF files created repeatedly for every application. XROVIA establishes a persistent, structured professional identity that grows with you."
+          title="Persistent digital identity for a connected world."
+          description="Traditional records are disconnected and difficult to verify. XROVIA establishes a persistent, structured professional identity that grows with you."
         />
 
         {/* Visual Comparison Grid */}
         <div className="mt-14 grid gap-8 lg:grid-cols-2">
-          {/* Traditional Resume Card */}
+          {/* Fragmented Records Card */}
           <div className="rounded-3xl border border-red-200/70 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
@@ -24,21 +24,21 @@ export function ProblemSection() {
                   <FileText className="h-5 w-5" />
                 </span>
                 <div>
-                  <h3 className="text-base font-bold text-slate-950">Traditional Resumes & CVs</h3>
-                  <p className="text-xs text-slate-500">Static, fragmented document files</p>
+                  <h3 className="text-base font-bold text-slate-950">Fragmented Professional Records</h3>
+                  <p className="text-xs text-slate-500">Isolated, static profile updates</p>
                 </div>
               </div>
               <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 border border-red-200/60">
-                Legacy Approach
+                Traditional Records
               </span>
             </div>
 
             <ul className="mt-6 space-y-4">
               {[
-                { title: "Constant Document Recreation", desc: "Must be reformatted and rebuilt for every single job application or opportunity." },
-                { title: "Unverified Self-Claims", desc: "Employers and institutions cannot easily verify education or project claims without lengthy background checks." },
-                { title: "Lost Work Context", desc: "Complex team projects, collaborative research, and individual contributions get collapsed into bullet points." },
-                { title: "No Discovery Potential", desc: "Static PDFs sit on hard drives or inbox attachments rather than being discoverable." },
+                { title: "Fragmented History", desc: "Education, skills, and work history scattered across multiple isolated portals and static uploads." },
+                { title: "Unverified Self-Claims", desc: "Institutions and partners cannot easily confirm qualifications or project contributions." },
+                { title: "Lost Work Context", desc: "Complex team projects, research, and individual achievements lose detail in basic lists." },
+                { title: "Limited Discovery", desc: "Static profiles remain hidden instead of providing an active digital presence." },
               ].map(({ title, desc }) => (
                 <li key={title} className="flex items-start gap-3 text-xs sm:text-sm">
                   <XCircle className="h-5 w-5 shrink-0 text-red-500 mt-0.5" />
