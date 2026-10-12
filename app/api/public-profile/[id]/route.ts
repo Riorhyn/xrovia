@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -12,6 +14,30 @@ export async function GET(
 
     const profile = await prisma.profile.findUnique({
       where: { professionalId },
+      select: {
+        id: true,
+        professionalId: true,
+        fullName: true,
+        headline: true,
+        location: true,
+        about: true,
+        photoUrl: true,
+        isPublic: true,
+        verificationStatus: true,
+        fullData: true,
+        evidenceFiles: {
+          select: {
+            id: true,
+            fileName: true,
+            itemType: true,
+            itemId: true,
+            mimeType: true,
+            size: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!profile || !profile.isPublic) {
@@ -24,7 +50,7 @@ export async function GET(
     const collaborationProjects = await prisma.collaborationProject.findMany({
       where: {
         status: { in: ["SELF_REPORTED", "TEAM_CONFIRMED", "ORGANIZATION_VERIFIED"] },
-        members: { some: { userId: profile.userId, status: "CONFIRMED" } },
+        members: { some: { userId: profile.id, status: "CONFIRMED" } },
       },
       include: {
         members: {

@@ -13,7 +13,7 @@ These are ten legitimate places to seek an editorial or profile link. A backlink
 
 3. Indie Hackers
    Target: https://xrovia.com/career-profile
-   Content angle: why a structured career record can complement a CV.
+   Content angle: why a structured career record can build a persistent professional identity.
 
 4. Medium
    Target: https://xrovia.com/career/job-search
@@ -38,7 +38,7 @@ These are ten legitimate places to seek an editorial or profile link. A backlink
 
 9. Quora
    Target: https://xrovia.com/online-cv
-   Content angle: answer questions about online CVs and professional profiles; link only when it genuinely supports the answer.
+   Content angle: answer questions about digital identities and professional profiles; link only when it genuinely supports the answer.
 
 10. Pinterest
     Target: https://xrovia.com/career-portfolio
