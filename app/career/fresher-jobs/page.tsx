@@ -18,9 +18,9 @@ export default function Page() {
         <p className="mt-6 text-xl leading-8 text-slate-600">Fresh graduates may not have years of work experience, but they can still present useful evidence of what they have learned and built. XROVIA lets freshers organize education, projects, technical skills, certifications, achievements, and experience into a shareable professional identity.</p>
         <section className="mt-10 space-y-6 text-base leading-8 text-slate-700">
           <h2 className="text-2xl font-bold text-slate-900">How XROVIA can help</h2>
-          <p>Use your profile alongside your resume and job applications to give recruiters or hiring teams more context about your background.</p>
+          <p>Use your digital identity to give organizations and professional contacts verified context about your qualifications.</p>
           <p>With XROVIA, you can keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one Professional ID. This information can be updated as your career develops.</p>
-          <p>Use XROVIA together with your CV, applications, portfolio, and other professional profiles. The goal is to keep your career record organized and easier to share, not to replace the tools you already use.</p>
+          <p>XROVIA keeps your verified professional record organized and accessible in one place with a secure digital identity card.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900">Explore XROVIA</h2>

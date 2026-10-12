@@ -14,10 +14,10 @@ Website: https://xrovia.com/
 - Internship guide: https://xrovia.com/career/internships
 - Engineering jobs guide: https://xrovia.com/career/engineering-jobs
 - Mechanical engineering jobs guide: https://xrovia.com/career/mechanical-engineering-jobs
-- Online CV guide: https://xrovia.com/online-cv
+- Digital Identity guide: https://xrovia.com/online-cv
 - Student project portfolio: https://xrovia.com/project-portfolio-for-students
 
-XROVIA is designed to complement CVs, resumes, portfolios, and other professional platforms by giving people one place to maintain their education, experience, skills, projects, certifications, achievements, and supporting evidence.
+XROVIA provides a persistent digital identity platform where individuals maintain their verified education, experience, skills, projects, certifications, achievements, and supporting evidence.
 
 
 <!-- Deployment trigger: 2026-09-27 -->

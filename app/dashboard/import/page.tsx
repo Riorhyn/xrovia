@@ -124,9 +124,9 @@ export default function ImportCvPage() {
 
   const handleFile = async (file: File) => {
     setError(""); setSaved(false); setDraft(null); setFileName(file.name);
-    if (file.size > 10 * 1024 * 1024) { setError("CV files must be 10 MB or smaller."); return; }
+    if (file.size > 10 * 1024 * 1024) { setError("Files must be 10 MB or smaller."); return; }
     const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
-    if (!allowed.includes(file.type)) { setError("Please upload a PDF, JPG, PNG, or WEBP CV."); return; }
+    if (!allowed.includes(file.type)) { setError("Please upload a PDF, JPG, PNG, or WEBP document."); return; }
 
     setParsing(true);
     try {
@@ -134,10 +134,10 @@ export default function ImportCvPage() {
       formData.append("file", file);
       const res = await fetch("/api/parse-cv", { method: "POST", body: formData });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Unable to parse CV.");
+      if (!res.ok) throw new Error(data.error || "Unable to parse document.");
       setDraft(data.profile || emptyProfile);
     } catch (e: any) {
-      setError(e?.message || "Unable to parse CV.");
+      setError(e?.message || "Unable to parse document.");
     } finally { setParsing(false); }
   };
 
@@ -169,8 +169,8 @@ export default function ImportCvPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600"><FileText className="h-4 w-4" /> Career record import</div>
-            <h1 className="mt-1 text-3xl font-black text-slate-900">Import your CV</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-500">Upload an existing CV and XROVIA will turn it into a structured draft. Nothing is saved until you review and approve it.</p>
+            <h1 className="mt-1 text-3xl font-black text-slate-900">Import document data</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-500">Upload an existing document and XROVIA will turn it into a structured draft. Nothing is saved until you review and approve it.</p>
           </div>
           <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50"><ArrowLeft className="h-4 w-4" /> Dashboard</Link>
         </div>
@@ -186,7 +186,7 @@ export default function ImportCvPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
           <label className="flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/60 px-6 text-center hover:border-blue-400 hover:bg-blue-50/40 transition">
             <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFile(file); e.currentTarget.value = ""; }} />
-            {parsing ? <><Loader2 className="h-8 w-8 animate-spin text-blue-600" /><span className="mt-3 text-sm font-bold text-slate-900">Reading your CV...</span><span className="mt-1 text-xs text-slate-500">This may take a few seconds.</span></> : <><Upload className="h-8 w-8 text-slate-400" /><span className="mt-3 text-sm font-bold text-slate-900">Upload PDF or image CV</span><span className="mt-1 text-xs text-slate-500">Maximum 10 MB</span></>}
+            {parsing ? <><Loader2 className="h-8 w-8 animate-spin text-blue-600" /><span className="mt-3 text-sm font-bold text-slate-900">Reading document...</span><span className="mt-1 text-xs text-slate-500">This may take a few seconds.</span></> : <><Upload className="h-8 w-8 text-slate-400" /><span className="mt-3 text-sm font-bold text-slate-900">Upload PDF or image document</span><span className="mt-1 text-xs text-slate-500">Maximum 10 MB</span></>}
           </label>
           {fileName && <p className="mt-3 text-xs font-semibold text-slate-600">Selected: {fileName}</p>}
         </div>

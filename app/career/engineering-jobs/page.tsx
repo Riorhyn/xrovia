@@ -18,9 +18,9 @@ export default function Page() {
         <p className="mt-6 text-xl leading-8 text-slate-600">Engineering candidates often have a mixture of coursework, software skills, projects, internships, certifications, and practical experience. A structured professional profile can make these details easier to maintain and present.</p>
         <section className="mt-10 space-y-6 text-base leading-8 text-slate-700">
           <h2 className="text-2xl font-bold text-slate-900">How XROVIA can help</h2>
-          <p>XROVIA can be used alongside a CV, portfolio, LinkedIn profile, and individual job applications.</p>
+          <p>XROVIA provides a persistent digital identity identifier and verified profile.</p>
           <p>With XROVIA, you can keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one Professional ID. This information can be updated as your career develops.</p>
-          <p>Use XROVIA together with your CV, applications, portfolio, and other professional profiles. The goal is to keep your career record organized and easier to share, not to replace the tools you already use.</p>
+          <p>XROVIA keeps your verified professional record organized and accessible in one place with a secure digital identity card.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900">Explore XROVIA</h2>
