@@ -1,7 +1,7 @@
 import { Fingerprint, ShieldCheck, Link2, BriefcaseBusiness, FileCheck2, Users, GraduationCap, History, FolderKanban, type LucideIcon } from "lucide-react";
 
 export const ROUTES = { home: "/", login: "/login", register: "/register", dashboard: "/dashboard", search: "/search" } as const;
-export const SAMPLE_ID = "PR-159481";
+export const SAMPLE_ID = "XR-159481";
 
 export type Problem = { title: string; body: string; icon: LucideIcon };
 export const PROBLEMS: Problem[] = [

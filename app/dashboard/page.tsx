@@ -11,17 +11,19 @@ import { CareerCommandCenter } from "@/components/dashboard/CareerCommandCenter"
 import { VerificationCenter } from "@/components/dashboard/VerificationCenter";
 
 export default function DashboardPage() {
-  const [profile, setProfile] = useState({ fullName: "Candidate Name", professionalId: "PR-159481" });
+  const [profile, setProfile] = useState<{ fullName: string; professionalId: string } | null>(null);
 
   const loadDashboardData = async () => {
     try {
       const res = await fetch("/api/profile/summary");
       if (!res.ok) return;
       const data = await res.json();
-      setProfile({
-        fullName: data.profile?.fullName || "Candidate Name",
-        professionalId: data.profile?.professionalId || "PR-159481",
-      });
+      if (data.profile) {
+        setProfile({
+          fullName: data.profile.fullName || "User",
+          professionalId: data.profile.professionalId || "XR-000000",
+        });
+      }
     } catch (error) {
       console.error("Failed to load dashboard profile:", error);
     }
@@ -48,19 +50,19 @@ export default function DashboardPage() {
                 Dashboard Overview
               </span>
               <h1 className="mt-3 truncate text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                Welcome back, {profile.fullName}
+                Welcome back, {profile?.fullName || "..."}
               </h1>
               <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
                 <span>Permanent Professional ID</span>
                 <span className="rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1 font-mono text-xs font-bold text-blue-700">
-                  {profile.professionalId}
+                  {profile?.professionalId || "..."}
                 </span>
               </p>
             </div>
 
             <div className="relative flex flex-wrap items-center gap-2.5">
               <Link
-                href={"/" + profile.professionalId}
+                href={"/" + (profile?.professionalId || "")}
                 target="_blank"
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
               >

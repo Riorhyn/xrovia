@@ -3,7 +3,7 @@ import { IdCardPreview } from "./id-card-preview";
 import { Container } from "./ui";
 
 const CARD_FIELDS = [
-  { term: "Professional ID", detail: "The permanent number that identifies you, such as PR-159481." },
+  { term: "Professional ID", detail: "The permanent number that identifies you, such as XR-159481." },
   { term: "Name and headline", detail: "Who you are and what you do, at a glance." },
   { term: "Primary focus", detail: "The main area your work centers on." },
   { term: "Core competencies", detail: "The skills you most want people to notice." },

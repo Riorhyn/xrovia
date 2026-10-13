@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     const randomDigits = randomInt(100000, 1000000);
-    const professionalId = `PR-${randomDigits}`;
+    const professionalId = `XR-${randomDigits}`;
 
     const passwordHash = await bcrypt.hash(password, 12);
 

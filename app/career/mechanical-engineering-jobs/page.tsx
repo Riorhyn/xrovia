@@ -20,7 +20,7 @@ export default function Page() {
           <h2 className="text-2xl font-bold text-slate-900">How XROVIA can help</h2>
           <p>Add specific tools, projects, responsibilities, certifications, and evidence that accurately represent your experience.</p>
           <p>With XROVIA, you can keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one Professional ID. This information can be updated as your career develops.</p>
-          <p>Use XROVIA together with your CV, applications, portfolio, and other professional profiles. The goal is to keep your career record organized and easier to share, not to replace the tools you already use.</p>
+          <p>Use XROVIA to build your professional presence, verify your achievements, and connect with opportunities.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900">Explore XROVIA</h2>

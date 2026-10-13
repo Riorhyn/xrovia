@@ -17,10 +17,10 @@ export default function Page() {
         <h1 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">Project portfolio for students</h1>
         <p className="mt-6 text-xl leading-8 text-slate-600">Projects can demonstrate how a student applies what they learn. XROVIA gives students a place to record projects together with skills, education, certifications, achievements, and other career information.</p>
         <section className="mt-10 space-y-6 text-base leading-8 text-slate-700">
-          <h2 className="text-2xl font-bold text-slate-900">How XROVIA can help</h2>
-          <p>Describe what you built, your role, the tools you used, and the result accurately. Use evidence where appropriate.</p>
-          <p>With XROVIA, you can keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one Professional ID. This information can be updated as your career develops.</p>
-          <p>Use XROVIA together with your CV, applications, portfolio, and other professional profiles. The goal is to keep your career record organized and easier to share, not to replace the tools you already use.</p>
+          <h2 className="text-2xl font-bold text-slate-900">How XROVIA helps</h2>
+          <p>Describe what you built, your role, the tools you used, and the result accurately. Attach supporting evidence and project links.</p>
+          <p>With XROVIA, you keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one unique Professional ID (`XR-XXXXXX`). This information can be updated continuously as your skills evolve.</p>
+          <p>Use XROVIA to showcase your project portfolio, collaborate with peers, and share verified achievements with industry partners.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900">Explore XROVIA</h2>

@@ -9,25 +9,44 @@ export function UserDigitalIdCard() {
     headline: "Professional Headline",
     location: "Location not provided",
     photoUrl: "",
-    professionalId: "PR-159481",
+    professionalId: "XR-159481",
   });
 
-  const loadData = () => {
+  const loadData = async () => {
+    try {
+      const res = await fetch("/api/profile/summary");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.profile) {
+          setProfile({
+            fullName: data.profile.fullName || "User",
+            headline: data.profile.headline || "Professional Headline",
+            location: data.profile.location || "Location not provided",
+            photoUrl: data.profile.photoUrl || "",
+            professionalId: data.profile.professionalId || "XR-000000",
+          });
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Error loading ID card from backend:", err);
+    }
+
     const saved = localStorage.getItem("user_profile_data");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.personal) {
-          setProfile({
-            fullName: parsed.personal.fullName || "Candidate Name",
-            headline: parsed.personal.headline || "Professional Headline",
-            location: parsed.personal.location || "Location not provided",
-            photoUrl: parsed.personal.photoUrl || "",
-            professionalId: "PR-159481",
-          });
+          setProfile((prev) => ({
+            ...prev,
+            fullName: parsed.personal.fullName || prev.fullName,
+            headline: parsed.personal.headline || prev.headline,
+            location: parsed.personal.location || prev.location,
+            photoUrl: parsed.personal.photoUrl || prev.photoUrl,
+          }));
         }
       } catch (e) {
-        console.error("Error loading ID card:", e);
+        console.error("Error loading ID card from localstorage:", e);
       }
     }
   };

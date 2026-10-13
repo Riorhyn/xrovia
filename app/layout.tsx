@@ -2,37 +2,32 @@ import "./globals.css";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "lucide-react";
 import { getSession } from "../lib/auth/session";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { AccountSwitcher } from "@/components/auth/AccountSwitcher";
+import { HeaderNav } from "@/components/home/HeaderNav";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   metadataBase: new URL("https://xrovia.com"),
   title: {
-    default: "XROVIA | Professional Identity Platform",
+    default: "XROVIA | Professional Digital Identity Platform",
     template: "%s | XROVIA",
   },
   description:
-    "XROVIA is a professional identity platform for creating, managing, verifying, and sharing your career profile, education, experience, skills, projects, and achievements.",
+    "XROVIA is a permanent digital identity platform for individuals and organizations. Build, verify, and discover structured professional history.",
   applicationName: "XROVIA",
   keywords: [
     "XROVIA",
     "Xrovia",
-    "XROVIA professional identity",
-    "XROVIA professional profile",
-    "XROVIA career profile",
-    "professional identity",
-    "professional identity platform",
-    "digital professional profile",
-    "career profile",
-    "professional profile",
-    "verified professional profile",
-    "digital identity",
-    "career record",
-    "professional ID",
+    "XROVIA digital identity",
+    "professional digital identity",
+    "digital identity platform",
+    "permanent professional ID",
+    "verified professional record",
+    "career portfolio",
+    "organization verification",
   ],
   authors: [{ name: "XROVIA" }],
   creator: "XROVIA",
@@ -62,9 +57,9 @@ export const metadata = {
     type: "website",
     url: "https://xrovia.com/",
     siteName: "XROVIA",
-    title: "XROVIA | Professional Identity Platform",
+    title: "XROVIA | Professional Digital Identity Platform",
     description:
-      "Create, manage, verify, and share your professional identity with one permanent Professional ID.",
+      "Create, manage, verify, and share your permanent digital identity with one unique Professional ID.",
     locale: "en_US",
     images: [
       {
@@ -77,9 +72,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "XROVIA | Professional Identity Platform",
+    title: "XROVIA | Professional Digital Identity Platform",
     description:
-      "Create, manage, verify, and share your professional identity with one permanent Professional ID.",
+      "Create, manage, verify, and share your permanent digital identity with one unique Professional ID.",
   },
 };
 
@@ -93,93 +88,83 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
-        <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/85 shadow-[0_1px_0_rgba(15,23,42,0.02)] backdrop-blur-xl">
-          <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="group flex items-center gap-2.5" aria-label="XROVIA home">
-              <Image
-                src="/ChatGPT Image Sep 27, 2026, 04_14_14 PM.png"
-                alt="XROVIA"
-                width={160}
-                height={90}
-                priority
-                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+        <HeaderNav
+          session={session}
+          accountSwitcherSlot={
+            session ? (
+              <AccountSwitcher
+                isAdmin={session.role === "ADMIN"}
+                activeOrganizationId={session.organizationId}
               />
-            </Link>
-
-            <nav className="hidden items-center gap-1 rounded-full border border-slate-200/80 bg-slate-50/80 p-1 text-sm font-semibold text-slate-600 md:flex">
-              <Link href="/#how-it-works" className="rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
-                How it works
-              </Link>
-              <Link href="/#benefits" className="rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
-                Benefits
-              </Link>
-              <Link href="/#search-id" className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 transition hover:bg-white hover:text-blue-700 hover:shadow-sm">
-                <Search className="h-4 w-4" />
-                Search ID
-              </Link>
-            </nav>
-
-            <div className="flex items-center gap-2">
-              {session ? (
-                <>
-                  <AccountSwitcher
-                    isAdmin={session.role === "ADMIN"}
-                    activeOrganizationId={session.organizationId}
-                  />
-                  <LogoutButton />
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="hidden rounded-xl px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:inline-flex"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="inline-flex rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
-                  >
-                    <span className="hidden sm:inline">Create Professional ID</span>
-                    <span className="sm:hidden">Create ID</span>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </header>
+            ) : null
+          }
+          logoutButtonSlot={session ? <LogoutButton /> : null}
+        />
 
         <main className="flex-1">{children}</main>
 
         <footer className="border-t border-slate-800 bg-slate-950 text-slate-400">
-          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_auto] lg:px-8 lg:py-14">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <Image
-                  src="/ChatGPT Image Sep 27, 2026, 04_32_11 PM.png"
-                  alt="XROVIA"
-                  width={180}
-                  height={48}
-                  className="h-9 w-[180px] object-cover object-center"
-                />
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+            <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5 lg:gap-12">
+              <div className="lg:col-span-2">
+                <Link href="/" aria-label="XROVIA Home">
+                  <Image
+                    src="/ChatGPT Image Sep 27, 2026, 04_32_11 PM.png"
+                    alt="XROVIA"
+                    width={180}
+                    height={48}
+                    className="h-9 w-[180px] object-cover object-center"
+                  />
+                </Link>
+                <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+                  XROVIA is the permanent digital identity platform connecting individuals, organizations, education, and professional discovery.
+                </p>
+                <div className="mt-6 flex items-center gap-3 text-xs font-semibold text-slate-400">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-3 py-1">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Platform Active
+                  </span>
+                  <span>v1.0.0</span>
+                </div>
               </div>
-              <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
-                Your permanent professional identity and career record.
-              </p>
+
+              <div>
+                <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-200">Platform</h3>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  <li><Link href="/#how-it-works" className="transition hover:text-white">How It Works</Link></li>
+                  <li><Link href="/#why-xrovia" className="transition hover:text-white">Why XROVIA</Link></li>
+                  <li><Link href="/#search-id" className="transition hover:text-white">Identity Lookup</Link></li>
+                  <li><Link href="/#for-organizations" className="transition hover:text-white">For Organizations</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-200">Access</h3>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  <li><Link href="/register" className="transition hover:text-white">Create Individual ID</Link></li>
+                  <li><Link href="/organization/register" className="transition hover:text-white">Register Organization</Link></li>
+                  <li><Link href="/login" className="transition hover:text-white">Sign In</Link></li>
+                  <li><Link href="/organization/login" className="transition hover:text-white">Organization Sign In</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-extrabold uppercase tracking-widest text-slate-200">Resources</h3>
+                <ul className="mt-4 space-y-2.5 text-sm">
+                  <li><Link href="/career/job-search" className="transition hover:text-white">Career Guides</Link></li>
+                  <li><Link href="/professional-profile" className="transition hover:text-white">Digital Profiles</Link></li>
+                  <li><Link href="/feedback" className="transition hover:text-white">Platform Feedback</Link></li>
+                  <li><Link href="/about" className="transition hover:text-white">About XROVIA</Link></li>
+                </ul>
+              </div>
             </div>
 
-            <nav className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-2" aria-label="Footer">
-              <Link href="/#search-id" className="transition hover:text-white">Search ID</Link>
-              <Link href="/#benefits" className="transition hover:text-white">Member Benefits</Link>
-              <Link href="/career/job-search" className="transition hover:text-white">Career Guides</Link>
-              <Link href="/professional-profile" className="transition hover:text-white">Professional Profile</Link>
-              <Link href="/feedback" className="transition hover:text-white">Feedback</Link>
-              <Link href="/organization/register" className="transition hover:text-white">For Organizations</Link>
-            </nav>
-
-            <p className="text-xs text-slate-500 lg:text-right">
-              © {new Date().getFullYear()} XROVIA.<br className="hidden lg:block" /> All rights reserved.
-            </p>
+            <div className="mt-12 flex flex-col items-center justify-between border-t border-slate-800/80 pt-8 text-xs text-slate-500 sm:flex-row">
+              <p>© {new Date().getFullYear()} XROVIA. All rights reserved.</p>
+              <p className="mt-2 sm:mt-0 text-slate-500">
+                A new standard for permanent digital identity.
+              </p>
+            </div>
           </div>
         </footer>
       </body>

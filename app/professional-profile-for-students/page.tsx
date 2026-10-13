@@ -17,10 +17,10 @@ export default function Page() {
         <h1 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">Professional profile for students</h1>
         <p className="mt-6 text-xl leading-8 text-slate-600">Students can start building a professional identity before they have a long employment history. Recording projects, skills, certifications, education, competitions, internships, and achievements creates a structured career record that can grow over time.</p>
         <section className="mt-10 space-y-6 text-base leading-8 text-slate-700">
-          <h2 className="text-2xl font-bold text-slate-900">How XROVIA can help</h2>
+          <h2 className="text-2xl font-bold text-slate-900">How XROVIA helps</h2>
           <p>Keep adding genuine accomplishments as your education and experience develop.</p>
-          <p>With XROVIA, you can keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one Professional ID. This information can be updated as your career develops.</p>
-          <p>Use XROVIA together with your CV, applications, portfolio, and other professional profiles. The goal is to keep your career record organized and easier to share, not to replace the tools you already use.</p>
+          <p>With XROVIA, you keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one unique Professional ID (`XR-XXXXXX`). This record grows with your academic and professional journey.</p>
+          <p>Use XROVIA to share verified achievements with employers and academic partners, establishing an early professional digital identity.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900">Explore XROVIA</h2>

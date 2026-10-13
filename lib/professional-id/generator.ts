@@ -3,7 +3,7 @@ import { prisma } from "../db/prisma";
 
 /**
  * Generates an unguessable, collision-resistant Professional ID
- * Format: PR-XXXXXX (e.g. PR-829471)
+ * Format: XR-XXXXXX (e.g. XR-829471)
  */
 export async function generateUniqueProfessionalId(): Promise<string> {
   let isUnique = false;
@@ -15,7 +15,7 @@ export async function generateUniqueProfessionalId(): Promise<string> {
     // Generate a secure 6-digit number string: 100000 -> 999999
     const randomBuffer = crypto.randomBytes(4);
     const randomNumber = 100000 + (randomBuffer.readUInt32BE(0) % 900000);
-    candidateId = `PR-${randomNumber}`;
+    candidateId = `XR-${randomNumber}`;
 
     const existing = await prisma.profile.findUnique({
       where: { professionalId: candidateId },
