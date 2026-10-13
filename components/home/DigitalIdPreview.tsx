@@ -68,7 +68,7 @@ export function DigitalIdPreview() {
   const handleNativeShare = async () => {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: `${DEMO_PROFILE.fullName}'s Professional ID`, text: `View ${DEMO_PROFILE.fullName}'s verified professional identity.`, url: shareUrl });
+        await navigator.share({ title: `${profile.fullName}'s Professional ID`, text: `View ${profile.fullName}'s verified professional identity.`, url: shareUrl });
       } catch {
         // user cancelled or share failed
       }
