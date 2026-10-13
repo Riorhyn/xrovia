@@ -8,8 +8,8 @@ import { Button, Container, SectionHeader } from "./ui";
 
 function normalizeId(raw: string): string | null {
   const value = raw.trim().toUpperCase();
-  if (/^\d+$/.test(value)) return `PR-${value}`;
-  if (/^PR-\d+$/.test(value)) return value;
+  if (/^\d+$/.test(value)) return `XR-${value}`;
+  if (/^XR-\d+$/.test(value)) return value;
   return null;
 }
 

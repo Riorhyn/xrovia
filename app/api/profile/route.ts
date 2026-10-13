@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     const payload = body.fullData ? body.fullData : body;
     const { personal } = payload;
     const existingProfile = await prisma.profile.findUnique({ where: { userId: session.userId } });
-    const professionalId = existingProfile?.professionalId || "PR-" + Math.floor(100000 + Math.random() * 900000);
+    const professionalId = existingProfile?.professionalId || "XR-" + Math.floor(100000 + Math.random() * 900000);
 
     const updatedUser = await prisma.user.update({
       where: { id: session.userId },

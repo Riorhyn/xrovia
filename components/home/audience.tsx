@@ -40,7 +40,7 @@ export function Audience() {
 
               <ul className="mt-6 space-y-3 text-xs sm:text-sm font-medium text-slate-700">
                 {[
-                  "Claim your permanent XROVIA Professional ID (`PR-XXXXXX`)",
+                  "Claim your permanent XROVIA Professional ID (`XR-XXXXXX`)",
                   "Organize education, experience, skills, and projects in one hub",
                   "Attach evidence files and request institutional verification",
                   "Share your clean public profile via QR code or vanity URL",

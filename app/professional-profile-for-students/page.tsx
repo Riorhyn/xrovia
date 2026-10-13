@@ -19,7 +19,7 @@ export default function Page() {
         <section className="mt-10 space-y-6 text-base leading-8 text-slate-700">
           <h2 className="text-2xl font-bold text-slate-900">How XROVIA helps</h2>
           <p>Keep adding genuine accomplishments as your education and experience develop.</p>
-          <p>With XROVIA, you keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one unique Professional ID (`PR-XXXXXX`). This record grows with your academic and professional journey.</p>
+          <p>With XROVIA, you keep your education, experience, skills, projects, certifications, achievements, and supporting evidence organized under one unique Professional ID (`XR-XXXXXX`). This record grows with your academic and professional journey.</p>
           <p>Use XROVIA to share verified achievements with employers and academic partners, establishing an early professional digital identity.</p>
         </section>
         <section className="mt-10 rounded-2xl bg-slate-50 border border-slate-200 p-6">

@@ -72,7 +72,7 @@ export function ProblemSection() {
 
             <ul className="mt-6 space-y-4">
               {[
-                { title: "One Permanent Identifier", desc: "Your Professional ID (`PR-XXXXXX`) stays with you throughout your entire career trajectory." },
+                { title: "One Permanent Identifier", desc: "Your Professional ID (`XR-XXXXXX`) stays with you throughout your entire career trajectory." },
                 { title: "Authentic Verification Status", desc: "Clear distinction between self-added info, peer collaboration, and institutional confirmation." },
                 { title: "Rich Project & Evidence Linking", desc: "Attach actual proof, team roles, and verifiable credentials to every record item." },
                 { title: "Searchable & Instantly Shareable", desc: "Share via QR code, direct link, or allow recruiters and partners to discover your record." },

@@ -53,7 +53,7 @@ export function ProductShowcase() {
                 </span>
                 <h3 className="text-2xl font-black text-white sm:text-3xl">One Permanent ID for Your History</h3>
                 <p className="text-sm leading-relaxed text-slate-300">
-                  Establish a single permanent digital identifier (`PR-XXXXXX`) that stays connected as you move between institutions and roles.
+                  Establish a single permanent digital identifier (`XR-XXXXXX`) that stays connected as you move between institutions and roles.
                 </p>
                 <ul className="space-y-2.5 pt-2 text-xs font-medium text-slate-300">
                   <li className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export function ProductShowcase() {
                   <span className="h-3 w-3 rounded-full bg-green-500/80" />
                 </div>
                 <div className="rounded-lg bg-slate-900 px-3 py-1 font-mono text-[11px] text-slate-400 border border-slate-800">
-                  https://xrovia.com/PR-159481
+                  https://xrovia.com/XR-159481
                 </div>
               </div>
 
@@ -157,7 +157,7 @@ export function ProductShowcase() {
                 <div className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
                   <div>
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Profile Identifier</span>
-                    <p className="mt-0.5 font-mono text-lg font-black text-blue-400">PR-159481</p>
+                    <p className="mt-0.5 font-mono text-lg font-black text-blue-400">XR-159481</p>
                   </div>
                   <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400 border border-emerald-500/20">
                     Active & Searchable

@@ -8,7 +8,7 @@ const WORKFLOW_STEPS = [
   {
     step: "01",
     title: "Create Your Unique Identity",
-    description: "Register your account and claim a permanent XROVIA Professional ID (`PR-XXXXXX`) that remains yours across institutions and career transitions.",
+    description: "Register your account and claim a permanent XROVIA Professional ID (`XR-XXXXXX`) that remains yours across institutions and career transitions.",
     icon: UserPlus,
     badge: "Create",
   },

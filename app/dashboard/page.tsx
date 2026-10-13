@@ -21,7 +21,7 @@ export default function DashboardPage() {
       if (data.profile) {
         setProfile({
           fullName: data.profile.fullName || "User",
-          professionalId: data.profile.professionalId || "PR-000000",
+          professionalId: data.profile.professionalId || "XR-000000",
         });
       }
     } catch (error) {

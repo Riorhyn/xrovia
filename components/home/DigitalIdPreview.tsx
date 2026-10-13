@@ -10,15 +10,43 @@ const DEMO_PROFILE = {
   location: "San Francisco, CA",
   about: "Mechanical engineer focused on product design, manufacturing systems, and sustainable hardware engineering.",
   skills: ["SolidWorks", "GD&T", "Manufacturing", "Python", "CAD / CAM"],
-  professionalId: "PR-159481",
+  professionalId: "XR-159481",
   verifiedCount: 6,
 };
 
 export function DigitalIdPreview() {
+  const [profile, setProfile] = useState(DEMO_PROFILE);
   const [showQrModal, setShowQrModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"card" | "verified">("card");
-  const shareUrl = typeof window !== "undefined" ? window.location.origin + "/" + DEMO_PROFILE.professionalId : "https://xrovia.com/PR-159481";
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/profile/summary");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.profile?.fullName) {
+            setProfile({
+              fullName: data.profile.fullName,
+              headline: data.profile.headline || "Professional Member",
+              location: data.profile.location || "Verified Location",
+              about: data.profile.about || "Digital Professional Identity on XROVIA.",
+              skills: Array.isArray(data.profile.skills) && data.profile.skills.length > 0
+                ? data.profile.skills.map((s: any) => typeof s === "string" ? s : s.name).slice(0, 5)
+                : ["Verified Record", "Professional ID"],
+              professionalId: data.profile.professionalId || "XR-159481",
+              verifiedCount: data.profile.verificationStatus === "VERIFIED" ? 8 : 4,
+            });
+          }
+        }
+      } catch {
+        // Fallback to sample demo profile when unauthenticated
+      }
+    })();
+  }, []);
+
+  const shareUrl = typeof window !== "undefined" ? window.location.origin + "/" + profile.professionalId : "https://xrovia.com/XR-159481";
 
   const recordItems = [
     { label: "Education", count: "01", summary: "B.E. Mechanical Engineering", Icon: GraduationCap, status: "Verified" },
@@ -67,13 +95,13 @@ export function DigitalIdPreview() {
           <div className="mt-5 flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 font-black text-sm text-white shadow-md shadow-blue-500/20">
-                AM
+                {profile.fullName?.[0]?.toUpperCase() || "X"}
               </div>
               <div className="min-w-0">
-                <h3 className="truncate text-base font-extrabold text-white">{DEMO_PROFILE.fullName}</h3>
-                <p className="mt-0.5 truncate text-xs text-slate-300">{DEMO_PROFILE.headline}</p>
+                <h3 className="truncate text-base font-extrabold text-white">{profile.fullName}</h3>
+                <p className="mt-0.5 truncate text-xs text-slate-300">{profile.headline}</p>
                 <p className="mt-1 flex items-center gap-1 truncate text-[11px] text-slate-400">
-                  <MapPin className="h-3 w-3 text-blue-400" /> {DEMO_PROFILE.location}
+                  <MapPin className="h-3 w-3 text-blue-400" /> {profile.location}
                 </p>
               </div>
             </div>
@@ -94,7 +122,7 @@ export function DigitalIdPreview() {
               <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-blue-100">XROVIA Unique ID</p>
               <span className="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-bold tracking-wider text-white">Active</span>
             </div>
-            <p className="mt-1 font-mono text-xl font-black tracking-tight text-white">{DEMO_PROFILE.professionalId}</p>
+            <p className="mt-1 font-mono text-xl font-black tracking-tight text-white">{profile.professionalId}</p>
           </div>
         </div>
 
@@ -111,7 +139,7 @@ export function DigitalIdPreview() {
               onClick={() => setActiveTab("verified")}
               className={`rounded-lg px-3 py-1 text-xs font-bold transition ${activeTab === "verified" ? "bg-blue-50 text-blue-700" : "text-slate-500 hover:text-slate-900"}`}
             >
-              Verification ({DEMO_PROFILE.verifiedCount})
+              Verification ({profile.verifiedCount})
             </button>
           </div>
 
@@ -119,16 +147,16 @@ export function DigitalIdPreview() {
             <div className="mt-4 space-y-4">
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Professional Summary</p>
-                <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-700">{DEMO_PROFILE.about}</p>
+                <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-slate-700">{profile.about}</p>
               </div>
 
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Core Capabilities</p>
-                  <span className="text-[10px] font-bold text-blue-600">12 Verified Skills</span>
+                  <span className="text-[10px] font-bold text-blue-600">Verified Skills</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {DEMO_PROFILE.skills.map((skill) => (
+                  {profile.skills.map((skill) => (
                     <span key={skill} className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-800">
                       {skill}
                     </span>
