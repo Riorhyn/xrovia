@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -8,7 +10,10 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const professionalId = decodeURIComponent(id).toUpperCase();
+    let professionalId = decodeURIComponent(id).trim().toUpperCase();
+    if (/^\d+$/.test(professionalId)) {
+      professionalId = `XR-${professionalId}`;
+    }
 
     const profile = await prisma.profile.findUnique({
       where: { professionalId },

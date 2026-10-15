@@ -29,8 +29,14 @@ import {
   ExternalLink,
   Link2,
   Linkedin,
-  GraduationCap as GraduationCapIcon,
+  Copy,
+  Check,
+  Share2,
+  QrCode,
+  X,
+  ThumbsUp,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 // Format external URLs so they open outside Next.js router
 const formatExternalUrl = (url?: string) => {
@@ -51,6 +57,9 @@ const formatExternalUrl = (url?: string) => {
 export default function PublicProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [endorsedSkills, setEndorsedSkills] = useState<Record<string, boolean>>({});
 
   const [collaborationProjects, setCollaborationProjects] = useState<any[]>([]);
 
@@ -81,7 +90,7 @@ export default function PublicProfilePage() {
       setIsLoading(true);
       setNotFound(false);
 
-      const id = window.location.pathname
+      let id = window.location.pathname
         .split("/")
         .filter(Boolean)
         .pop();
@@ -89,6 +98,10 @@ export default function PublicProfilePage() {
       if (!id) {
         setNotFound(true);
         return;
+      }
+
+      if (/^\d+$/.test(id)) {
+        id = `XR-${id}`;
       }
 
       const res = await fetch(
@@ -156,6 +169,20 @@ export default function PublicProfilePage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
+  const handleEndorse = (skill: string) => {
+    setEndorsedSkills((prev) => ({ ...prev, [skill]: !prev[skill] }));
+  };
 
   const initials = profile.personal?.fullName
     ? profile.personal.fullName
@@ -262,10 +289,20 @@ export default function PublicProfilePage() {
                   <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Professional ID</p>
                   <p className="font-mono text-xs font-black text-slate-800">{profile.professionalId}</p>
                 </div>
-                <div className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold ${profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
-                  {profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
-                  {profile.educations?.length + profile.experiences?.length > 0 && profile.educations?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EDUCATION"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) && profile.experiences?.every((item:any)=>profile.verificationRequests?.some((r:any)=>r.type==="EXPERIENCE"&&r.itemId===String(item.id)&&r.status==="VERIFIED")) ? "Verified" : "Self-Reported"}
-                </div>
+                <button
+                  onClick={() => setShowQrModal(true)}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <QrCode className="h-3.5 w-3.5 text-blue-600" />
+                  QR Card
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5 text-slate-500" />}
+                  {copied ? "Copied Link" : "Share"}
+                </button>
               </div>
             </div>
 
@@ -294,22 +331,32 @@ export default function PublicProfilePage() {
         {/* Core Competencies */}
         {profile.skills?.length > 0 && (
           <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              Core Competencies
-            </h2>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                Core Competencies & Endorsements
+              </h2>
+              <span className="text-[11px] text-slate-500 font-medium">Click to endorse skills</span>
+            </div>
 
             <div className="flex flex-wrap gap-2">
-              {profile.skills.map(
-                (skill: string, i: number) => (
-                  <span
+              {profile.skills.map((skill: string, i: number) => {
+                const isEndorsed = Boolean(endorsedSkills[skill]);
+                return (
+                  <button
                     key={`${skill}-${i}`}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-blue-100 bg-blue-50/60 px-3 py-1 text-xs font-bold text-blue-900"
+                    onClick={() => handleEndorse(skill)}
+                    className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition ${
+                      isEndorsed
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-800 shadow-sm"
+                        : "border-blue-100 bg-blue-50/60 text-blue-900 hover:border-blue-300 hover:bg-blue-100/60"
+                    }`}
                   >
-                    <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
-                    {skill}
-                  </span>
-                )
-              )}
+                    {isEndorsed ? <ThumbsUp className="h-3.5 w-3.5 text-emerald-600" /> : <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />}
+                    <span>{skill}</span>
+                    {isEndorsed && <span className="ml-0.5 rounded-full bg-emerald-200/80 px-1.5 text-[9px] text-emerald-900 font-extrabold">+1</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -650,6 +697,36 @@ export default function PublicProfilePage() {
         )}
 
       </div>
+
+      {/* QR Share Modal */}
+      {showQrModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+          <div className="relative w-full max-w-sm space-y-5 rounded-3xl border border-slate-100 bg-white p-6 text-center shadow-2xl">
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-800"
+              aria-label="Close modal"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600">Digital Identity Card</span>
+              <h3 className="mt-1 text-lg font-black text-slate-950">{profile.personal?.fullName}</h3>
+              <p className="font-mono text-xs font-bold text-slate-500">{profile.professionalId}</p>
+            </div>
+            <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-inner">
+              <QRCodeSVG value={shareUrl} size={160} level="H" includeMargin />
+            </div>
+            <button
+              onClick={handleCopy}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-700"
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Profile Link Copied!" : "Copy Profile Link"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, Search, User, Building2, ShieldCheck, ArrowRight } from "lucide-react";
 
 interface HeaderNavProps {
@@ -12,7 +13,13 @@ interface HeaderNavProps {
 }
 
 export function HeaderNav({ session, accountSwitcherSlot, logoutButtonSlot }: HeaderNavProps) {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Avoid rendering duplicate marketing header on dashboard or admin pages
+  if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
