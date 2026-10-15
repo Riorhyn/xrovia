@@ -242,8 +242,8 @@ export function DigitalIdPreview() {
             </button>
             <div>
               <span className="text-xs font-extrabold uppercase tracking-[0.14em] text-blue-600">Scan Professional ID</span>
-              <h3 className="mt-1 text-lg font-black text-slate-950">{DEMO_PROFILE.fullName}</h3>
-              <p className="font-mono text-xs font-bold text-slate-500">{DEMO_PROFILE.professionalId}</p>
+              <h3 className="mt-1 text-lg font-black text-slate-950">{profile.fullName}</h3>
+              <p className="font-mono text-xs font-bold text-slate-500">{profile.professionalId}</p>
             </div>
             <div className="mx-auto flex h-52 w-52 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-inner">
               <QRCodeSVG value={shareUrl} size={176} level="H" includeMargin />
